@@ -14,7 +14,7 @@ public class ExceptionUtils {
      * @param params    params
      * @return String
      */
-    static String getExceptionMessage(Enum errorEnum, Object... params) {
+    public static String getExceptionMessage(Enum errorEnum, Object... params) {
         String errorMessage = null;
         try {
             errorMessage = (String) errorEnum.getClass().getDeclaredField("message").get(errorEnum);
@@ -34,7 +34,7 @@ public class ExceptionUtils {
      * @param params    params
      * @return String
      */
-    static String getExceptionMessage(Object errorCode, String errorMsg, Object... params) {
+    public static String getExceptionMessage(Object errorCode, String errorMsg, Object... params) {
         return MessageFormat.format(errorMsg, params);
     }
 
