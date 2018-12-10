@@ -154,7 +154,7 @@ public class Assert {
 
     /**
      * 小于
-     *
+     * less then
      * @param number1       number1
      * @param number2       number2
      * @param exceptionEnum exceptionEnum
@@ -171,7 +171,7 @@ public class Assert {
 
     /**
      * 小于等于
-     *
+     * less equals
      * @param number1       number1
      * @param number2       number2
      * @param exceptionEnum exceptionEnum
@@ -187,7 +187,7 @@ public class Assert {
 
     /**
      * 大于
-     *
+     * great then
      * @param number1       number1
      * @param number2       number2
      * @param exceptionEnum exceptionEnum
@@ -203,7 +203,7 @@ public class Assert {
 
     /**
      * 大于等于
-     *
+     * great equals
      * @param number1       number1
      * @param number2       number2
      * @param exceptionEnum exceptionEnum
