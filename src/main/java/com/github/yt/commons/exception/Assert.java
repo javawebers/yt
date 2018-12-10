@@ -153,6 +153,23 @@ public class Assert {
     }
 
     /**
+     * 小于
+     *
+     * @param number1       number1
+     * @param number2       number2
+     * @param exceptionEnum exceptionEnum
+     * @param params        params
+     */
+    public static void lt(Number number1, Number number2, Enum exceptionEnum, Object... params) {
+        double n1 = number1.doubleValue();
+        double n2 = number2.doubleValue();
+        if (n1 >= n2) {
+            throw new BaseAccidentException(exceptionEnum, params);
+        }
+    }
+
+
+    /**
      * 小于等于
      *
      * @param number1       number1
@@ -177,6 +194,22 @@ public class Assert {
      * @param params        params
      */
     public static void gt(Number number1, Number number2, Enum exceptionEnum, Object... params) {
+        double n1 = number1.doubleValue();
+        double n2 = number2.doubleValue();
+        if (n1 <= n2) {
+            throw new BaseAccidentException(exceptionEnum, params);
+        }
+    }
+
+    /**
+     * 大于等于
+     *
+     * @param number1       number1
+     * @param number2       number2
+     * @param exceptionEnum exceptionEnum
+     * @param params        params
+     */
+    public static void ge(Number number1, Number number2, Enum exceptionEnum, Object... params) {
         double n1 = number1.doubleValue();
         double n2 = number2.doubleValue();
         if (n1 < n2) {
