@@ -61,23 +61,23 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
 
     public BaseErrorException(Enum errorEnum, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params));
-        errorCode = errorEnum.name();
+        errorCode = ExceptionUtils.getExceptionCode(errorEnum);
     }
 
     public BaseErrorException(Enum errorEnum, Exception e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params), e);
-        errorCode = errorEnum.name();
+        errorCode = ExceptionUtils.getExceptionCode(errorEnum);
     }
 
     public BaseErrorException(Object errorResult, Enum errorEnum, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params));
-        errorCode = errorEnum.name();
+        errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorResult = errorResult;
     }
 
     public BaseErrorException(Object errorResult, Enum errorEnum, Exception e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params), e);
-        errorCode = errorEnum.name();
+        errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorResult = errorResult;
     }
 
