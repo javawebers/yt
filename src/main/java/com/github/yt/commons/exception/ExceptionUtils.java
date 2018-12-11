@@ -7,6 +7,26 @@ import java.text.MessageFormat;
  */
 public class ExceptionUtils {
 
+    /**
+     * 获取异常码.
+     *
+     * @param errorEnum errorEnum
+     * @return Object
+     */
+    public static Object getExceptionCode(Enum errorEnum) {
+        Object errorCode = null;
+        try {
+            errorCode = errorEnum.getClass().getDeclaredField("code").get(errorEnum);
+            if (errorCode == null) {
+                errorCode = errorEnum.name();
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            errorCode = errorEnum.name();
+        }
+        return errorCode;
+    }
 
     /**
      * 获取异常消息.
@@ -30,12 +50,11 @@ public class ExceptionUtils {
     /**
      * 获取异常消息.
      *
-     * @param errorCode errorCode
      * @param errorMsg  errorMsg
      * @param params    params
      * @return String
      */
-    public static String getExceptionMessage(Object errorCode, String errorMsg, Object... params) {
+    public static String getExceptionMessage(String errorMsg, Object... params) {
         return MessageFormat.format(errorMsg, params);
     }
 
