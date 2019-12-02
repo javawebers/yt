@@ -9,12 +9,14 @@ public class YtStringUtils {
 
     /**
      * The empty String {@code ""}.
+     *
      * @since 2.0
      */
     public static final String EMPTY = "";
 
     /**
      * Represents a failed index search.
+     *
      * @since 2.1
      */
     public static final int INDEX_NOT_FOUND = -1;
@@ -33,7 +35,7 @@ public class YtStringUtils {
      * YtStringUtils.isBlank("  bob  ") = false
      * </pre>
      *
-     * @param cs  the CharSequence to check, may be null
+     * @param cs the CharSequence to check, may be null
      * @return {@code true} if the CharSequence is null, empty or whitespace only
      * @since 2.0
      * @since 3.0 Changed signature from isBlank(String) to isBlank(CharSequence)
@@ -64,9 +66,9 @@ public class YtStringUtils {
      * YtStringUtils.isNotBlank("  bob  ") = true
      * </pre>
      *
-     * @param cs  the CharSequence to check, may be null
+     * @param cs the CharSequence to check, may be null
      * @return {@code true} if the CharSequence is
-     *  not empty and not null and not whitespace only
+     * not empty and not null and not whitespace only
      * @since 2.0
      * @since 3.0 Changed signature from isNotBlank(String) to isNotBlank(CharSequence)
      */
@@ -76,6 +78,7 @@ public class YtStringUtils {
 
     // Empty checks
     //-----------------------------------------------------------------------
+
     /**
      * <p>Checks if a CharSequence is empty ("") or null.</p>
      *
@@ -91,7 +94,7 @@ public class YtStringUtils {
      * It no longer trims the CharSequence.
      * That functionality is available in isBlank().</p>
      *
-     * @param cs  the CharSequence to check, may be null
+     * @param cs the CharSequence to check, may be null
      * @return {@code true} if the CharSequence is empty or null
      * @since 3.0 Changed signature from isEmpty(String) to isEmpty(CharSequence)
      */
@@ -111,7 +114,7 @@ public class YtStringUtils {
      * YtStringUtils.isNotEmpty("  bob  ") = true
      * </pre>
      *
-     * @param cs  the CharSequence to check, may be null
+     * @param cs the CharSequence to check, may be null
      * @return {@code true} if the CharSequence is not empty and not null
      * @since 3.0 Changed signature from isNotEmpty(String) to isNotEmpty(CharSequence)
      */
@@ -139,8 +142,8 @@ public class YtStringUtils {
      * YtStringUtils.join([null, "", "a"], ';')  = ";;a"
      * </pre>
      *
-     * @param array  the array of values to join together, may be null
-     * @param separator  the separator character to use
+     * @param array     the array of values to join together, may be null
+     * @param separator the separator character to use
      * @return the joined String, {@code null} if null array input
      * @since 2.0
      */
@@ -174,18 +177,18 @@ public class YtStringUtils {
      * StringUtils.join([null, "", "a"], ',', 0, 3)   = ",,a"
      * </pre>
      *
-     * @param array  the array of values to join together, may be null
+     * @param array      the array of values to join together, may be null
      * @param separator  the separator character to use, null treated as ""
      * @param startIndex the first index to start joining from.
-     * @param endIndex the index to stop joining from (exclusive).
+     * @param endIndex   the index to stop joining from (exclusive).
      * @return the joined String, {@code null} if null array input; or the empty string
      * if {@code endIndex - startIndex <= 0}. The number of joined entries is given by
      * {@code endIndex - startIndex}
      * @throws ArrayIndexOutOfBoundsException ife<br>
-     * {@code startIndex < 0} or <br>
-     * {@code startIndex >= array.length()} or <br>
-     * {@code endIndex < 0} or <br>
-     * {@code endIndex > array.length()}
+     *                                        {@code startIndex < 0} or <br>
+     *                                        {@code startIndex >= array.length()} or <br>
+     *                                        {@code endIndex < 0} or <br>
+     *                                        {@code endIndex > array.length()}
      */
     public static String join(final Object[] array, String separator, final int startIndex, final int endIndex) {
         if (array == null) {
@@ -223,10 +226,10 @@ public class YtStringUtils {
      * <p>No delimiter is added before or after the list.
      * A {@code null} separator is the same as an empty String ("").</p>
      *
-     * <p>See the examples here: {@link #join(Object[],String)}. </p>
+     * <p>See the examples here: {@link #join(Object[], String)}. </p>
      *
      * @param iterable  the {@code Iterable} providing the values to join together, may be null
-     * @param separator  the separator character to use, null treated as ""
+     * @param separator the separator character to use, null treated as ""
      * @return the joined String, {@code null} if null iterator input
      * @since 2.3
      */
@@ -244,10 +247,10 @@ public class YtStringUtils {
      * <p>No delimiter is added before or after the list.
      * A {@code null} separator is the same as an empty String ("").</p>
      *
-     * <p>See the examples here: {@link #join(Object[],String)}. </p>
+     * <p>See the examples here: {@link #join(Object[], String)}. </p>
      *
      * @param iterator  the {@code Iterator} of values to join together, may be null
-     * @param separator  the separator character to use, null treated as ""
+     * @param separator the separator character to use, null treated as ""
      * @return the joined String, {@code null} if null iterator input
      */
     public static String join(Iterator<?> iterator, String separator) {
@@ -314,10 +317,10 @@ public class YtStringUtils {
      * YtStringUtils.substringAfterLast("a", "z")     = ""
      * </pre>
      *
-     * @param str  the String to get a substring from, may be null
-     * @param separator  the String to search for, may be null
+     * @param str       the String to get a substring from, may be null
+     * @param separator the String to search for, may be null
      * @return the substring after the last occurrence of the separator,
-     *  {@code null} if null String input
+     * {@code null} if null String input
      * @since 2.0
      */
     public static String substringAfterLast(final String str, final String separator) {

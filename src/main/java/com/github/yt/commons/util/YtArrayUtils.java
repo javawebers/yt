@@ -19,18 +19,19 @@ public class YtArrayUtils {
     /**
      * <p>Checks if an array of Objects is not empty and not {@code null}.
      *
-     * @param <T> the component type of the array
-     * @param array  the array to test
+     * @param <T>   the component type of the array
+     * @param array the array to test
      * @return {@code true} if the array is not empty and not {@code null}
      * @since 2.5
      */
     public static <T> boolean isNotEmpty(final T[] array) {
         return !isEmpty(array);
     }
+
     /**
      * <p>Checks if an array of Objects is empty or {@code null}.
      *
-     * @param array  the array to test
+     * @param array the array to test
      * @return {@code true} if the array is empty or {@code null}
      * @since 2.1
      */
@@ -39,6 +40,7 @@ public class YtArrayUtils {
     }
 
     //-----------------------------------------------------------------------
+
     /**
      * <p>Returns the length of the specified array.
      * This method can deal with {@code Object} arrays and with primitive arrays.
@@ -54,7 +56,7 @@ public class YtArrayUtils {
      * YtArrayUtils.getLength(["a", "b", "c"]) = 3
      * </pre>
      *
-     * @param array  the array to retrieve the length from, may be null
+     * @param array the array to retrieve the length from, may be null
      * @return The length of the array, or {@code 0} if the array is {@code null}
      * @throws IllegalArgumentException if the object argument is not an array.
      * @since 2.1
@@ -71,22 +73,23 @@ public class YtArrayUtils {
      *
      * <p>The method returns {@code false} if a {@code null} array is passed in.
      *
-     * @param array  the array to search through
-     * @param objectToFind  the object to find
+     * @param array        the array to search through
+     * @param objectToFind the object to find
      * @return {@code true} if the array contains the object
      */
     public static boolean contains(final Object[] array, final Object objectToFind) {
         return indexOf(array, objectToFind) != INDEX_NOT_FOUND;
     }
+
     /**
      * <p>Finds the index of the given object in the array.
      *
      * <p>This method returns {@link #INDEX_NOT_FOUND} ({@code -1}) for a {@code null} input array.
      *
-     * @param array  the array to search through for the object, may be {@code null}
-     * @param objectToFind  the object to find, may be {@code null}
+     * @param array        the array to search through for the object, may be {@code null}
+     * @param objectToFind the object to find, may be {@code null}
      * @return the index of the object within the array,
-     *  {@link #INDEX_NOT_FOUND} ({@code -1}) if not found or {@code null} array input
+     * {@link #INDEX_NOT_FOUND} ({@code -1}) if not found or {@code null} array input
      */
     public static int indexOf(final Object[] array, final Object objectToFind) {
         return indexOf(array, objectToFind, 0);
@@ -100,11 +103,11 @@ public class YtArrayUtils {
      * <p>A negative startIndex is treated as zero. A startIndex larger than the array
      * length will return {@link #INDEX_NOT_FOUND} ({@code -1}).
      *
-     * @param array  the array to search through for the object, may be {@code null}
-     * @param objectToFind  the object to find, may be {@code null}
-     * @param startIndex  the index to start searching at
+     * @param array        the array to search through for the object, may be {@code null}
+     * @param objectToFind the object to find, may be {@code null}
+     * @param startIndex   the index to start searching at
      * @return the index of the object within the array starting at the index,
-     *  {@link #INDEX_NOT_FOUND} ({@code -1}) if not found or {@code null} array input
+     * {@link #INDEX_NOT_FOUND} ({@code -1}) if not found or {@code null} array input
      */
     public static int indexOf(final Object[] array, final Object objectToFind, int startIndex) {
         if (array == null) {
