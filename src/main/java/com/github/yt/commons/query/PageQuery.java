@@ -6,7 +6,7 @@ package com.github.yt.commons.query;
  *
  * @author sheng
  */
-public interface PageQuery<T extends PageQuery<T>> {
+public interface PageQuery<T extends PageQuery<?>> {
 
     /**
      * 设置 pageNo
