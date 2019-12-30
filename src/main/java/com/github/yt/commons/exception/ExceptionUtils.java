@@ -13,16 +13,11 @@ public class ExceptionUtils {
      * @param errorEnum errorEnum
      * @return Object
      */
-    public static Object getExceptionCode(Enum errorEnum) {
-        Object errorCode = null;
+    public static Object getExceptionCode(Enum<?> errorEnum) {
+        Object errorCode;
         try {
             errorCode = errorEnum.getClass().getDeclaredField("code").get(errorEnum);
-            if (errorCode == null) {
-                errorCode = errorEnum.name();
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             errorCode = errorEnum.name();
         }
         return errorCode;
@@ -35,16 +30,13 @@ public class ExceptionUtils {
      * @param params    params
      * @return String
      */
-    public static String getExceptionMessage(Enum errorEnum, Object... params) {
-        String errorMessage = null;
+    public static String getExceptionMessage(Enum<?> errorEnum, Object... params) {
         try {
-            errorMessage = (String) errorEnum.getClass().getDeclaredField("message").get(errorEnum);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            String errorMessage = (String) errorEnum.getClass().getDeclaredField("message").get(errorEnum);
+            return MessageFormat.format(errorMessage, params);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException("获取异常枚举中 message 属性异常", e);
         }
-        return MessageFormat.format(errorMessage, params);
     }
 
     /**
@@ -59,18 +51,13 @@ public class ExceptionUtils {
     }
 
     /**
-     *
-     * @param errorEnum
-     * @return
+     * 获取异常描述
      */
-    public static String getExceptionDescription(Enum errorEnum) {
+    public static String getExceptionDescription(Enum<?> errorEnum) {
         String exceptionDescription = null;
         try {
             exceptionDescription = (String) errorEnum.getClass().getDeclaredField("description").get(errorEnum);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-
+        } catch (IllegalAccessException | NoSuchFieldException ignored) {
         }
         return exceptionDescription;
     }
