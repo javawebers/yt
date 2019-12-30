@@ -4,6 +4,8 @@ import java.util.Iterator;
 
 /**
  * copy from org.apache.commons
+ *
+ * @author org.apache.commons
  */
 public class YtStringUtils {
 
@@ -268,7 +270,8 @@ public class YtStringUtils {
         }
 
         // two or more elements
-        StringBuilder buf = new StringBuilder(256); // Java default is 16, probably too small
+        // Java default is 16, probably too small
+        StringBuilder buf = new StringBuilder(256);
         if (first != null) {
             buf.append(first);
         }

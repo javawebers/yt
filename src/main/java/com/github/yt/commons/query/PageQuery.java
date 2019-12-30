@@ -3,8 +3,10 @@ package com.github.yt.commons.query;
 /**
  * 分页查询条件
  * controller 设置分页信息和 mapper 使用分页信息的粘合剂
+ *
+ * @author sheng
  */
-public interface PageQuery<T extends PageQuery> {
+public interface PageQuery<T extends PageQuery<T>> {
 
     /**
      * 设置 pageNo

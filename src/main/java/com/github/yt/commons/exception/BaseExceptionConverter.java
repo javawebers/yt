@@ -7,5 +7,11 @@ package com.github.yt.commons.exception;
  * @author liujiasheng
  */
 public interface BaseExceptionConverter {
+    /**
+     * 已知异常转换为 BaseAccidentException，非已知异常不进行处理
+     *
+     * @param e 已知异常
+     * @return BaseAccidentException
+     */
     Exception convertToBaseException(Exception e);
 }
