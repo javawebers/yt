@@ -4,7 +4,6 @@ package com.github.yt.commons.exception;
  * Created with IntelliJ IDEA.
  * 以下我们对是“意外事件”和“错误”的理解
  * <p>
- * <p>
  * 异常条件	                        意外事件	                    错误
  * <p>
  * 认为是（Is considered to be）	    设计的一部分	                难以应付的意外
@@ -23,6 +22,11 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
      * errorCode
      */
     private Object errorCode;
+
+    /**
+     * 异常枚举
+     */
+    private Enum<?> errorEnum;
 
     /**
      * error结果集
@@ -61,24 +65,28 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
 
     public BaseErrorException(Enum<?> errorEnum, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params));
-        errorCode = ExceptionUtils.getExceptionCode(errorEnum);
+        this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
+        this.errorEnum = errorEnum;
     }
 
     public BaseErrorException(Enum<?> errorEnum, Exception e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params), e);
-        errorCode = ExceptionUtils.getExceptionCode(errorEnum);
+        this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
+        this.errorEnum = errorEnum;
     }
 
     public BaseErrorException(Object errorResult, Enum<?> errorEnum, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params));
-        errorCode = ExceptionUtils.getExceptionCode(errorEnum);
+        this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorResult = errorResult;
+        this.errorEnum = errorEnum;
     }
 
     public BaseErrorException(Object errorResult, Enum<?> errorEnum, Exception e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params), e);
-        errorCode = ExceptionUtils.getExceptionCode(errorEnum);
+        this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorResult = errorResult;
+        this.errorEnum = errorEnum;
     }
 
     @Override
@@ -91,4 +99,8 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
         return errorCode;
     }
 
+    @Override
+    public Enum<?> getErrorEnum() {
+        return errorEnum;
+    }
 }

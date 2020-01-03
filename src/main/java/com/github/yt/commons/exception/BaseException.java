@@ -16,6 +16,13 @@ public interface BaseException {
     Object getErrorCode();
 
     /**
+     * 获取传入的枚举值
+     *
+     * @return Enum
+     */
+    Enum<?> getErrorEnum();
+
+    /**
      * 获取异常结果集.
      *
      * @return Object
