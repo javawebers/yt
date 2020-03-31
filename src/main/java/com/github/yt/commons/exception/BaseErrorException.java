@@ -33,6 +33,9 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
      */
     private Object errorResult;
 
+    public BaseErrorException() {
+    }
+
     public BaseErrorException(int errorCode, String errorMsg, Object... params) {
         this((Object) errorCode, errorMsg, params);
     }

@@ -33,6 +33,9 @@ public class BaseAccidentException extends RuntimeException implements BaseExcep
      */
     private Object errorResult;
 
+    public BaseAccidentException() {
+    }
+
     public BaseAccidentException(int errorCode, String errorMsg, Object... params) {
         this((Object) errorCode, errorMsg, params);
     }
