@@ -1,5 +1,6 @@
 package com.github.yt.commons.exception;
 
+import java.lang.reflect.Field;
 import java.text.MessageFormat;
 
 /**
@@ -16,7 +17,9 @@ public class ExceptionUtils {
     public static Object getExceptionCode(Enum<?> errorEnum) {
         Object errorCode;
         try {
-            errorCode = errorEnum.getClass().getDeclaredField("code").get(errorEnum);
+            Field codeField = errorEnum.getClass().getDeclaredField("code");
+            codeField.setAccessible(true);
+            errorCode = codeField.get(errorEnum);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             errorCode = errorEnum.name();
         }
@@ -32,7 +35,9 @@ public class ExceptionUtils {
      */
     public static String getExceptionMessage(Enum<?> errorEnum, Object... params) {
         try {
-            String errorMessage = (String) errorEnum.getClass().getDeclaredField("message").get(errorEnum);
+            Field messageField = errorEnum.getClass().getDeclaredField("message");
+            messageField.setAccessible(true);
+            String errorMessage = (String) messageField.get(errorEnum);
             return MessageFormat.format(errorMessage, params);
         } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new RuntimeException("获取异常枚举中 message 属性异常", e);
@@ -56,7 +61,9 @@ public class ExceptionUtils {
     public static String getExceptionDescription(Enum<?> errorEnum) {
         String exceptionDescription = null;
         try {
-            exceptionDescription = (String) errorEnum.getClass().getDeclaredField("description").get(errorEnum);
+            Field descriptionField = errorEnum.getClass().getDeclaredField("description");
+            descriptionField.setAccessible(true);
+            exceptionDescription = (String) descriptionField.get(errorEnum);
         } catch (IllegalAccessException | NoSuchFieldException ignored) {
         }
         return exceptionDescription;
