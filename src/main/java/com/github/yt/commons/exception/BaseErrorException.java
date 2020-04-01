@@ -29,6 +29,11 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
     private Enum<?> errorEnum;
 
     /**
+     * 异常参数
+     */
+    private Object[] errorParams;
+
+    /**
      * error结果集
      */
     private Object errorResult;
@@ -55,11 +60,13 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
     private BaseErrorException(Object errorCode, String errorMsg, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorMsg, params));
         this.errorCode = errorCode;
+        this.errorParams = params;
     }
 
     private BaseErrorException(Object errorCode, String errorMsg, Exception e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorMsg, params), e);
         this.errorCode = errorCode;
+        this.errorParams = params;
     }
 
     public BaseErrorException(String errorMsg, Exception e) {
@@ -70,12 +77,14 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
         super(ExceptionUtils.getExceptionMessage(errorEnum, params));
         this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorEnum = errorEnum;
+        this.errorParams = params;
     }
 
     public BaseErrorException(Enum<?> errorEnum, Exception e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params), e);
         this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorEnum = errorEnum;
+        this.errorParams = params;
     }
 
     public BaseErrorException(Object errorResult, Enum<?> errorEnum, Object... params) {
@@ -83,6 +92,7 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
         this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorResult = errorResult;
         this.errorEnum = errorEnum;
+        this.errorParams = params;
     }
 
     public BaseErrorException(Object errorResult, Enum<?> errorEnum, Exception e, Object... params) {
@@ -90,6 +100,7 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
         this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorResult = errorResult;
         this.errorEnum = errorEnum;
+        this.errorParams = params;
     }
 
     @Override
@@ -106,4 +117,11 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
     public Enum<?> getErrorEnum() {
         return errorEnum;
     }
+
+
+    @Override
+    public Object[] getErrorParams() {
+        return errorParams;
+    }
+
 }

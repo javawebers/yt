@@ -23,6 +23,13 @@ public interface BaseException {
     Enum<?> getErrorEnum();
 
     /**
+     * 获取异常参数
+     *
+     * @return 参数
+     */
+    Object[] getErrorParams();
+
+    /**
      * 获取异常结果集.
      *
      * @return Object
