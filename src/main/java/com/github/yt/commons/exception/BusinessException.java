@@ -1,7 +1,13 @@
 package com.github.yt.commons.exception;
 
 /**
- * Created with IntelliJ IDEA.
+ * 业务异常，用法和 BaseAccidentException 一致
+ * 使用场景：
+ * 1、已知业务异异常
+ * 2、数据校验
+ * 3、结果集异常
+ * 4、未知、不可处理的异常可以包装成这个异常
+ * <p>
  * 以下我们对是“意外事件”和“错误”的理解
  * <p>
  * 异常条件	                        意外事件	                    错误
@@ -14,7 +20,7 @@ package com.github.yt.commons.exception;
  *
  * @author liujiasheng
  */
-public class BaseAccidentException extends RuntimeException implements BaseException {
+public class BusinessException extends RuntimeException implements BaseException {
 
     private static final long serialVersionUID = 8686960428281101225L;
 
@@ -33,57 +39,57 @@ public class BaseAccidentException extends RuntimeException implements BaseExcep
      */
     private Object errorResult;
 
-    public BaseAccidentException() {
+    public BusinessException() {
     }
 
-    public BaseAccidentException(int errorCode, String errorMsg, Object... params) {
+    public BusinessException(int errorCode, String errorMsg, Object... params) {
         this((Object) errorCode, errorMsg, params);
     }
 
-    public BaseAccidentException(int errorCode, String errorMsg, Exception e, Object... params) {
+    public BusinessException(int errorCode, String errorMsg, Exception e, Object... params) {
         this((Object) errorCode, errorMsg, e, params);
     }
 
-    public BaseAccidentException(String errorCode, String errorMsg, Object... params) {
+    public BusinessException(String errorCode, String errorMsg, Object... params) {
         this((Object) errorCode, errorMsg, params);
     }
 
-    public BaseAccidentException(String errorCode, String errorMsg, Exception e, Object... params) {
+    public BusinessException(String errorCode, String errorMsg, Exception e, Object... params) {
         this((Object) errorCode, errorMsg, e, params);
     }
 
-    private BaseAccidentException(Object errorCode, String errorMsg, Object... params) {
+    private BusinessException(Object errorCode, String errorMsg, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorMsg, params));
         this.errorCode = errorCode;
         this.errorParams = params;
     }
 
-    private BaseAccidentException(Object errorCode, String errorMsg, Exception e, Object... params) {
+    private BusinessException(Object errorCode, String errorMsg, Exception e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorMsg, params), e);
         this.errorCode = errorCode;
         this.errorParams = params;
     }
 
-    public BaseAccidentException(Enum<?> errorEnum, Object... params) {
+    public BusinessException(Enum<?> errorEnum, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params));
         this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorParams = params;
     }
 
-    public BaseAccidentException(Enum<?> errorEnum, Exception e, Object... params) {
+    public BusinessException(Enum<?> errorEnum, Exception e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params), e);
         this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorParams = params;
     }
 
-    public BaseAccidentException(Object errorResult, Enum<?> errorEnum, Object... params) {
+    public BusinessException(Object errorResult, Enum<?> errorEnum, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params));
         this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorResult = errorResult;
         this.errorParams = params;
     }
 
-    public BaseAccidentException(Object errorResult, Enum<?> errorEnum, Exception e, Object... params) {
+    public BusinessException(Object errorResult, Enum<?> errorEnum, Exception e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params), e);
         this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorResult = errorResult;
