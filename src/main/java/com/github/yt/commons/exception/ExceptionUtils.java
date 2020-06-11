@@ -47,8 +47,8 @@ public class ExceptionUtils {
     /**
      * 获取异常消息.
      *
-     * @param errorMsg  errorMsg
-     * @param params    params
+     * @param errorMsg errorMsg
+     * @param params   params
      * @return String
      */
     public static String getExceptionMessage(String errorMsg, Object... params) {
@@ -57,6 +57,9 @@ public class ExceptionUtils {
 
     /**
      * 获取异常描述
+     *
+     * @param errorEnum errorEnum
+     * @return 异常描述
      */
     public static String getExceptionDescription(Enum<?> errorEnum) {
         String exceptionDescription = null;

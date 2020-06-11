@@ -26,7 +26,8 @@ public class Assert {
      * 断言不为空
      * 默认为当前记录不存在
      *
-     * @param object object
+     * @param object        object
+     * @param exceptionEnum 异常枚举
      */
     public static void notNull(Object object, Enum<?> exceptionEnum) {
         if (object == null) {
@@ -131,6 +132,7 @@ public class Assert {
     /**
      * 断言
      *
+     * @param expression expression
      * @param exceptionEnum exceptionEnum
      * @param params        params
      */
@@ -143,6 +145,7 @@ public class Assert {
     /**
      * 否断言
      *
+     * @param expression expression
      * @param exceptionEnum exceptionEnum
      * @param params        params
      */
