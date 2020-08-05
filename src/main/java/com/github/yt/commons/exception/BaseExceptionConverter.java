@@ -13,5 +13,5 @@ public interface BaseExceptionConverter {
      * @param e 已知异常
      * @return BaseAccidentException
      */
-    Exception convertToBaseException(Exception e);
+    Throwable convertToBaseException(Throwable e);
 }
