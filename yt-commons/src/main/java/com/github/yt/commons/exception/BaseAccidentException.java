@@ -40,7 +40,7 @@ public class BaseAccidentException extends RuntimeException implements BaseExcep
         this((Object) errorCode, errorMsg, params);
     }
 
-    public BaseAccidentException(int errorCode, String errorMsg, Exception e, Object... params) {
+    public BaseAccidentException(int errorCode, String errorMsg, Throwable e, Object... params) {
         this((Object) errorCode, errorMsg, e, params);
     }
 
@@ -48,7 +48,7 @@ public class BaseAccidentException extends RuntimeException implements BaseExcep
         this((Object) errorCode, errorMsg, params);
     }
 
-    public BaseAccidentException(String errorCode, String errorMsg, Exception e, Object... params) {
+    public BaseAccidentException(String errorCode, String errorMsg, Throwable e, Object... params) {
         this((Object) errorCode, errorMsg, e, params);
     }
 
@@ -58,7 +58,7 @@ public class BaseAccidentException extends RuntimeException implements BaseExcep
         this.errorParams = params;
     }
 
-    private BaseAccidentException(Object errorCode, String errorMsg, Exception e, Object... params) {
+    private BaseAccidentException(Object errorCode, String errorMsg, Throwable e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorMsg, params), e);
         this.errorCode = errorCode;
         this.errorParams = params;
@@ -70,7 +70,7 @@ public class BaseAccidentException extends RuntimeException implements BaseExcep
         this.errorParams = params;
     }
 
-    public BaseAccidentException(Enum<?> errorEnum, Exception e, Object... params) {
+    public BaseAccidentException(Enum<?> errorEnum, Throwable e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params), e);
         this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorParams = params;
@@ -83,7 +83,7 @@ public class BaseAccidentException extends RuntimeException implements BaseExcep
         this.errorParams = params;
     }
 
-    public BaseAccidentException(Object errorResult, Enum<?> errorEnum, Exception e, Object... params) {
+    public BaseAccidentException(Object errorResult, Enum<?> errorEnum, Throwable e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params), e);
         this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorResult = errorResult;

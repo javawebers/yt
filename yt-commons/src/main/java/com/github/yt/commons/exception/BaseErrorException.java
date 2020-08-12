@@ -40,7 +40,7 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
         this((Object) errorCode, errorMsg, params);
     }
 
-    public BaseErrorException(int errorCode, String errorMsg, Exception e, Object... params) {
+    public BaseErrorException(int errorCode, String errorMsg, Throwable e, Object... params) {
         this((Object) errorCode, errorMsg, e, params);
     }
 
@@ -48,7 +48,7 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
         this((Object) errorCode, errorMsg, params);
     }
 
-    public BaseErrorException(String errorCode, String errorMsg, Exception e, Object... params) {
+    public BaseErrorException(String errorCode, String errorMsg, Throwable e, Object... params) {
         this((Object) errorCode, errorMsg, e, params);
     }
 
@@ -58,13 +58,13 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
         this.errorParams = params;
     }
 
-    private BaseErrorException(Object errorCode, String errorMsg, Exception e, Object... params) {
+    private BaseErrorException(Object errorCode, String errorMsg, Throwable e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorMsg, params), e);
         this.errorCode = errorCode;
         this.errorParams = params;
     }
 
-    public BaseErrorException(String errorMsg, Exception e) {
+    public BaseErrorException(String errorMsg, Throwable e) {
         super(errorMsg, e);
     }
 
@@ -74,7 +74,7 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
         this.errorParams = params;
     }
 
-    public BaseErrorException(Enum<?> errorEnum, Exception e, Object... params) {
+    public BaseErrorException(Enum<?> errorEnum, Throwable e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params), e);
         this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorParams = params;
@@ -87,7 +87,7 @@ public class BaseErrorException extends RuntimeException implements BaseExceptio
         this.errorParams = params;
     }
 
-    public BaseErrorException(Object errorResult, Enum<?> errorEnum, Exception e, Object... params) {
+    public BaseErrorException(Object errorResult, Enum<?> errorEnum, Throwable e, Object... params) {
         super(ExceptionUtils.getExceptionMessage(errorEnum, params), e);
         this.errorCode = ExceptionUtils.getExceptionCode(errorEnum);
         this.errorResult = errorResult;
