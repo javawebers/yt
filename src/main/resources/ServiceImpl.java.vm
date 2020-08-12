@@ -1,0 +1,19 @@
+package ${modulePackage}.${packageService}.impl;
+
+import com.github.yt.mybatis.service.BaseService;
+import ${modulePackage}.${packageDao}.${replaceSuffixClassName}Mapper;
+import ${modulePackage}.${packageEntity}.${className};
+import ${modulePackage}.${packageService}.${replaceSuffixClassName}Service;
+
+import javax.annotation.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service("${replaceSuffixLowerName}Service")
+@Transactional
+public class ${replaceSuffixClassName}ServiceImpl extends BaseService<${className}> implements ${replaceSuffixClassName}Service {
+
+    @Resource
+    private ${replaceSuffixClassName}Mapper mapper;
+
+}
