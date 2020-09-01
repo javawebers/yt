@@ -30,7 +30,12 @@ public class CommonPageParser {
         try {
             File file = new File(CommonPageParser.class.getResource("/").getFile());
             rootPath = file.getParent();
-            rootPath = java.net.URLDecoder.decode(rootPath.substring(0, rootPath.indexOf("target") - 1), "utf-8");
+            try {
+                rootPath = java.net.URLDecoder.decode(rootPath.substring(0, rootPath.indexOf("target") - 1), "utf-8");
+
+            } catch (Exception e) {
+                rootPath = java.net.URLDecoder.decode(rootPath.substring(0, rootPath.indexOf("build") - 1), "utf-8");
+            }
             return rootPath;
         } catch (Exception e) {
             e.printStackTrace();
