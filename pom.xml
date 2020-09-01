@@ -94,9 +94,8 @@
                 <executions>
                     <execution>
                         <id>attach-sources</id>
-                        <phase>install</phase>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -113,6 +112,10 @@
                         <goals>
                             <goal>sign</goal>
                         </goals>
+                        <configuration>
+                        <keyname>likeabook</keyname>
+                        <passphraseServerId>likeabook</passphraseServerId>
+                    </configuration>
                     </execution>
                 </executions>
             </plugin>
