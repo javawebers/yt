@@ -113,8 +113,6 @@
                             <goal>sign</goal>
                         </goals>
                         <configuration>
-                        <keyname>likeabook</keyname>
-                        <passphraseServerId>likeabook</passphraseServerId>
                     </configuration>
                     </execution>
                 </executions>

@@ -1,10 +1,7 @@
 package com.github.yt.web.controller;
 
 
-import com.github.yt.commons.exception.ExceptionUtils;
-import com.github.yt.web.YtWebExceptionEnum;
 import com.github.yt.web.YtWetDemoApplication;
-import com.github.yt.web.common.ControllerTestHandler;
 import com.github.yt.web.example.result.BusinessResultConfig;
 import com.github.yt.web.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.result.HttpResultHandler;
@@ -18,6 +15,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Field;
+import com.github.yt.web.unittest.ControllerTestHandler;
 
 /**
  * 和 ResultClassDefaultTest 互斥，不能同时执行
@@ -49,10 +47,7 @@ public class ResultClassBusinessTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void error() throws Exception {
-        ResultActions resultActions = ControllerTestHandler.get("/resultClass/error");
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
-                "$." + resultConfig.getErrorCodeField(),
-                Matchers.equalTo(resultConfig.getDefaultErrorCode())));
+        ResultActions resultActions = ControllerTestHandler.get("/resultClass/error", resultConfig.getDefaultErrorCode());
         resultActions.andExpect(MockMvcResultMatchers.jsonPath(
                 "$." + resultConfig.getMessageField(),
                 Matchers.equalTo(resultConfig.getDefaultErrorMessage())));
@@ -60,10 +55,7 @@ public class ResultClassBusinessTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void knowException() throws Exception {
-        ResultActions resultActions = ControllerTestHandler.get("/resultClass/knowException");
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
-                "$." + resultConfig.getErrorCodeField(),
-                Matchers.equalTo(resultConfig.convertErrorCode(MyBusinessExceptionEnum.CODE_1003.name()))));
+        ResultActions resultActions = ControllerTestHandler.get("/resultClass/knowException", MyBusinessExceptionEnum.CODE_1003);
         resultActions.andExpect(MockMvcResultMatchers.jsonPath(
                 "$." + resultConfig.getMessageField(),
                 Matchers.equalTo(MyBusinessExceptionEnum.CODE_1003.getMessage())));

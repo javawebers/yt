@@ -1,17 +1,16 @@
 package com.github.yt.web.controller;
 
 import com.github.yt.web.YtWetDemoApplication;
-import com.github.yt.web.common.ControllerTestHandler;
 import com.github.yt.web.common.ResultActionsUtils;
 import com.github.yt.web.result.HttpResultHandler;
 import org.hamcrest.Matchers;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.annotation.Order;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testng.annotations.Test;
+import com.github.yt.web.unittest.ControllerTestHandler;
 
 @ActiveProfiles("default")
 @SpringBootTest(classes = {YtWetDemoApplication.class})
@@ -31,7 +30,7 @@ public class PackageResponseBodyDefaultTest extends AbstractTestNGSpringContextT
 
     @Test
     public void classDefaultMethodFalse() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/methodFalse");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/methodFalse", false);
         ResultActionsUtils.notPackaged(resultActions);
     }
 
@@ -50,14 +49,14 @@ public class PackageResponseBodyDefaultTest extends AbstractTestNGSpringContextT
 
     @Test
     public void classTrueMethodFalse() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/methodFalse");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/methodFalse", false);
         ResultActionsUtils.notPackaged(resultActions);
     }
 
 
     @Test
     public void classFalseMethodDefault() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassFalse/methodDefault");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassFalse/methodDefault", false);
         ResultActionsUtils.notPackaged(resultActions);
     }
 
@@ -69,7 +68,7 @@ public class PackageResponseBodyDefaultTest extends AbstractTestNGSpringContextT
 
     @Test
     public void classFalseMethodFalse() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassFalse/methodFalse");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassFalse/methodFalse", false);
         ResultActionsUtils.notPackaged(resultActions);
     }
 
@@ -130,7 +129,7 @@ public class PackageResponseBodyDefaultTest extends AbstractTestNGSpringContextT
 
     @Test
     public void entityThrowException() throws Exception {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/entityThrowException");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/entityThrowException", HttpResultHandler.getResultConfig().getDefaultErrorCode());
         resultActions.andExpect(MockMvcResultMatchers.jsonPath(
                 "$." + HttpResultHandler.getResultConfig().getErrorCodeField(),
                 Matchers.equalTo(HttpResultHandler.getResultConfig().getDefaultErrorCode())));

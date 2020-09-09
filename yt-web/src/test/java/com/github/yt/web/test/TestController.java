@@ -5,7 +5,7 @@ import com.github.yt.web.result.HttpResultEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@RestController("test2")
 public class TestController extends BaseController {
 
     @GetMapping(value = "/testResultEntity1")

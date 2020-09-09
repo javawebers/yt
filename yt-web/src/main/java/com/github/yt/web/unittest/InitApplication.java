@@ -1,4 +1,4 @@
-package com.github.yt.web.common;
+package com.github.yt.web.unittest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
