@@ -71,6 +71,12 @@
             <version>2.9.2</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.javawebers</groupId>
+            <artifactId>yt-mybatis</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

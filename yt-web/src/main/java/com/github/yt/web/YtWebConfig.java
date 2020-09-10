@@ -128,6 +128,14 @@ public class YtWebConfig {
          * 每页记录数
          */
         private String pageSizeName = "pageSize";
+        /**
+         * 总条数
+         */
+        private String pageTotalCountName = "totalCount";
+        /**
+         * 数据字段
+         */
+        private String pageDataName = "data";
 
         public String getPageNoName() {
             return pageNoName;
@@ -145,6 +153,22 @@ public class YtWebConfig {
         public Page setPageSizeName(String pageSizeName) {
             this.pageSizeName = pageSizeName;
             return this;
+        }
+
+        public String getPageTotalCountName() {
+            return pageTotalCountName;
+        }
+
+        public void setPageTotalCountName(String pageTotalCountName) {
+            this.pageTotalCountName = pageTotalCountName;
+        }
+
+        public String getPageDataName() {
+            return pageDataName;
+        }
+
+        public void setPageDataName(String pageDataName) {
+            this.pageDataName = pageDataName;
         }
     }
 
