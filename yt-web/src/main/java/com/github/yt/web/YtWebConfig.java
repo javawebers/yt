@@ -87,6 +87,11 @@ public class YtWebConfig {
         private boolean returnStackTrace = false;
 
         /**
+         * 业务异常返回码
+         */
+        private int errorState = 500;
+
+        /**
          * 返回体配置类
          */
         private Class<? extends BaseResultConfig> resultConfigClass = SimpleResultConfig.class;
@@ -116,6 +121,14 @@ public class YtWebConfig {
         public Result setResultConfigClass(Class<? extends BaseResultConfig> resultConfigClass) {
             this.resultConfigClass = resultConfigClass;
             return this;
+        }
+
+        public int getErrorState() {
+            return errorState;
+        }
+
+        public void setErrorState(int errorState) {
+            this.errorState = errorState;
         }
     }
 

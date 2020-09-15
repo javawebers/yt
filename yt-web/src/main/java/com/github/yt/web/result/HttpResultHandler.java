@@ -2,10 +2,18 @@ package com.github.yt.web.result;
 
 import com.github.yt.commons.exception.BaseException;
 import com.github.yt.web.YtWebConfig;
+import com.github.yt.web.util.JsonUtils;
 import com.github.yt.web.util.SpringContextUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
+import static com.github.yt.web.result.PackageResponseBodyAdvice.REQUEST_RESULT_ENTITY;
 
 /**
  * http请求返回实体处理类
@@ -13,6 +21,8 @@ import java.io.StringWriter;
  * @author liujiasheng
  */
 public class HttpResultHandler {
+    private static Logger logger = LoggerFactory.getLogger(HttpResultHandler.class);
+
     private static BaseResultConfig resultConfig;
 
     public static BaseResultConfig getResultConfig() {
@@ -72,6 +82,24 @@ public class HttpResultHandler {
             resultBody.put(getResultConfig().getStackTraceField(), stringWriter.getBuffer());
         }
         return resultBody;
+    }
+
+
+
+    public static void writeExceptionResult(final Throwable e, HttpServletRequest request, HttpServletResponse response) {
+        // 当不向上抛异常时主动打印异常
+        logger.error(e.getMessage(), e);
+        HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(e);
+        YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
+        response.setStatus(ytWebConfig.getResult().getErrorState());
+        response.addHeader("Content-type", "application/json;charset=UTF-8");
+        request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
+        String result = JsonUtils.toJsonString(resultBody);
+        try {
+            response.getWriter().write(result);
+        } catch (IOException ioException) {
+            throw new RuntimeException(ioException);
+        }
     }
 
 }

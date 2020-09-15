@@ -29,7 +29,7 @@ public class ControllerTestHandler {
 //                    .accept(MediaType.APPLICATION_JSON_UTF8)
                     .params(paramMap)
                     .headers(InitApplication.getHttpHeaders()))
-                    .andExpect(MockMvcResultMatchers.status().isOk())
+//                    .andExpect(MockMvcResultMatchers.status().isOk())
                     .andDo(MockMvcResultHandlers.print());
             if (isPackaged) {
                 resultActions.andExpect(MockMvcResultMatchers.jsonPath(

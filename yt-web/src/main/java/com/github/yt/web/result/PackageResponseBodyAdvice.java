@@ -98,16 +98,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
             throw se;
         }
 
-        // 当不向上抛异常时主动打印异常
-        logger.error(se.getMessage(), se);
-
-        HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(se);
-
-        response.setStatus(200);
-        response.addHeader("Content-type", "application/json;charset=UTF-8");
-        request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
-        String result = JsonUtils.toJsonString(resultBody);
-        response.getWriter().write(result);
+        HttpResultHandler.writeExceptionResult(se, request, response);
     }
 
 
