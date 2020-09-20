@@ -57,6 +57,32 @@ public class YtMybatisConfig implements Serializable {
          */
         private Class<? extends BaseEntityValue> baseEntityValue = DefaultBaseEntityValue.class;
 
+        /**
+         * id 生成规则
+         */
+        private IdGenerateRule idGenerateRule = IdGenerateRule.TABLE_DATE_RANDOM;
+        /**
+         * 当 id 生成规则为 TABLE_DATE_RANDOM 时，随机值的位数
+         */
+        private int idRandomNum = 5;
+
+
+        public int getIdRandomNum() {
+            return idRandomNum;
+        }
+
+        public void setIdRandomNum(int idRandomNum) {
+            this.idRandomNum = idRandomNum;
+        }
+
+        public IdGenerateRule getIdGenerateRule() {
+            return idGenerateRule;
+        }
+
+        public void setIdGenerateRule(IdGenerateRule idGenerateRule) {
+            this.idGenerateRule = idGenerateRule;
+        }
+
         public Class<? extends BaseEntityValue> getBaseEntityValue() {
             return baseEntityValue;
         }
@@ -65,6 +91,23 @@ public class YtMybatisConfig implements Serializable {
             this.baseEntityValue = baseEntityValue;
             return this;
         }
+    }
+
+    /**
+     * id 生成规则枚举
+     */
+    public enum IdGenerateRule {
+
+        /**
+         * uuid，如：cbbd1886daa6c9b7a6367ad563df4611
+         */
+        UUID,
+        /**
+         * 表名+时间+随机值，如：sys_user_20200920153722572_dn3f3
+         */
+        TABLE_DATE_RANDOM,
+        ;
+
     }
 
     public static class Mybatis {

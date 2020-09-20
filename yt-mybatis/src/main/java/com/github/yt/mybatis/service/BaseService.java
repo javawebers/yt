@@ -1,6 +1,7 @@
 package com.github.yt.mybatis.service;
 
 import com.github.yt.commons.exception.Assert;
+import com.github.yt.mybatis.YtMybatisConfig;
 import com.github.yt.mybatis.YtMybatisExceptionEnum;
 import com.github.yt.mybatis.dialect.DialectHandler;
 import com.github.yt.mybatis.entity.YtColumnType;
@@ -8,6 +9,7 @@ import com.github.yt.mybatis.mapper.BaseMapper;
 import com.github.yt.mybatis.query.*;
 import com.github.yt.mybatis.util.BaseEntityHandler;
 import com.github.yt.mybatis.util.EntityUtils;
+import com.github.yt.mybatis.util.SpringContextUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.persistence.Id;
@@ -17,7 +19,9 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 通用service实现
@@ -362,13 +366,6 @@ public abstract class BaseService<T> implements IBaseService<T> {
     }
 
     /**
-     * 生成一个 uuid 作为主键，去除其中的"-"
-     */
-    private static String generateUuidIdValue() {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
-
-    /**
      * id 为 String 类型，自动生成 uuid id
      * id 为空直接返回
      *
@@ -389,7 +386,23 @@ public abstract class BaseService<T> implements IBaseService<T> {
         }
 
         int i = 0;
-        String generateIdValue = generateUuidIdValue();
+
+        YtMybatisConfig ytMybatisConfig = SpringContextUtils.getBean(YtMybatisConfig.class);
+        YtMybatisConfig.IdGenerateRule idGenerateRule = ytMybatisConfig.getEntity().getIdGenerateRule();
+
+        String generateIdValue;
+        switch (idGenerateRule) {
+            case TABLE_DATE_RANDOM:
+                generateIdValue = EntityUtils.getTableName(entityClass) +
+                        "_" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) +
+                        "_" + randomString(ytMybatisConfig.getEntity().getIdRandomNum());
+                break;
+            case UUID:
+            default:
+                generateIdValue = UUID.randomUUID().toString().replace("-", "");
+                break;
+        }
+
         for (T entity : entityCollection) {
             String idValue = (String) EntityUtils.getValue(entity, idField);
             if (idValue == null) {
@@ -407,7 +420,6 @@ public abstract class BaseService<T> implements IBaseService<T> {
             }
         }
     }
-
 
     /**
      * 设置创建人信息
@@ -550,6 +562,26 @@ public abstract class BaseService<T> implements IBaseService<T> {
             }
         }
         return selectedFieldColumnNameSet;
+    }
+
+    /**
+     * 获得一个随机的字符串
+     *
+     * @param length     字符串的长度
+     * @return 随机字符串
+     */
+    private static String randomString(int length) {
+        String baseString = "0123456789abcdefghijklmnopqrstuvwxyz";
+        final StringBuilder sb = new StringBuilder(length);
+        if (length < 1) {
+            length = 1;
+        }
+        int baseLength = baseString.length();
+        for (int i = 0; i < length; i++) {
+            int number = ThreadLocalRandom.current().nextInt(baseLength);
+            sb.append(baseString.charAt(number));
+        }
+        return sb.toString();
     }
 
 }
