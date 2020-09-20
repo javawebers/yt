@@ -3,6 +3,7 @@ package com.github.yt.web.controller;
 import com.github.yt.web.YtWetDemoApplication;
 import com.github.yt.web.result.SimpleResultConfig;
 import org.hamcrest.Matchers;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -16,6 +17,7 @@ import com.github.yt.web.unittest.ControllerTestHandler;
  */
 @ActiveProfiles("webPageQuery")
 @SpringBootTest(classes = {YtWetDemoApplication.class})
+@AutoConfigureMockMvc
 public class WebPageQueryNotDefaultTest extends AbstractTestNGSpringContextTests {
     private SimpleResultConfig resultConfig = new SimpleResultConfig();
 

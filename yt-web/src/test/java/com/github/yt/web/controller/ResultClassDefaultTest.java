@@ -5,6 +5,7 @@ import com.github.yt.web.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.result.SimpleResultConfig;
 import org.hamcrest.Matchers;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -21,6 +22,7 @@ import com.github.yt.web.unittest.ControllerTestHandler;
  */
 @ActiveProfiles("resultClassDefault")
 @SpringBootTest(classes = {YtWetDemoApplication.class})
+@AutoConfigureMockMvc
 public class ResultClassDefaultTest extends AbstractTestNGSpringContextTests {
     private SimpleResultConfig resultConfig = new SimpleResultConfig();
 

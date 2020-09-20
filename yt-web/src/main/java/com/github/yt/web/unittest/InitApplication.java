@@ -1,39 +1,32 @@
 package com.github.yt.web.unittest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
+import com.github.yt.web.util.SpringContextUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-@Component
-public class InitApplication implements ApplicationListener<ContextRefreshedEvent> {
-    @Autowired
-    private WebApplicationContext webApplicationContext;
+@Component("ytWebTestInitApplication")
+public class InitApplication {
+    public final MockMvc mockMvc;
+    public final HttpHeaders httpHeaders;
+    public final MockHttpSession session;
 
-    public static MockMvc mockMvc;
-    public static HttpHeaders httpHeaders;
-    public static MockHttpSession session;
-
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
-
-        session = new MockHttpSession();
-
-        if (mockMvc == null) {
-            mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        }
-        if (httpHeaders == null) {
-            httpHeaders = new HttpHeaders();
-        }
+    public InitApplication(MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
+        this.httpHeaders = new HttpHeaders();
+        this.session = new MockHttpSession();
     }
 
     public static HttpHeaders getHttpHeaders() {
-        return httpHeaders;
+        return SpringContextUtils.getBean(InitApplication.class).httpHeaders;
     }
 
+    public static MockMvc getMockMvc() {
+        return SpringContextUtils.getBean(InitApplication.class).mockMvc;
+    }
+
+    public static MockHttpSession getSession() {
+        return SpringContextUtils.getBean(InitApplication.class).session;
+    }
 }

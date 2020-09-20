@@ -5,6 +5,7 @@ import com.github.yt.web.common.ResultActionsUtils;
 import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.unittest.ControllerTestHandler;
 import org.hamcrest.Matchers;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -15,6 +16,7 @@ import org.testng.annotations.Test;
 @ActiveProfiles("packageResponseBodyFalse")
 @SpringBootTest(classes = {YtWetDemoApplication.class})
 @Test(priority = 2)
+@AutoConfigureMockMvc
 public class PackageResponseBodyFalseTest extends AbstractTestNGSpringContextTests {
 
     @Test

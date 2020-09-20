@@ -4,6 +4,7 @@ import com.github.yt.web.YtWetDemoApplication;
 import com.github.yt.web.example.controller.PostController;
 import com.github.yt.web.unittest.ControllerTestHandler;
 import com.github.yt.web.unittest.HttpRestHandler;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @ActiveProfiles("default")
 @SpringBootTest(classes = {YtWetDemoApplication.class})
+@AutoConfigureMockMvc
 public class PostTest extends AbstractTestNGSpringContextTests {
 
     @Test

@@ -4,8 +4,6 @@ import com.github.yt.commons.exception.ExceptionUtils;
 import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.util.JsonUtils;
 import org.hamcrest.Matchers;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -14,10 +12,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.util.HashMap;
-
 public class ControllerTestHandler {
-    private static Logger logger = LoggerFactory.getLogger(ControllerTestHandler.class);
 
     private static ResultActions getResultActions(String url, MultiValueMap<String, String> paramMap, Object code, boolean isPackaged) {
         if (code instanceof Enum) {
@@ -25,11 +20,10 @@ public class ControllerTestHandler {
         }
         try {
             ResultActions resultActions;
-            resultActions = InitApplication.mockMvc.perform(MockMvcRequestBuilders.get(url)
+            resultActions = InitApplication.getMockMvc().perform(MockMvcRequestBuilders.get(url)
 //                    .accept(MediaType.APPLICATION_JSON_UTF8)
                     .params(paramMap)
                     .headers(InitApplication.getHttpHeaders()))
-//                    .andExpect(MockMvcResultMatchers.status().isOk())
                     .andDo(MockMvcResultHandlers.print());
             if (isPackaged) {
                 resultActions.andExpect(MockMvcResultMatchers.jsonPath(
@@ -58,7 +52,7 @@ public class ControllerTestHandler {
                 jsonStr = JsonUtils.toJsonString(jsonBody);
             }
             ResultActions resultActions;
-            resultActions = InitApplication.mockMvc.perform(MockMvcRequestBuilders.post(url)
+            resultActions = InitApplication.getMockMvc().perform(MockMvcRequestBuilders.post(url)
                     .accept(MediaType.APPLICATION_JSON_UTF8)
                     .contentType(MediaType.APPLICATION_JSON_UTF8)
                     .content(jsonStr)
