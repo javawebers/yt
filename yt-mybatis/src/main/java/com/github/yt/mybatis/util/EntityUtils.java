@@ -214,7 +214,7 @@ public class EntityUtils {
                 Field idField = getIdField(entity.getClass());
                 result.put((String) getValue(entity, idField), entity);
             }
-        } else{
+        } else {
             result = new HashMap<>(0);
         }
         return result;
@@ -255,12 +255,7 @@ public class EntityUtils {
         if (entityCollection != null && !entityCollection.isEmpty()) {
             result = new HashMap<>(entityCollection.size());
             for (T entity : entityCollection) {
-                Field propertyField;
-                try {
-                    propertyField = entity.getClass().getDeclaredField(propertyName);
-                } catch (NoSuchFieldException e) {
-                    throw new BaseErrorException(YtMybatisExceptionEnum.CODE_94, e);
-                }
+                Field propertyField = getField(entity.getClass(), propertyName);
                 Object propertyValue = getValue(entity, propertyField);
                 if (!result.containsKey(propertyValue)) {
                     result.put(propertyValue, new ArrayList<>());
