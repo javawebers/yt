@@ -258,7 +258,7 @@ public abstract class BaseService<T> implements IBaseService<T> {
     }
 
     @Override
-    public T findOneById(@NotNull Serializable id) {
+    public T findOneById(Serializable id) {
         T entity = findById(id);
         if (entity == null) {
             throw new EmptyResultDataAccessException("没有查询到数据，id: " + id, 1);
