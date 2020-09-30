@@ -38,18 +38,4 @@ public class PageUtils {
         return new Page<>(pageNo, pageSize, totalCount, data);
 
     }
-//
-//    @Deprecated
-//    public static <R> Page<R> createPage(int pageNo, int pageSize, int totalCount, List<R> data) {
-//        YtMybatisConfig ytMybatisConfig = SpringContextUtils.getBean(YtMybatisConfig.class);
-//
-//        return new Page<R>()
-//                .initKey(ytMybatisConfig.getPage().getPageNoName(),
-//                        ytMybatisConfig.getPage().getPageSizeName(),
-//                        ytMybatisConfig.getPage().getPageTotalCountName(),
-//                        ytMybatisConfig.getPage().getPageDataName())
-//                .initValue(pageNo, pageSize, totalCount, data);
-//    }
-
-
 }

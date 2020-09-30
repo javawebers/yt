@@ -133,6 +133,11 @@ public class YtWebConfig {
     }
 
     public static class Page {
+
+        /**
+         * 是否转换 page， 将 page 对象转换为 map
+         */
+        private boolean convertPage = true;
         /**
          * 页码
          */
@@ -149,6 +154,15 @@ public class YtWebConfig {
          * 数据字段
          */
         private String pageDataName = "data";
+
+        public boolean isConvertPage() {
+            return convertPage;
+        }
+
+        public Page setConvertPage(boolean convertPage) {
+            this.convertPage = convertPage;
+            return this;
+        }
 
         public String getPageNoName() {
             return pageNoName;

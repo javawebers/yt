@@ -1,12 +1,14 @@
 package com.github.yt.web.example.controller;
 
-import com.github.yt.commons.exception.BaseAccidentException;
+import com.github.yt.mybatis.query.Page;
+import com.github.yt.mybatis.query.PageUtils;
 import com.github.yt.web.example.entity.WebQueryEntity;
-import com.github.yt.web.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.query.WebQuery;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("webPageQuery")
@@ -19,4 +21,8 @@ public class WebPageQueryController {
                 .setPageSize(webQuery.takePageSize());
     }
 
+    @GetMapping("pageResult")
+    public Page<Object> pageResult() {
+        return PageUtils.createPage(1, 2, 3, new ArrayList<>());
+    }
 }

@@ -2,9 +2,9 @@ package com.github.yt.web.result;
 
 import com.github.yt.commons.exception.BaseException;
 import com.github.yt.commons.exception.BaseExceptionConverter;
+import com.github.yt.commons.query.IPage;
 import com.github.yt.web.YtWebConfig;
 import com.github.yt.web.util.JsonUtils;
-import com.github.yt.web.util.SpringContextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -27,6 +27,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -45,13 +46,19 @@ import java.util.Objects;
 @Order(200)
 @ControllerAdvice
 public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, ApplicationContextAware {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static final String REQUEST_EXCEPTION = "yt:request_exception";
     public static final String REQUEST_RESULT_ENTITY = "yt:request_result_entity";
     public static final String REQUEST_BEFORE_BODY_WRITE = "yt:request_before_body_write";
 
     private ApplicationContext applicationContext;
+
+    private final YtWebConfig ytWebConfig;
+
+    public PackageResponseBodyAdvice(YtWebConfig ytWebConfig) {
+        this.ytWebConfig = ytWebConfig;
+    }
+
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
@@ -97,7 +104,6 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         if (beforeBodyWrite != null) {
             throw se;
         }
-
         HttpResultHandler.writeExceptionResult(se, request, response);
     }
 
@@ -112,6 +118,19 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
         HttpServletRequest request = ((ServletServerHttpRequest) serverHttpRequest).getServletRequest();
+
+        // 如果返回的对象是 Page 类型，将对象转换成 map ，并设置 配置中的属性
+        YtWebConfig.Page pageConfig = ytWebConfig.getPage();
+        if (pageConfig.isConvertPage() && body instanceof IPage) {
+            IPage<?> page = (IPage<?>) body;
+            LinkedHashMap<Object, Object> result = new LinkedHashMap<>();
+            body = result;
+            result.put(pageConfig.getPageNoName(), page.getPageNo());
+            result.put(pageConfig.getPageSizeName(), page.getPageSize());
+            result.put(pageConfig.getPageTotalCountName(), page.getTotalCount());
+            result.put(pageConfig.getPageDataName(), page.getData());
+        }
+
         request.setAttribute(REQUEST_RESULT_ENTITY, body);
 
         if (!successPackageResponseBody(request, Objects.requireNonNull(returnType.getMethod()))) {
@@ -193,7 +212,6 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
                 // 判断类配置(默认true)
                 return classPackageResponseBody.value();
             } else {
-                YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
                 return ytWebConfig.getResult().isPackageResponseBody();
             }
     }

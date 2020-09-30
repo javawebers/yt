@@ -66,5 +66,19 @@ public class WebPageQueryDefaultTest extends AbstractTestNGSpringContextTests {
                 Matchers.equalTo(10)));
     }
 
+    // 返回的分页数据
+    @Test
+    public void test5() throws Exception {
+        ResultActions resultActions = ControllerTestHandler.get("/webPageQuery/pageResult");
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                "$." + resultConfig.getResultField() + ".pageNo",
+                Matchers.equalTo(1)));
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                "$." + resultConfig.getResultField() + ".pageSize",
+                Matchers.equalTo(2)));
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                "$." + resultConfig.getResultField() + ".totalCount",
+                Matchers.equalTo(3)));
+    }
 
 }
