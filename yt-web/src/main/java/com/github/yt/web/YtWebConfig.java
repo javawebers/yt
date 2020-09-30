@@ -137,7 +137,7 @@ public class YtWebConfig {
         /**
          * 是否转换 page， 将 page 对象转换为 map
          */
-        private boolean convertPage = true;
+        private boolean convertPage = false;
         /**
          * 页码
          */
