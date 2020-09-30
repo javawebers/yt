@@ -3,8 +3,8 @@ use `yt-mybatis`;
 
 -- 表名和实体名一致
 CREATE TABLE  if not exists `DbEntitySame` (
-  `dbEntitySameId` varchar(36) NOT NULL COMMENT 'id',
-  `testVarchar` varchar(36) DEFAULT NULL COMMENT 'String类型',
+  `dbEntitySameId` varchar(200) NOT NULL COMMENT 'id',
+  `testVarchar` varchar(200) DEFAULT NULL COMMENT 'String类型',
   `testInt` int(11) DEFAULT NULL COMMENT 'int类型',
   `testBoolean` tinyint(1) DEFAULT NULL COMMENT 'boolean类型',
   `testEnum` enum('MALE','FEMALE') DEFAULT NULL COMMENT 'enum 类型，MALE:男 ，FEMALE:女',
@@ -21,8 +21,8 @@ CREATE TABLE  if not exists `DbEntitySame` (
 
 -- 表名和实体名一致
 CREATE TABLE  if not exists `db_entity_not_same` (
-  `db_entity_not_same_id` varchar(36) NOT NULL COMMENT 'id',
-  `test_varchar` varchar(36) DEFAULT NULL COMMENT 'String类型',
+  `db_entity_not_same_id` varchar(200) NOT NULL COMMENT 'id',
+  `test_varchar` varchar(200) DEFAULT NULL COMMENT 'String类型',
   `test_int` int(11) DEFAULT NULL COMMENT 'int类型',
   `test_boolean` tinyint(1) DEFAULT NULL COMMENT 'boolean类型',
   `founder_id` varchar(255) DEFAULT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE  if not exists `db_entity_not_same` (
 -- 表名和实体名一致
 CREATE TABLE  if not exists `IntId` (
   `intId` int(11) NOT NULL COMMENT 'id',
-  `testVarchar` varchar(36) DEFAULT NULL COMMENT 'String类型',
+  `testVarchar` varchar(200) DEFAULT NULL COMMENT 'String类型',
   `founderId` varchar(255) DEFAULT NULL,
   `founderName` varchar(255) DEFAULT NULL,
   `createTime` datetime DEFAULT NULL,

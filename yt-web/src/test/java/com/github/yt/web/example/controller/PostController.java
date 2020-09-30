@@ -4,7 +4,6 @@ import com.github.yt.mybatis.query.Page;
 import com.github.yt.mybatis.query.PageUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
