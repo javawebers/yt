@@ -7,8 +7,10 @@ import org.springframework.stereotype.Repository;
 
 
 /**
- * ${replaceSuffixClassName} Mapper
+ * ${codeName} Mapper
  *
+ * @author  ${author}
+ * @date    ${date}
  */
 @Mapper
 @Repository

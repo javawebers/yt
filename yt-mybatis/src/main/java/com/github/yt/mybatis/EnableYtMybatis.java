@@ -9,6 +9,7 @@ import java.lang.annotation.*;
 /**
  * 开启mybatis无xml crud功能
  * @author sheng
+ * @date sss
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

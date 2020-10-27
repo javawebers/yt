@@ -6,7 +6,10 @@ ${importBaseEntity}
 import ${modulePackage}.${packagePO}.${poClassName};
 
 /**
-* PO 类的扩展类
+ * ${codeName} PO 类的扩展类
+ *
+ * @author  ${author}
+ * @date    ${date}
 */
 ##@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 @Table(name = "${tableName}")

@@ -7,12 +7,15 @@ import org.apache.velocity.VelocityContext;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
 /**
  * 代码生成类
+ *
  * @author sheng
  */
 public class JavaCodeGenerator {
@@ -104,9 +107,13 @@ public class JavaCodeGenerator {
          */
         MAPPER_XML,
         /**
-         * service
+         * 生成 service 的接口和实现类
          */
         SERVICE,
+        /**
+         * 只生成 service 没有接口
+         */
+        SERVICE_ONLY_IMPL,
         /**
          * controller
          */
@@ -219,7 +226,10 @@ public class JavaCodeGenerator {
             e.printStackTrace();
             return;
         }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         VelocityContext context = new VelocityContext();
+        context.put("date", sdf.format(new Date()));
+        context.put("author", System.getenv().get("USERNAME"));
         context.put("className", className);
         context.put("poClassName", poClassName);
         context.put("lowerName", lowerName);
@@ -229,6 +239,7 @@ public class JavaCodeGenerator {
         context.put("moduleSimplePackage", moduleSimplePackage);
         context.put("replaceSuffixClassName", replaceSuffixClassName);
         context.put("replaceSuffixLowerName", replaceSuffixLowerName);
+
 
         context.put("packageEntity", packageEntity);
         context.put("packagePO", packagePo);
@@ -288,6 +299,9 @@ public class JavaCodeGenerator {
                 case SERVICE:
                     CommonPageParser.writerPage(context, "Service.java.vm", rootPath + javaPath + modulePakPath, servicePath);
                     CommonPageParser.writerPage(context, "ServiceImpl.java.vm", rootPath + javaPath + modulePakPath, serviceImplPath);
+                    break;
+                case SERVICE_ONLY_IMPL:
+                    CommonPageParser.writerPage(context, "ServiceOnlyImpl.java.vm", rootPath + javaPath + modulePakPath, servicePath);
                     break;
                 case CONTROLLER:
                     CommonPageParser.writerPage(context, "Controller.java.vm", rootPath + javaPath + modulePakPath, controllerPath);

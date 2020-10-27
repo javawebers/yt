@@ -5,6 +5,12 @@ import javax.persistence.Column;
 
 ${importBaseEntity}
 
+/**
+ * ${codeName} PO
+ *
+ * @author  ${author}
+ * @date    ${date}
+ */
 ##@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 @Table(name = "${tableName}")
 public class ${poClassName}<T extends ${poClassName}<T>> ${extendsBaseEntity} {

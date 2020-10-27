@@ -11,6 +11,8 @@ import ${modulePackage}.${packageService}.${replaceSuffixClassName}Service;
 /**
  * ${codeName}控制器
  *
+ * @author  ${author}
+ * @date    ${date}
  */
 @RestController
 @RequestMapping("/${replaceSuffixLowerName}")

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * ${codeName}服务层
  *
+ * @author  ${author}
+ * @date    ${date}
  */
 public interface ${replaceSuffixClassName}Service extends IBaseService<${className}> {
 

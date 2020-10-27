@@ -3,7 +3,6 @@ package ${modulePackage}.${packageService}.impl;
 import com.github.yt.mybatis.service.BaseService;
 import ${modulePackage}.${packageDao}.${replaceSuffixClassName}Mapper;
 import ${modulePackage}.${packageEntity}.${className};
-import ${modulePackage}.${packageService}.${replaceSuffixClassName}Service;
 
 import javax.annotation.Resource;
 
@@ -11,14 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * ${codeName}服务层实现类
+ * ${codeName}服务层
  *
  * @author  ${author}
  * @date    ${date}
  */
 @Service("${replaceSuffixLowerName}Service")
 @Transactional
-public class ${replaceSuffixClassName}ServiceImpl extends BaseService<${className}> implements ${replaceSuffixClassName}Service {
+public class ${replaceSuffixClassName}Service extends BaseService<${className}> {
 
     @Resource
     private ${replaceSuffixClassName}Mapper mapper;
