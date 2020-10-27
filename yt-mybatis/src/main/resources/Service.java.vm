@@ -1,10 +1,8 @@
 package ${modulePackage}.${packageService};
 
 import com.github.yt.mybatis.service.IBaseService;
-import ${modulePackage}.${packageDao}.${replaceSuffixClassName}Mapper;
 import ${modulePackage}.${packageEntity}.${className};
 
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * ${codeName}服务层

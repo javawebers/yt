@@ -1,8 +1,6 @@
 package ${modulePackage}.${packageEntity};
 
 import javax.persistence.Table;
-import javax.persistence.Column;
-${importBaseEntity}
 import ${modulePackage}.${packagePO}.${poClassName};
 
 /**

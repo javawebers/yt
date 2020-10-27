@@ -1,4 +1,4 @@
-package ${modulePackage}.${packageService}.impl;
+package ${modulePackage}.${packageService};
 
 import com.github.yt.mybatis.service.BaseService;
 import ${modulePackage}.${packageDao}.${replaceSuffixClassName}Mapper;
