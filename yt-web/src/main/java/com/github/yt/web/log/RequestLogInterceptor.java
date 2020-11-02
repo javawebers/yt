@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class RequestLogInterceptor implements HandlerInterceptor {
 
-    private Logger logger = LoggerFactory.getLogger(RequestLogInterceptor.class);
+    private final Logger logger = LoggerFactory.getLogger(RequestLogInterceptor.class);
 
     /**
      * 读取post的body参数

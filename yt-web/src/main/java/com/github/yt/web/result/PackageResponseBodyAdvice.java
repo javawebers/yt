@@ -5,8 +5,6 @@ import com.github.yt.commons.exception.BaseExceptionConverter;
 import com.github.yt.commons.query.IPage;
 import com.github.yt.web.YtWebConfig;
 import com.github.yt.web.util.JsonUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.MethodParameter;
@@ -123,12 +121,12 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         YtWebConfig.Page pageConfig = ytWebConfig.getPage();
         if (pageConfig.isConvertPage() && body instanceof IPage) {
             IPage<?> page = (IPage<?>) body;
-            LinkedHashMap<Object, Object> result = new LinkedHashMap<>();
-            body = result;
-            result.put(pageConfig.getPageNoName(), page.getPageNo());
-            result.put(pageConfig.getPageSizeName(), page.getPageSize());
-            result.put(pageConfig.getPageTotalCountName(), page.getTotalCount());
-            result.put(pageConfig.getPageDataName(), page.getData());
+            LinkedHashMap<Object, Object> pageResultEntity = new LinkedHashMap<>();
+            body = pageResultEntity;
+            pageResultEntity.put(pageConfig.getPageNoName(), page.getPageNo());
+            pageResultEntity.put(pageConfig.getPageSizeName(), page.getPageSize());
+            pageResultEntity.put(pageConfig.getPageTotalCountName(), page.getTotalCount());
+            pageResultEntity.put(pageConfig.getPageDataName(), page.getData());
         }
 
         request.setAttribute(REQUEST_RESULT_ENTITY, body);

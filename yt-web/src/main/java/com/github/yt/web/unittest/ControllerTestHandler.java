@@ -21,7 +21,7 @@ public class ControllerTestHandler {
         try {
             ResultActions resultActions;
             resultActions = InitApplication.getMockMvc().perform(MockMvcRequestBuilders.get(url)
-//                    .accept(MediaType.APPLICATION_JSON_UTF8)
+                    .accept(MediaType.APPLICATION_JSON_UTF8)
                     .params(paramMap)
                     .headers(InitApplication.getHttpHeaders()))
                     .andDo(MockMvcResultHandlers.print());

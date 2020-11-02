@@ -40,6 +40,15 @@ public interface BaseResultConfig {
         return "stackTrace";
     }
 
+    /**
+     * uuid 字段
+     *
+     * @return uuid 字段
+     */
+    default String getUuidField() {
+        return "requestUuid";
+    }
+
     // default
 
     /**

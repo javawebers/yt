@@ -34,10 +34,10 @@ import java.util.*;
 @Order(1000)
 @Component
 public class QueryControllerAspect {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static Set<Method> methodSet = new HashSet<>();
-    private static Map<Method, Integer> queryMethodMap = new HashMap<>();
+    private static final Set<Method> METHOD_SET = new HashSet<>();
+    private static final Map<Method, Integer> QUERY_METHOD_MAP = new HashMap<>();
 
     @Pointcut("@annotation(org.springframework.web.bind.annotation.RequestMapping) || " +
             "@annotation(org.springframework.web.bind.annotation.GetMapping) || " +
@@ -53,22 +53,22 @@ public class QueryControllerAspect {
             // 获取实现类的方法
             Method currentMethod = target.getClass().getMethod(methodSignature.getName(), methodSignature.getParameterTypes());
             // 每个方法只遍历一次
-            if (!methodSet.contains(currentMethod)) {
-                methodSet.add(currentMethod);
+            if (!METHOD_SET.contains(currentMethod)) {
+                METHOD_SET.add(currentMethod);
                 Class<?>[] classes = methodSignature.getParameterTypes();
                 for (int i = 0; i < classes.length; i++) {
                     if (PageQuery.class.isAssignableFrom(classes[i])) {
-                        queryMethodMap.put(currentMethod, i);
+                        QUERY_METHOD_MAP.put(currentMethod, i);
                     }
                 }
             }
-            if (queryMethodMap.containsKey(currentMethod)) {
+            if (QUERY_METHOD_MAP.containsKey(currentMethod)) {
                 RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
                 HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(requestAttributes)).getRequest();
                 YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
                 String pageNoStr = request.getParameter(ytWebConfig.getPage().getPageNoName());
                 String pageSizeStr = request.getParameter(ytWebConfig.getPage().getPageSizeName());
-                PageQuery<?> pageQuery = (PageQuery<?>) proceedingJoinPoint.getArgs()[queryMethodMap.get(currentMethod)];
+                PageQuery<?> pageQuery = (PageQuery<?>) proceedingJoinPoint.getArgs()[QUERY_METHOD_MAP.get(currentMethod)];
                 int pageSizeNum;
                 try {
                     pageSizeNum = (pageSizeStr == null || pageSizeStr.isEmpty()) ? 10 : Integer.parseInt(pageSizeStr);

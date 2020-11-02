@@ -6,12 +6,16 @@ import com.github.yt.web.util.JsonUtils;
 import com.github.yt.web.util.SpringContextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Objects;
 
 import static com.github.yt.web.result.PackageResponseBodyAdvice.REQUEST_RESULT_ENTITY;
 
@@ -21,7 +25,7 @@ import static com.github.yt.web.result.PackageResponseBodyAdvice.REQUEST_RESULT_
  * @author liujiasheng
  */
 public class HttpResultHandler {
-    private static Logger logger = LoggerFactory.getLogger(HttpResultHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpResultHandler.class);
 
     private static BaseResultConfig resultConfig;
 
@@ -56,6 +60,7 @@ public class HttpResultHandler {
         resultBody.put(getResultConfig().getErrorCodeField(), getResultConfig().getDefaultSuccessCode());
         resultBody.put(getResultConfig().getMessageField(), getResultConfig().getDefaultSuccessMessage());
         resultBody.put(getResultConfig().getResultField(), result);
+        resultBody.put(getResultConfig().getUuidField(), getRequest().getAttribute(RequestUuidInterceptor.REQUEST_UUID));
         if (withMore) {
             resultBody.put(getResultConfig().getMoreResultField(), moreResult);
         }
@@ -74,6 +79,8 @@ public class HttpResultHandler {
             resultBody.put(getResultConfig().getMessageField(), getResultConfig().getDefaultErrorMessage());
             resultBody.put(getResultConfig().getResultField(), null);
         }
+        resultBody.put(getResultConfig().getUuidField(), getRequest().getAttribute(RequestUuidInterceptor.REQUEST_UUID));
+
         // 返回异常堆栈到前端
         YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
         if (ytWebConfig.getResult().isReturnStackTrace()) {
@@ -100,6 +107,12 @@ public class HttpResultHandler {
         } catch (IOException ioException) {
             throw new RuntimeException(ioException);
         }
+    }
+
+
+    private static HttpServletRequest getRequest() {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        return ((ServletRequestAttributes) Objects.requireNonNull(requestAttributes)).getRequest();
     }
 
 }
