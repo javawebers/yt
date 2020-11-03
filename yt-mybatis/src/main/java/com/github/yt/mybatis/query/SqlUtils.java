@@ -15,20 +15,33 @@ import java.util.regex.Pattern;
  * @author liujiasheng
  */
 public class SqlUtils {
-    public static void select(SQL sql, Class<?> entityClass, MybatisQuery<?> query) {
-        List<String> columnList;
-        if (query != null) {
-            // 添加所有扩展字段
-            columnList = new ArrayList<>(query.takeExtendSelectColumnList());
-            // 是否排除所有 t 中的字段
-            if (!query.takeExcludeAllSelectColumn()) {
-                columnList.addAll(getEntitySelectColumn(entityClass, query.takeExcludeSelectColumnList()));
-            }
-        } else {
-            columnList = getEntitySelectColumn(entityClass, null);
+
+    public static void selectCount(SQL sql, Class<?> entityClass, MybatisQuery<?> query) {
+        if(query.takeCountColumn() == null) {
+            Field idField = EntityUtils.getIdField(entityClass);
+            query.countColumn(DialectHandler.getDialect().getColumnNameWithTableAlas(idField));
         }
-        for (String column : columnList) {
-            sql.SELECT(column);
+        String count;
+        if (query.takeDistinct()) {
+            count = "count(DISTINCT " + query.takeCountColumn() + ")";
+        } else {
+            count = "count(" + query.takeCountColumn() + ")";
+        }
+        sql.SELECT(count);
+    }
+
+    public static void select(SQL sql, Class<?> entityClass, MybatisQuery<?> query) {
+        // 添加所有扩展字段
+        List<String> columnList = new ArrayList<>(query.takeExtendSelectColumnList());
+        // 是否排除所有 t 中的字段
+        if (!query.takeExcludeAllSelectColumn()) {
+            columnList.addAll(getEntitySelectColumn(entityClass, query.takeExcludeSelectColumnList()));
+        }
+        String[] wheres = columnList.toArray(new String[0]);
+        if (query.takeDistinct()) {
+            sql.SELECT_DISTINCT(wheres);
+        } else {
+            sql.SELECT(wheres);
         }
     }
 
@@ -37,9 +50,6 @@ public class SqlUtils {
     }
 
     public static void join(SQL sql, MybatisQuery<?> query) {
-        if (query == null) {
-            return;
-        }
         query.takeJoinList().forEach(queryJoin -> {
             switch (queryJoin.takeJoinType()) {
                 case JOIN:
@@ -67,25 +77,22 @@ public class SqlUtils {
 
 
     public static void where(SQL sql, MybatisQuery<?> query) {
-        if (query != null) {
-            // query.whereList
-            // 拼接where查询条件
-            if (query.takeWhereList() != null && !query.takeWhereList().isEmpty()) {
-                for (Object where : query.takeWhereList()) {
-                    sql.WHERE((String) where);
-                }
-            }
+        // query.whereList
+        // 拼接where查询条件
+        if (query.takeWhereList() != null && !query.takeWhereList().isEmpty()) {
+            String[] wheres = query.takeWhereList().toArray(new String[0]);
+            sql.WHERE(wheres);
         }
     }
 
     public static void groupBy(SQL sql, MybatisQuery<?> query) {
-        if (query != null && YtStringUtils.isNotBlank(query.takeGroupBy())) {
+        if (YtStringUtils.isNotBlank(query.takeGroupBy())) {
             sql.GROUP_BY(query.takeGroupBy());
         }
     }
 
     public static void orderBy(SQL sql, MybatisQuery<?> query) {
-        if (query != null && query.takeOrderByList() != null && !query.takeOrderByList().isEmpty()) {
+        if (query.takeOrderByList() != null && !query.takeOrderByList().isEmpty()) {
             for (Object orderBy : query.takeOrderByList()) {
                 sql.ORDER_BY((String) orderBy);
             }
@@ -93,11 +100,7 @@ public class SqlUtils {
     }
 
     public static String limitOffset(String sql, MybatisQuery<?> query) {
-        if (query != null) {
-            return DialectHandler.getDialect().limitOffset(sql, query.takeLimitFrom(), query.takeLimitSize());
-        } else {
-            return sql;
-        }
+        return DialectHandler.getDialect().limitOffset(sql, query.takeLimitFrom(), query.takeLimitSize());
     }
 
 

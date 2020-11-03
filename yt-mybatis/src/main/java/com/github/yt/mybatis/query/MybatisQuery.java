@@ -2,7 +2,6 @@ package com.github.yt.mybatis.query;
 
 import com.github.yt.commons.query.PageQuery;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +12,21 @@ import java.util.Map;
  */
 public interface MybatisQuery<T extends MybatisQuery<?>> extends PageQuery<T> {
 
-    // apis
+    /**
+     * 查询去重
+     *
+     * @return this
+     */
+    T distinct();
+
+    /**
+     * 统计字段
+     * 调用多次会覆盖之前的值
+     *
+     * @param countColumn countColumn
+     * @return this
+     */
+    T countColumn(String countColumn);
 
     /**
      * 添加扩展的查询字段
@@ -245,6 +258,12 @@ public interface MybatisQuery<T extends MybatisQuery<?>> extends PageQuery<T> {
     List<String> takeUpdateColumnList();
 
     /**
+     * 获取 countColumn
+     * @return countColumn
+     */
+    String takeCountColumn();
+
+    /**
      * 扩展字段集合
      *
      * @return ExtendSelectColumnList
@@ -264,6 +283,13 @@ public interface MybatisQuery<T extends MybatisQuery<?>> extends PageQuery<T> {
      * @return ExcludeAllSelectColumn
      */
     boolean takeExcludeAllSelectColumn();
+
+    /**
+     * 是否去重
+     *
+     * @return 是否去重
+     */
+    boolean takeDistinct();
 
     /**
      * 获取查询条件集合

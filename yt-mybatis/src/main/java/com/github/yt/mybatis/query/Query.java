@@ -3,7 +3,6 @@ package com.github.yt.mybatis.query;
 import com.github.yt.commons.util.YtStringUtils;
 import com.github.yt.mybatis.dialect.DialectHandler;
 
-import javax.lang.model.element.Element;
 import java.lang.reflect.Array;
 import java.util.*;
 
@@ -23,7 +22,8 @@ public class Query implements MybatisQuery<Query> {
     final protected List<String> extendSelectColumnList = new ArrayList<>();
     final protected List<String> excludeSelectColumnList = new ArrayList<>();
     protected boolean excludeAllSelectColumn = false;
-
+    protected boolean isDistinct = false;
+    protected String countColumn;
     final protected List<String> whereList = new ArrayList<>();
 
     final protected List<QueryInCondition> inParamList = new ArrayList<>();
@@ -57,6 +57,18 @@ public class Query implements MybatisQuery<Query> {
 
     private void addInParam(String paramName, Collection<?> paramValue) {
         inParamList.add(new QueryInCondition(paramName, paramValue));
+    }
+
+    @Override
+    public Query distinct() {
+        isDistinct = true;
+        return this;
+    }
+
+    @Override
+    public Query countColumn(String countColumn) {
+        this.countColumn = countColumn;
+        return this;
     }
 
     @Override
@@ -256,6 +268,11 @@ public class Query implements MybatisQuery<Query> {
     }
 
     @Override
+    public String takeCountColumn() {
+        return countColumn;
+    }
+
+    @Override
     public List<String> takeExtendSelectColumnList() {
         return extendSelectColumnList;
     }
@@ -268,6 +285,11 @@ public class Query implements MybatisQuery<Query> {
     @Override
     public boolean takeExcludeAllSelectColumn() {
         return excludeAllSelectColumn;
+    }
+
+    @Override
+    public boolean takeDistinct() {
+        return isDistinct;
     }
 
     @Override

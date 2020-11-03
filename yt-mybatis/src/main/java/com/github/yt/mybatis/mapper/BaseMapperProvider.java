@@ -60,7 +60,7 @@ public class BaseMapperProvider {
         Query query = (Query) paramMap.get(ParamUtils.QUERY_OBJECT);
 
         SQL sql = new SQL();
-        sql.SELECT("count(*)");
+        SqlUtils.selectCount(sql, entityConditionClass, query);
         SqlUtils.from(sql, entityConditionClass);
         SqlUtils.join(sql, query);
         SqlUtils.where(sql, query);

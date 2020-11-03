@@ -31,10 +31,6 @@ public class HttpRestHandler {
     /**
      * 获取接口返回结果
      *
-     * @param resultActions
-     * @param resultType
-     * @param <T>
-     * @return
      */
     public static <T> T getResult(ResultActions resultActions, Class<T> resultType) {
         return getResult(responseToString(resultActions), resultType);
@@ -43,11 +39,8 @@ public class HttpRestHandler {
     /**
      * 获取接口返回结果
      *
-     * @param json
-     * @param resultType
-     * @param <T>
-     * @return
      */
+    @SuppressWarnings("unchecked")
     public static <T> T getResult(String json, Class<T> resultType) {
         try {
             Object result = getResult(json);
@@ -64,9 +57,6 @@ public class HttpRestHandler {
     /**
      * 获取接口返回结果（列表）
      *
-     * @param resultType
-     * @param <T>
-     * @return
      */
     public static <T> List<T> getListResult(ResultActions resultActions, Class<T> resultType) {
         String jsonResult = responseToString(resultActions);
@@ -77,9 +67,6 @@ public class HttpRestHandler {
     /**
      * 获取接口返回结果（分页）
      *
-     * @param resultType
-     * @param <T>
-     * @return
      */
     public static <T> List<T> getPageListResult(ResultActions resultActions, Class<T> resultType) {
         String jsonResult = responseToString(resultActions);
@@ -136,17 +123,14 @@ public class HttpRestHandler {
     private static String responseToString(ResultActions resultActions) {
         MvcResult mvcResult = resultActions.andReturn();
         MockHttpServletResponse mockHttpServletResponse = mvcResult.getResponse();
-        PrintWriter printWriter = null;
         try {
-            printWriter = mockHttpServletResponse.getWriter();
+            PrintWriter printWriter = mockHttpServletResponse.getWriter();
+            OutputStreamWriter outputStreamWriter = ((OutputStreamWriter) getValue(printWriter, "out"));
+            return getValue(outputStreamWriter, "lock").toString();
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        OutputStreamWriter outputStreamWriter = ((OutputStreamWriter) getValue(printWriter, "out"));
-        String jsonString = getValue(outputStreamWriter, "lock").toString();
-        return jsonString;
     }
-
 
     private static Object getResult(String json) {
         try {
