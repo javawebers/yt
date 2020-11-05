@@ -12,6 +12,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.lang.reflect.Field;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
 public class ControllerTestHandler {
 
     private static ResultActions getResultActions(String url, MultiValueMap<String, String> paramMap, Object code, boolean isPackaged) {
@@ -37,7 +43,7 @@ public class ControllerTestHandler {
         }
     }
 
-    private static ResultActions postResultActions(String url, Object jsonBody, MultiValueMap<String, String> paramMap, Object code){
+    private static ResultActions postResultActions(String url, Object jsonBody, MultiValueMap<String, String> paramMap, Object code) {
         if (code instanceof Enum) {
             code = HttpResultHandler.getResultConfig().convertErrorCode(ExceptionUtils.getExceptionCode((Enum<?>) code));
         }
@@ -47,7 +53,7 @@ public class ControllerTestHandler {
         try {
             String jsonStr;
             if (jsonBody instanceof String) {
-                jsonStr = (String)jsonBody;
+                jsonStr = (String) jsonBody;
             } else {
                 jsonStr = JsonUtils.toJsonString(jsonBody);
             }
@@ -89,6 +95,13 @@ public class ControllerTestHandler {
         return get(url, new LinkedMultiValueMap<>(), HttpResultHandler.getResultConfig().getDefaultSuccessCode());
     }
 
+    public static ResultActions getWithObjectParam(String url, Object paramObject) {
+        return getWithObjectParam(url, paramObject, HttpResultHandler.getResultConfig().getDefaultSuccessCode());
+    }
+
+    public static ResultActions getWithObjectParam(String url, Object paramObject, Object code) {
+        return get(parseToUrlPair(url, paramObject), new LinkedMultiValueMap<>(), code);
+    }
 
     public static ResultActions post(String url, Object jsonBody, LinkedMultiValueMap<String, String> param, Object code) {
         return postResultActions(url, jsonBody, param, code);
@@ -105,8 +118,47 @@ public class ControllerTestHandler {
     public static ResultActions post(String url, Object jsonBody) {
         return postResultActions(url, jsonBody, new LinkedMultiValueMap<>(), HttpResultHandler.getResultConfig().getDefaultSuccessCode());
     }
+
     public static ResultActions post(String url) {
         return postResultActions(url, "{}", new LinkedMultiValueMap<>(), HttpResultHandler.getResultConfig().getDefaultSuccessCode());
     }
 
+    public static String parseToUrlPair(String url, Object o) {
+        String params = parseToUrlPair(o);
+        if (!url.contains("?")) {
+            url += "?";
+        }
+
+        if (!url.endsWith("&")) {
+            url += "&";
+        }
+        return url + params;
+    }
+
+    public static String parseToUrlPair(Object o) {
+        Class<?> c = o.getClass();
+        Field[] fields = c.getDeclaredFields();
+        Map<String, Object> map = new TreeMap<>();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            String name = field.getName();
+            Object value;
+            try {
+                value = field.get(o);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            if (value != null) {
+                map.put(name, value);
+            }
+        }
+        Set<Map.Entry<String, Object>> set = map.entrySet();
+        Iterator<Map.Entry<String, Object>> it = set.iterator();
+        StringBuilder sb = new StringBuilder();
+        while (it.hasNext()) {
+            Map.Entry<String, Object> e = it.next();
+            sb.append(e.getKey()).append("=").append(e.getValue()).append("&");
+        }
+        return sb.toString();
+    }
 }
