@@ -13,10 +13,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 public class ControllerTestHandler {
 
@@ -137,7 +134,7 @@ public class ControllerTestHandler {
 
     public static String parseToUrlPair(Object o) {
         Class<?> c = o.getClass();
-        Field[] fields = c.getDeclaredFields();
+        List<Field> fields = getFieldList(c);
         Map<String, Object> map = new TreeMap<>();
         for (Field field : fields) {
             field.setAccessible(true);
@@ -161,4 +158,13 @@ public class ControllerTestHandler {
         }
         return sb.toString();
     }
+
+    private static List<Field> getFieldList(Class<?> entityClass) {
+        List<Field> fieldList = new ArrayList<>();
+        for (Class<?> c = entityClass; c != Object.class; c = c.getSuperclass()) {
+            fieldList.addAll(Arrays.asList(c.getDeclaredFields()));
+        }
+        return fieldList;
+    }
+
 }
