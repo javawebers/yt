@@ -56,7 +56,7 @@ public class DataBasicService {
         List<DbEntitySame> result = dbEntitySameService.findList(new DbEntitySame(),
                 new Query().addWhere("dbEntitySameId in ${dbEntitySameIdList}")
                         .addParam("dbEntitySameIdList", idList)
-                        .addOrderBy("dbEntitySameId"));
+                        .addOrderBy("dbEntitySameId"), false);
         Assert.assertEquals(result.size(), list.size());
         return result;
     }
@@ -91,7 +91,7 @@ public class DataBasicService {
         List<DbEntityNotSame> result = dbEntityNotSameService.findList(new DbEntityNotSame(),
                 new Query().addWhere("db_entity_not_same_id in ${dbEntityNotSameIdList}")
                         .addParam("dbEntityNotSameIdList", idList)
-                        .addOrderBy("db_entity_not_same_id"));
+                        .addOrderBy("db_entity_not_same_id"), false);
         Assert.assertEquals(list.size(), result.size());
         return result;
     }

@@ -17,6 +17,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -111,29 +112,60 @@ public abstract class BaseService<T> implements IBaseService<T> {
 
     @Override
     public int updateById(T entity, String... fieldColumnNames) {
+        return updateById(entity, true, fieldColumnNames);
+    }
+
+    @Override
+    public int updateById(T entity, boolean defaultSettingDeleteFlag, String... fieldColumnNames) {
         org.springframework.util.Assert.notNull(entity, ENTITY_MUST_NOT_BE_NULL);
         org.springframework.util.Assert.notNull(EntityUtils.getIdValue(entity), ID_MUST_NOT_BE_NULL);
-        return update(entity, true, fieldColumnNames);
+        return update(entity, true, defaultSettingDeleteFlag, fieldColumnNames);
     }
 
     @Override
     public int updateForSelectiveById(T entity, String... fieldColumnNames) {
+        return updateForSelectiveById(entity, true, fieldColumnNames);
+    }
+
+    @Override
+    public int updateForSelectiveById(T entity, boolean defaultSettingDeleteFlag, String... fieldColumnNames) {
         org.springframework.util.Assert.notNull(entity, ENTITY_MUST_NOT_BE_NULL);
         org.springframework.util.Assert.notNull(EntityUtils.getIdValue(entity), ID_MUST_NOT_BE_NULL);
-        return update(entity, false, fieldColumnNames);
+        return update(entity, false, defaultSettingDeleteFlag, fieldColumnNames);
     }
 
     @Override
     public int updateBatchById(Collection<T> entities, String... fieldColumnNames) {
-        throw new UnsupportedOperationException("暂未实现");
+        return updateBatchById(entities, true, fieldColumnNames);
+    }
+
+    @Override
+    public int updateBatchById(Collection<T> entities, boolean defaultSettingDeleteFlag, String... fieldColumnNames) {
+        // TODO: 2020-11-11 目前先循环更新，需要改成一条语句更新多条记录方式
+        int count = 0;
+        for (T entity : entities) {
+            count += updateById(entity, defaultSettingDeleteFlag, fieldColumnNames);
+        }
+        return count;
     }
 
     @Override
     public int updateBatchForSelectiveById(Collection<T> entities, String... fieldColumnNames) {
-        throw new UnsupportedOperationException("暂未实现");
+        return updateBatchForSelectiveById(entities, true, fieldColumnNames);
     }
 
-    private int update(T entity, boolean isUpdateNullField, String... selectedFieldColumnNames) {
+    @Override
+    public int updateBatchForSelectiveById(Collection<T> entities, boolean defaultSettingDeleteFlag, String... fieldColumnNames) {
+        // TODO: 2020-11-11 目前先循环更新，需要改成一条语句更新多条记录方式
+        int count = 0;
+        for (T entity : entities) {
+            count += updateForSelectiveById(entity, defaultSettingDeleteFlag, fieldColumnNames);
+        }
+        return count;
+    }
+
+    private int update(T entity, boolean isUpdateNullField, boolean defaultSettingDeleteFlag, String... selectedFieldColumnNames) {
+        defaultSettingDeleteFlag(entity, defaultSettingDeleteFlag);
         // 判断是否更新指定字段
         Set<String> selectedFieldColumnNameSet = getSelectedFieldColumnNameSet(selectedFieldColumnNames, entity);
         Query query = new Query();
@@ -164,13 +196,25 @@ public abstract class BaseService<T> implements IBaseService<T> {
 
     @Override
     public int update(T entityCondition, MybatisQuery<?> query) {
+        return update(entityCondition, query, true);
+    }
+
+    @Override
+    public int update(T entityCondition, MybatisQuery<?> query, boolean defaultSettingDeleteFlag) {
+        defaultSettingDeleteFlag(entityCondition, defaultSettingDeleteFlag);
         setUpdateBaseColumn(entityCondition.getClass(), query);
         return getMapper().update(ParamUtils.getParamMap(entityCondition, query, false));
     }
 
     @Override
     public int update(MybatisQuery<?> query) {
-        return update(newEntityInstance(), query);
+        return update(query, true);
+    }
+
+    @Override
+    public int update(MybatisQuery<?> query, boolean defaultSettingDeleteFlag) {
+        T entityCondition = newEntityInstance();
+        return update(entityCondition, query, defaultSettingDeleteFlag);
     }
 
     @Override
@@ -188,17 +232,30 @@ public abstract class BaseService<T> implements IBaseService<T> {
         Field idField = EntityUtils.getIdField(getEntityClass());
         Query query = new Query();
         query.equal(DialectHandler.getDialect().getColumnName(idField), id);
-        int num = this.logicDelete(newEntityInstance(), query);
+        T entityCondition = newEntityInstance();
+        int num = this.logicDelete(entityCondition, query);
         Assert.le(num, 1, YtMybatisExceptionEnum.CODE_77);
         return num;
     }
 
     @Override
-    public int logicDelete(T entityCondition, MybatisQuery<?> query) {
+    public int logicDeleteBatchByIds(Object firstValue, Serializable... moreIds) {
+        org.springframework.util.Assert.notNull(firstValue, ID_MUST_NOT_BE_NULL);
+        Collection<?> idList = convertToCollection(firstValue, moreIds);
 
+        Field idField = EntityUtils.getIdField(getEntityClass());
+        Query query = new Query();
+        query.in(DialectHandler.getDialect().getColumnName(idField), idList);
+        T entityCondition = newEntityInstance();
+        int num = this.logicDelete(entityCondition, query);
+        Assert.le(num, idList.size(), YtMybatisExceptionEnum.CODE_77);
+        return num;
+    }
+
+    @Override
+    public int logicDelete(T entityCondition, MybatisQuery<?> query) {
         setUpdateDeleteFlag(entityCondition, query);
         setUpdateBaseColumn(entityCondition.getClass(), query);
-
         return getMapper().update(ParamUtils.getParamMap(entityCondition, query, false));
     }
 
@@ -251,16 +308,27 @@ public abstract class BaseService<T> implements IBaseService<T> {
 
     @Override
     public T findById(Serializable id) {
+        return findById(id, true);
+    }
+
+    @Override
+    public T findById(Serializable id, boolean defaultSettingDeleteFlag) {
         org.springframework.util.Assert.notNull(id, ID_MUST_NOT_BE_NULL);
         Field idField = EntityUtils.getIdField(getEntityClass());
         Query query = new Query();
         query.equal(DialectHandler.getDialect().getColumnName(idField), id);
-        return find(newEntityInstance(), query);
+        T entityCondition = newEntityInstance();
+        return find(entityCondition, query, defaultSettingDeleteFlag);
     }
 
     @Override
     public T findOneById(Serializable id) {
-        T entity = findById(id);
+        return findOneById(id, true);
+    }
+
+    @Override
+    public T findOneById(Serializable id, boolean defaultSettingDeleteFlag) {
+        T entity = findById(id, defaultSettingDeleteFlag);
         if (entity == null) {
             throw new EmptyResultDataAccessException("没有查询到数据，id: " + id, 1);
         }
@@ -269,12 +337,22 @@ public abstract class BaseService<T> implements IBaseService<T> {
 
     @Override
     public T find(T entityCondition) {
-        return find(entityCondition, new Query());
+        return find(entityCondition, true);
+    }
+
+    @Override
+    public T find(T entityCondition, boolean defaultSettingDeleteFlag) {
+        return find(entityCondition, new Query(), defaultSettingDeleteFlag);
     }
 
     @Override
     public T findOne(T entityCondition) {
-        T entity = find(entityCondition);
+        return findOne(entityCondition, true);
+    }
+
+    @Override
+    public T findOne(T entityCondition, boolean defaultSettingDeleteFlag) {
+        T entity = find(entityCondition, defaultSettingDeleteFlag);
         if (entity == null) {
             throw new EmptyResultDataAccessException("没有查询到数据", 1);
         }
@@ -283,7 +361,12 @@ public abstract class BaseService<T> implements IBaseService<T> {
 
     @Override
     public T findOne(T entityCondition, MybatisQuery<?> query) {
-        T entity = find(entityCondition, query);
+        return findOne(entityCondition, query, true);
+    }
+
+    @Override
+    public T findOne(T entityCondition, MybatisQuery<?> query, boolean defaultSettingDeleteFlag) {
+        T entity = find(entityCondition, query, defaultSettingDeleteFlag);
         if (entity == null) {
             throw new EmptyResultDataAccessException("没有查询到数据", 1);
         }
@@ -292,54 +375,109 @@ public abstract class BaseService<T> implements IBaseService<T> {
 
     @Override
     public T findOne(MybatisQuery<?> query) {
-        return findOne(newEntityInstance(), query);
+        return findOne(query, true);
+    }
+
+    @Override
+    public T findOne(MybatisQuery<?> query, boolean defaultSettingDeleteFlag) {
+        return findOne(newEntityInstance(), query, defaultSettingDeleteFlag);
     }
 
     @Override
     public T find(T entityCondition, MybatisQuery<?> query) {
+        return find(entityCondition, query, true);
+    }
+
+    @Override
+    public T find(T entityCondition, MybatisQuery<?> query, boolean defaultSettingDeleteFlag) {
         if (query.takeLimitFrom() == null) {
             query.limit(0, 2);
         }
+        defaultSettingDeleteFlag(entityCondition, defaultSettingDeleteFlag);
         return getMapper().find(ParamUtils.getParamMap(entityCondition, query, true));
     }
 
     @Override
     public T find(MybatisQuery<?> query) {
-        return find(newEntityInstance(), query);
+        return find(query, true);
+    }
+
+    @Override
+    public T find(MybatisQuery<?> query, boolean defaultSettingDeleteFlag) {
+        return find(newEntityInstance(), query, defaultSettingDeleteFlag);
     }
 
     @Override
     public List<T> findList(T entityCondition) {
-        return findList(entityCondition, new Query());
+        return findList(entityCondition, true);
+    }
+
+    @Override
+    public List<T> findList(T entityCondition, boolean defaultSettingDeleteFlag) {
+        return findList(entityCondition, new Query(), defaultSettingDeleteFlag);
     }
 
     @Override
     public List<T> findList(T entityCondition, MybatisQuery<?> query) {
+        return findList(entityCondition, query, true);
+    }
+
+    @Override
+    public List<T> findList(T entityCondition, MybatisQuery<?> query, boolean defaultSettingDeleteFlag) {
+        defaultSettingDeleteFlag(entityCondition, defaultSettingDeleteFlag);
         return getMapper().findList(ParamUtils.getParamMap(entityCondition, query, true));
     }
 
     @Override
     public List<T> findList(MybatisQuery<?> query) {
-        return findList(newEntityInstance(), query);
+        return findList(query, true);
+    }
+
+    @Override
+    public List<T> findList(MybatisQuery<?> query, boolean defaultSettingDeleteFlag) {
+        return findList(newEntityInstance(), query, defaultSettingDeleteFlag);
     }
 
     @Override
     public int count(T entityCondition) {
-        return count(entityCondition, new Query());
+        return count(entityCondition, true);
+    }
+
+    @Override
+    public int count(T entityCondition, boolean defaultSettingDeleteFlag) {
+        return count(entityCondition, new Query(), defaultSettingDeleteFlag);
     }
 
     @Override
     public int count(T entityCondition, MybatisQuery<?> query) {
+        return count(entityCondition, query, true);
+    }
+
+    @Override
+    public int count(T entityCondition, MybatisQuery<?> query, boolean defaultSettingDeleteFlag) {
+        defaultSettingDeleteFlag(entityCondition, defaultSettingDeleteFlag);
         return getMapper().count(ParamUtils.getParamMap(entityCondition, query, true));
+
     }
 
     @Override
     public int count(MybatisQuery<?> query) {
-        return count(newEntityInstance(), query);
+        return count(query, true);
+    }
+
+    @Override
+    public int count(MybatisQuery<?> query, boolean defaultSettingDeleteFlag) {
+        return count(newEntityInstance(), query, defaultSettingDeleteFlag);
     }
 
     @Override
     public Page<T> findPage(T entityCondition, MybatisQuery<?> query) {
+        return findPage(entityCondition, query, true);
+    }
+
+    @Override
+    public Page<T> findPage(T entityCondition, MybatisQuery<?> query, boolean defaultSettingDeleteFlag) {
+        defaultSettingDeleteFlag(entityCondition, defaultSettingDeleteFlag);
         // 设置页数页码
         ParamUtils.setPageInfo(query);
         Map<String, Object> paramMap = ParamUtils.getParamMap(entityCondition, query, true);
@@ -363,7 +501,12 @@ public abstract class BaseService<T> implements IBaseService<T> {
 
     @Override
     public Page<T> findPage(MybatisQuery<?> query) {
-        return findPage(newEntityInstance(), query);
+        return findPage(query, true);
+    }
+
+    @Override
+    public Page<T> findPage(MybatisQuery<?> query, boolean defaultSettingDeleteFlag) {
+        return findPage(newEntityInstance(), query, defaultSettingDeleteFlag);
     }
 
     /**
@@ -568,7 +711,7 @@ public abstract class BaseService<T> implements IBaseService<T> {
     /**
      * 获得一个随机的字符串
      *
-     * @param length     字符串的长度
+     * @param length 字符串的长度
      * @return 随机字符串
      */
     private static String randomString(int length) {
@@ -583,6 +726,47 @@ public abstract class BaseService<T> implements IBaseService<T> {
             sb.append(baseString.charAt(number));
         }
         return sb.toString();
+    }
+
+    /**
+     * 默认设置 deleteFlag
+     *
+     * @param entity                   实体类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     */
+    private void defaultSettingDeleteFlag(T entity, boolean defaultSettingDeleteFlag) {
+        // 判断是否设置
+        if (defaultSettingDeleteFlag) {
+            Field deleteFlagField = EntityUtils.getYtColumnField(entity.getClass(), YtColumnType.DELETE_FLAG);
+            // 判断是否有 deleteFlag 字段
+            if (deleteFlagField != null) {
+                // 获取当前 deleteFlag 值，如果为空就设置
+                Object deleteFlag = EntityUtils.getValue(entity, deleteFlagField);
+                if (deleteFlag == null) {
+                    // 将 deleteFlag 设置成 false
+                    EntityUtils.setValue(entity, deleteFlagField, false);
+                }
+            }
+        }
+    }
+
+
+    private Collection<?> convertToCollection(Object firstValue, Serializable... moreIds) {
+        if (firstValue instanceof Collection) {
+            return (Collection<?>)firstValue;
+        } else if (firstValue.getClass().isArray()) {
+            int length = Array.getLength(firstValue);
+            Object[] os = new Object[length];
+            for (int i = 0; i < os.length; i++) {
+                os[i] = Array.get(firstValue, i);
+            }
+            return Arrays.asList(os);
+        } else {
+            List<Object> list = new ArrayList<>();
+            list.add(firstValue);
+            list.addAll(Arrays.asList(moreIds));
+            return list;
+        }
     }
 
 }

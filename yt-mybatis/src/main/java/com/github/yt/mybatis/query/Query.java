@@ -176,7 +176,7 @@ public class Query implements MybatisQuery<Query> {
      * @return 字段随机字符串
      */
     private static String generateRandomColumn(String columnName) {
-        return columnName.replace(".", "_") + "_" + UUID.randomUUID().toString().replace("-", "");
+        return columnName.replace(".", "_").replace("`", "_") + "_" + UUID.randomUUID().toString().replace("-", "");
     }
 
     @Override
@@ -234,9 +234,9 @@ public class Query implements MybatisQuery<Query> {
         return this;
     }
 
-    private Object convertToCollection(Object firstValue, Object... moreValues) {
+    private Collection<?> convertToCollection(Object firstValue, Object... moreValues) {
         if (firstValue instanceof Collection) {
-            return firstValue;
+            return (Collection<?>)firstValue;
         } else if (firstValue.getClass().isArray()) {
             int length = Array.getLength(firstValue);
             Object[] os = new Object[length];

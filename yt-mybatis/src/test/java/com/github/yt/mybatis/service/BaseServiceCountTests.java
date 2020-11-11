@@ -15,6 +15,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @SpringBootTest(classes = {YtMybatisDemoApplication.class})
 public class BaseServiceCountTests extends AbstractTestNGSpringContextTests {
@@ -83,6 +86,19 @@ public class BaseServiceCountTests extends AbstractTestNGSpringContextTests {
         int count = dbEntityNotSameService.count(
                 new DbEntityNotSame().setTestBoolean(true));
         Assert.assertEquals(6, count);
+    }
+
+    @Test
+    public void notSameExistDefaultSettingDeleteFlag() {
+        List<DbEntityNotSame>  list = dataBasicService.save12NotSame();
+        dbEntityNotSameService.logicDeleteBatchByIds(list.stream().map(DbEntityNotSame::getDbEntityNotSameId).collect(Collectors.toSet()));
+        int count = dbEntityNotSameService.count(
+                new DbEntityNotSame().setTestBoolean(true));
+        Assert.assertEquals(count, 0);
+        count = dbEntityNotSameService.count(
+                new DbEntityNotSame().setTestBoolean(true), false);
+        Assert.assertEquals(count, 6);
+
     }
 
     @Test

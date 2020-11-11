@@ -98,7 +98,7 @@ public class BaseServiceSaveTests extends AbstractTestNGSpringContextTests {
                 .setTestEnum(DbEntitySameTestEnumEnum.FEMALE).setDeleteFlag(true);
         dbEntitySameService.save(entity);
 
-        DbEntitySame dbEntity = dbEntitySameService.findById(entity.getDbEntitySameId());
+        DbEntitySame dbEntity = dbEntitySameService.findById(entity.getDbEntitySameId(), false);
         Assert.assertEquals(dbEntity.getTestBoolean(), (Boolean) true);
         Assert.assertEquals(dbEntity.getTestInt(), (Integer) 22);
         Assert.assertEquals(dbEntity.getTestVarchar(), "22");
@@ -188,7 +188,7 @@ public class BaseServiceSaveTests extends AbstractTestNGSpringContextTests {
         entity.setTestBoolean(true).setTestInt(22).setTestVarchar("22").setDeleteFlag(true);
         dbEntityNotSameService.save(entity);
 
-        DbEntityNotSame dbEntity = dbEntityNotSameService.findById(entity.getDbEntityNotSameId());
+        DbEntityNotSame dbEntity = dbEntityNotSameService.findById(entity.getDbEntityNotSameId(), false);
         Assert.assertEquals(dbEntity.getTestBoolean(), (Boolean) true);
         Assert.assertEquals(dbEntity.getTestInt(), (Integer) 22);
         Assert.assertEquals(dbEntity.getTestVarchar(), "22");

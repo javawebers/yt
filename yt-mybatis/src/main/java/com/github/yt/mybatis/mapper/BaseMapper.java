@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * ★★★★★ 不要手动调用这个类里的方法，统一调用 BaseService 中提供的方法
+ * <p>
  * 通用mapper接口
  *
  * @param <T> 实体类泛型类型
@@ -18,6 +20,8 @@ import java.util.Map;
 public interface BaseMapper<T> {
 
     /**
+     * ★★★★★ 不要手动调用这个类里的方法，统一调用 BaseService 中提供的方法
+     * <p>
      * 批量新增
      * 单条和批量都会调用这个方法
      *
@@ -28,6 +32,8 @@ public interface BaseMapper<T> {
     int saveBatch(Collection<T> entityCollection);
 
     /**
+     * ★★★★★ 不要手动调用这个类里的方法，统一调用 BaseService 中提供的方法
+     * <p>
      * 删除（物理）
      *
      * @param paramMap 删除参数
@@ -37,6 +43,8 @@ public interface BaseMapper<T> {
     int delete(Map<String, Object> paramMap);
 
     /**
+     * ★★★★★ 不要手动调用这个类里的方法，统一调用 BaseService 中提供的方法
+     * <p>
      * 更新记录
      * 逻辑删除也会调用这个方法
      *
@@ -47,7 +55,10 @@ public interface BaseMapper<T> {
     int update(Map<String, Object> paramMap);
 
     /**
+     * ★★★★★ 不要手动调用这个类里的方法，统一调用 BaseService 中提供的方法
+     * <p>
      * 根据条件查询一条记录
+     *
      * @param param 查询参数
      * @return 单个记录，可以为空
      */
@@ -55,7 +66,10 @@ public interface BaseMapper<T> {
     T find(Map<String, Object> param);
 
     /**
+     * ★★★★★ 不要手动调用这个类里的方法，统一调用 BaseService 中提供的方法
+     * <p>
      * 根据条件查询多条记录
+     *
      * @param param 查询参数
      * @return 记录集合，集合不为空，集合中的记录数可以为 0
      */
@@ -63,7 +77,10 @@ public interface BaseMapper<T> {
     List<T> findList(Map<String, Object> param);
 
     /**
+     * ★★★★★ 不要手动调用这个类里的方法，统一调用 BaseService 中提供的方法
+     * <p>
      * 根据条件统计数量
+     *
      * @param param 查询参数
      * @return 数量
      */

@@ -4,7 +4,7 @@
 
     <groupId>com.github.javawebers</groupId>
     <artifactId>yt</artifactId>
-    <version>2.1.5</version>
+    <version>2.1.6</version>
     <packaging>pom</packaging>
     <url>https://github.com/javawebers/yt</url>
     <name>${project.artifactId}</name>

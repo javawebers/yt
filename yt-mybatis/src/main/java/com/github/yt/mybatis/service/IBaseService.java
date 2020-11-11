@@ -45,11 +45,21 @@ public interface IBaseService<T> {
     /**
      * 根据主键更新实体
      *
-     * @param entity           业务实体
+     * @param entity           业务实体，主键是查询条件，其他字段是要跟新的值
      * @param fieldColumnNames 指定更新的字段，为空也进行更新。更新的字段对应数据库字段
      * @return 更新的条数
      */
     int updateById(T entity, String... fieldColumnNames);
+
+    /**
+     * 根据主键更新实体
+     *
+     * @param entity                   业务实体
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @param fieldColumnNames         指定更新的字段，为空也进行更新。更新的字段对应数据库字段
+     * @return 更新的条数
+     */
+    int updateById(T entity, boolean defaultSettingDeleteFlag, String... fieldColumnNames);
 
     /**
      * 只更新非空字段
@@ -61,6 +71,16 @@ public interface IBaseService<T> {
     int updateForSelectiveById(T entity, String... fieldColumnNames);
 
     /**
+     * 只更新非空字段
+     *
+     * @param entity                   业务实体
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @param fieldColumnNames         指定更新的字段，为空不进行更新。更新的字段对应数据库字段
+     * @return 更新的条数
+     */
+    int updateForSelectiveById(T entity, boolean defaultSettingDeleteFlag, String... fieldColumnNames);
+
+    /**
      * 根据 id 批量更新
      *
      * @param entities         业务实体
@@ -70,6 +90,16 @@ public interface IBaseService<T> {
     int updateBatchById(Collection<T> entities, String... fieldColumnNames);
 
     /**
+     * 根据 id 批量更新
+     *
+     * @param entities                 业务实体
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @param fieldColumnNames         指定更新的字段，为空也进行更新。更新的字段对应数据库字段
+     * @return 更新的条数
+     */
+    int updateBatchById(Collection<T> entities, boolean defaultSettingDeleteFlag, String... fieldColumnNames);
+
+    /**
      * 根据 id 批量更新，只更新非空字段
      *
      * @param entities         业务实体
@@ -77,6 +107,16 @@ public interface IBaseService<T> {
      * @return 更新的条数
      */
     int updateBatchForSelectiveById(Collection<T> entities, String... fieldColumnNames);
+
+    /**
+     * 根据 id 批量更新，只更新非空字段
+     *
+     * @param entities                 业务实体
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @param fieldColumnNames         指定更新的字段，为空不进行更新。更新的字段对应数据库字段
+     * @return 更新的条数
+     */
+    int updateBatchForSelectiveById(Collection<T> entities, boolean defaultSettingDeleteFlag, String... fieldColumnNames);
 
     /**
      * 根据条件更新
@@ -90,10 +130,29 @@ public interface IBaseService<T> {
     /**
      * 根据条件更新
      *
+     * @param entityCondition          实体条件
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @param query                    扩展条件
+     * @return 更新条数
+     */
+    int update(T entityCondition, MybatisQuery<?> query, boolean defaultSettingDeleteFlag);
+
+    /**
+     * 根据条件更新
+     *
      * @param query 扩展条件
      * @return 更新条数
      */
     int update(MybatisQuery<?> query);
+
+    /**
+     * 根据条件更新
+     *
+     * @param query                    扩展条件
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @return 更新条数
+     */
+    int update(MybatisQuery<?> query, boolean defaultSettingDeleteFlag);
 
     /**
      * 逻辑删除，不存在抛出异常
@@ -110,6 +169,15 @@ public interface IBaseService<T> {
      * @return 删除记录数
      */
     int logicDeleteById(Serializable id);
+
+    /**
+     * 根据 id 批量逻辑删除
+     *
+     * @param firstValue 第一个值，可以是集合，数组，id 中的任意一种
+     * @param moreIds    业务实体ID集合
+     * @return 删除记录数
+     */
+    int logicDeleteBatchByIds(Object firstValue, Serializable... moreIds);
 
     /**
      * 逻辑删除实体
@@ -186,6 +254,15 @@ public interface IBaseService<T> {
     T findById(Serializable id);
 
     /**
+     * 根据ID获取实体
+     *
+     * @param id                       业务实体ID
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @return 业务实体
+     */
+    T findById(Serializable id, boolean defaultSettingDeleteFlag);
+
+    /**
      * 根据ID获取实体，获取一条记录，不存在抛出异常
      *
      * @param id 业务实体ID
@@ -194,12 +271,30 @@ public interface IBaseService<T> {
     T findOneById(Serializable id);
 
     /**
+     * 根据ID获取实体，获取一条记录，不存在抛出异常
+     *
+     * @param id                       业务实体ID
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @return 业务实体
+     */
+    T findOneById(Serializable id, boolean defaultSettingDeleteFlag);
+
+    /**
      * 按条件查询一条记录
      *
      * @param entityCondition 业务实体类或业务查询实体类
      * @return 业务实体
      */
     T find(T entityCondition);
+
+    /**
+     * 按条件查询一条记录
+     *
+     * @param entityCondition          业务实体类或业务查询实体类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @return 业务实体
+     */
+    T find(T entityCondition, boolean defaultSettingDeleteFlag);
 
     /**
      * 按条件查询一条记录
@@ -213,10 +308,29 @@ public interface IBaseService<T> {
     /**
      * 按条件查询一条记录
      *
+     * @param entityCondition          业务实体类或业务查询实体类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @param query                    查询辅助类
+     * @return 业务实体
+     */
+    T find(T entityCondition, MybatisQuery<?> query, boolean defaultSettingDeleteFlag);
+
+    /**
+     * 按条件查询一条记录
+     *
      * @param query 查询辅助类
      * @return 业务实体
      */
     T find(MybatisQuery<?> query);
+
+    /**
+     * 按条件查询一条记录
+     *
+     * @param query                    查询辅助类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @return 业务实体
+     */
+    T find(MybatisQuery<?> query, boolean defaultSettingDeleteFlag);
 
     /**
      * 按条件查询一条记录，获取一条记录，不存在抛出异常
@@ -225,6 +339,15 @@ public interface IBaseService<T> {
      * @return 业务实体
      */
     T findOne(T entityCondition);
+
+    /**
+     * 按条件查询一条记录，获取一条记录，不存在抛出异常
+     *
+     * @param entityCondition          业务实体类或业务查询实体类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @return 业务实体
+     */
+    T findOne(T entityCondition, boolean defaultSettingDeleteFlag);
 
     /**
      * 按条件查询一条记录，获取一条记录，不存在抛出异常
@@ -238,10 +361,29 @@ public interface IBaseService<T> {
     /**
      * 按条件查询一条记录，获取一条记录，不存在抛出异常
      *
+     * @param entityCondition          业务实体类或业务查询实体类
+     * @param query                    查询辅助类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @return 业务实体
+     */
+    T findOne(T entityCondition, MybatisQuery<?> query, boolean defaultSettingDeleteFlag);
+
+    /**
+     * 按条件查询一条记录，获取一条记录，不存在抛出异常
+     *
      * @param query 查询辅助类
      * @return 业务实体
      */
     T findOne(MybatisQuery<?> query);
+
+    /**
+     * 按条件查询一条记录，获取一条记录，不存在抛出异常
+     *
+     * @param query                    查询辅助类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @return 业务实体
+     */
+    T findOne(MybatisQuery<?> query, boolean defaultSettingDeleteFlag);
 
     /**
      * 按条件查询记录集合
@@ -250,6 +392,15 @@ public interface IBaseService<T> {
      * @return 业务实体集合
      */
     List<T> findList(T entityCondition);
+
+    /**
+     * 按条件查询记录集合
+     *
+     * @param entityCondition          业务实体类或业务查询实体类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @return 业务实体集合
+     */
+    List<T> findList(T entityCondition, boolean defaultSettingDeleteFlag);
 
     /**
      * 按条件查询记录集合
@@ -263,10 +414,29 @@ public interface IBaseService<T> {
     /**
      * 按条件查询记录集合
      *
+     * @param entityCondition          业务实体类或业务查询实体类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @param query                    查询辅助类
+     * @return 业务实体集合
+     */
+    List<T> findList(T entityCondition, MybatisQuery<?> query, boolean defaultSettingDeleteFlag);
+
+    /**
+     * 按条件查询记录集合
+     *
      * @param query 查询辅助类
      * @return 业务实体集合
      */
     List<T> findList(MybatisQuery<?> query);
+
+    /**
+     * 按条件查询记录集合
+     *
+     * @param query                    查询辅助类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @return 业务实体集合
+     */
+    List<T> findList(MybatisQuery<?> query, boolean defaultSettingDeleteFlag);
 
     /**
      * 查询数量
@@ -275,6 +445,15 @@ public interface IBaseService<T> {
      * @return 数量
      */
     int count(T entityCondition);
+
+    /**
+     * 查询数量
+     *
+     * @param entityCondition          业务实体类或业务查询实体类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @return 数量
+     */
+    int count(T entityCondition, boolean defaultSettingDeleteFlag);
 
     /**
      * 查询数量
@@ -288,10 +467,29 @@ public interface IBaseService<T> {
     /**
      * 查询数量
      *
+     * @param entityCondition          业务实体类或业务查询实体类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @param query                    查询辅助类
+     * @return 数量
+     */
+    int count(T entityCondition, MybatisQuery<?> query, boolean defaultSettingDeleteFlag);
+
+    /**
+     * 查询数量
+     *
      * @param query 查询辅助类
      * @return 数量
      */
     int count(MybatisQuery<?> query);
+
+    /**
+     * 查询数量
+     *
+     * @param query                    查询辅助类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @return 数量
+     */
+    int count(MybatisQuery<?> query, boolean defaultSettingDeleteFlag);
 
     /**
      * 获取数据
@@ -305,8 +503,27 @@ public interface IBaseService<T> {
     /**
      * 获取数据
      *
+     * @param entityCondition          查询业务实体
+     * @param query                    查询辅助类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @return 根据查询条件查询的查询结果集
+     */
+    Page<T> findPage(T entityCondition, MybatisQuery<?> query, boolean defaultSettingDeleteFlag);
+
+    /**
+     * 获取数据
+     *
      * @param query 查询辅助类
      * @return 根据查询条件查询的查询结果集
      */
     Page<T> findPage(MybatisQuery<?> query);
+
+    /**
+     * 获取数据
+     *
+     * @param query                    查询辅助类
+     * @param defaultSettingDeleteFlag 是否默认设置 deleteFlag（不是设置 deleteFlag）
+     * @return 根据查询条件查询的查询结果集
+     */
+    Page<T> findPage(MybatisQuery<?> query, boolean defaultSettingDeleteFlag);
 }
