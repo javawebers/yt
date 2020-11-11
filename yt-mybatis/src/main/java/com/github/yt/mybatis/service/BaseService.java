@@ -119,7 +119,7 @@ public abstract class BaseService<T> implements IBaseService<T> {
     public int updateById(T entity, boolean defaultSettingDeleteFlag, String... fieldColumnNames) {
         org.springframework.util.Assert.notNull(entity, ENTITY_MUST_NOT_BE_NULL);
         org.springframework.util.Assert.notNull(EntityUtils.getIdValue(entity), ID_MUST_NOT_BE_NULL);
-        return update(entity, true, defaultSettingDeleteFlag, fieldColumnNames);
+        return updateById(entity, true, defaultSettingDeleteFlag, fieldColumnNames);
     }
 
     @Override
@@ -131,7 +131,7 @@ public abstract class BaseService<T> implements IBaseService<T> {
     public int updateForSelectiveById(T entity, boolean defaultSettingDeleteFlag, String... fieldColumnNames) {
         org.springframework.util.Assert.notNull(entity, ENTITY_MUST_NOT_BE_NULL);
         org.springframework.util.Assert.notNull(EntityUtils.getIdValue(entity), ID_MUST_NOT_BE_NULL);
-        return update(entity, false, defaultSettingDeleteFlag, fieldColumnNames);
+        return updateById(entity, false, defaultSettingDeleteFlag, fieldColumnNames);
     }
 
     @Override
@@ -164,8 +164,7 @@ public abstract class BaseService<T> implements IBaseService<T> {
         return count;
     }
 
-    private int update(T entity, boolean isUpdateNullField, boolean defaultSettingDeleteFlag, String... selectedFieldColumnNames) {
-        defaultSettingDeleteFlag(entity, defaultSettingDeleteFlag);
+    private int updateById(T entity, boolean isUpdateNullField, boolean defaultSettingDeleteFlag, String... selectedFieldColumnNames) {
         // 判断是否更新指定字段
         Set<String> selectedFieldColumnNameSet = getSelectedFieldColumnNameSet(selectedFieldColumnNames, entity);
         Query query = new Query();
@@ -191,7 +190,9 @@ public abstract class BaseService<T> implements IBaseService<T> {
             query.update(DialectHandler.getDialect().getColumnName(field), EntityUtils.getValue(entity, field));
         }
         query.equal(DialectHandler.getDialect().getColumnName(idField), EntityUtils.getValue(entity, idField));
-        return getMapper().update(ParamUtils.getParamMap(newEntityInstance(), query, false));
+        T entityCondition = newEntityInstance();
+        defaultSettingDeleteFlag(entityCondition, defaultSettingDeleteFlag);
+        return getMapper().update(ParamUtils.getParamMap(entityCondition, query, false));
     }
 
     @Override

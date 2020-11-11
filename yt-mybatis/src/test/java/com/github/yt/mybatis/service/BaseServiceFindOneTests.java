@@ -3,6 +3,7 @@ package com.github.yt.mybatis.service;
 import com.github.yt.mybatis.YtMybatisDemoApplication;
 import com.github.yt.mybatis.example.entity.DbEntityNotSame;
 import com.github.yt.mybatis.example.entity.DbEntitySame;
+import com.github.yt.mybatis.example.po.DbEntityNotSamePO;
 import com.github.yt.mybatis.example.po.DbEntitySameTestEnumEnum;
 import com.github.yt.mybatis.example.service.DataBasicService;
 import com.github.yt.mybatis.example.service.DbEntityNotSameService;
@@ -17,6 +18,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 import javax.annotation.Resource;
+import java.util.stream.Collectors;
 
 @SpringBootTest(classes = {YtMybatisDemoApplication.class})
 public class BaseServiceFindOneTests extends AbstractTestNGSpringContextTests {
@@ -126,6 +128,32 @@ public class BaseServiceFindOneTests extends AbstractTestNGSpringContextTests {
         DbEntityNotSame dbEntity = dbEntityNotSameService.findOne(new DbEntityNotSame().setTestVarchar(entity.getTestVarchar()),
                 new Query().addWhere("test_varchar = #{testVarchar}")
                         .addParam("testVarchar", entity.getTestVarchar()));
+        Assert.assertNotNull(dbEntity);
+    }
+
+    @Test(expectedExceptions = EmptyResultDataAccessException.class)
+    public void notSameDefaultSettingDeleteFlag() {
+        DbEntityNotSame entity = dataBasicService.saveOneNotSame();
+        dbEntityNotSameService.logicDelete(entity);
+        DbEntityNotSame dbEntity = dbEntityNotSameService.findOne(new DbEntityNotSame().setTestVarchar(entity.getTestVarchar()),
+                new Query().addWhere("test_varchar = #{testVarchar}")
+                        .addParam("testVarchar", entity.getTestVarchar()));
+        Assert.assertNull(dbEntity);
+
+        dbEntity = dbEntityNotSameService.findOne(new DbEntityNotSame().setTestVarchar(entity.getTestVarchar()),
+                new Query().addWhere("test_varchar = #{testVarchar}")
+                        .addParam("testVarchar", entity.getTestVarchar()), false);
+        Assert.assertNull(dbEntity);
+    }
+
+    @Test
+    public void notSameDefaultSettingDeleteFlag2() {
+        DbEntityNotSame entity = dataBasicService.saveOneNotSame();
+        dbEntityNotSameService.logicDelete(entity);
+
+        DbEntityNotSame dbEntity = dbEntityNotSameService.findOne(new DbEntityNotSame().setTestVarchar(entity.getTestVarchar()),
+                new Query().addWhere("test_varchar = #{testVarchar}")
+                        .addParam("testVarchar", entity.getTestVarchar()), false);
         Assert.assertNotNull(dbEntity);
     }
 

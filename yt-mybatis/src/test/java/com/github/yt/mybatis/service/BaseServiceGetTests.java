@@ -100,6 +100,20 @@ public class BaseServiceGetTests extends AbstractTestNGSpringContextTests {
         DbEntityNotSame dbEntity = dbEntityNotSameService.findById(entity.getDbEntityNotSameId());
         Assert.assertNotNull(dbEntity);
     }
+    @Test
+    public void notSameDefaultSettingDeleteFlag() {
+        DbEntityNotSame entity = dataBasicService.saveOneNotSame();
+        dbEntityNotSameService.logicDelete(entity);
+        DbEntityNotSame dbEntity = dbEntityNotSameService.findById(entity.getDbEntityNotSameId());
+        Assert.assertNull(dbEntity);
+    }
+    @Test
+    public void notSameDefaultSettingDeleteFlag2() {
+        DbEntityNotSame entity = dataBasicService.saveOneNotSame();
+        dbEntityNotSameService.logicDelete(entity);
+        DbEntityNotSame dbEntity = dbEntityNotSameService.findById(entity.getDbEntityNotSameId(), false);
+        Assert.assertNotNull(dbEntity);
+    }
 
 
 }

@@ -3,6 +3,7 @@ package com.github.yt.mybatis.service;
 import com.github.yt.mybatis.YtMybatisDemoApplication;
 import com.github.yt.mybatis.example.entity.DbEntityNotSame;
 import com.github.yt.mybatis.example.entity.DbEntitySame;
+import com.github.yt.mybatis.example.po.DbEntityNotSamePO;
 import com.github.yt.mybatis.example.po.DbEntitySameTestEnum2Enum;
 import com.github.yt.mybatis.example.service.DataBasicService;
 import com.github.yt.mybatis.example.service.DbEntityNotSameService;
@@ -15,9 +16,10 @@ import org.testng.annotations.Test;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SpringBootTest(classes = {YtMybatisDemoApplication.class})
-public class BaseServiceUpdateTests extends AbstractTestNGSpringContextTests {
+public class BaseServiceUpdateForSelectiveByIdTests extends AbstractTestNGSpringContextTests {
 
     @Resource
     private DataBasicService dataBasicService;
@@ -36,19 +38,19 @@ public class BaseServiceUpdateTests extends AbstractTestNGSpringContextTests {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void sameNull() {
-        dbEntitySameService.updateById(null);
+        dbEntitySameService.updateForSelectiveById(null);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void sameNullId() {
-        dbEntitySameService.updateById(new DbEntitySame());
+        dbEntitySameService.updateForSelectiveById(new DbEntitySame());
     }
 
     @Test
     public void sameExist() {
         List<DbEntitySame> list = dataBasicService.save12Same();
 
-        int num = dbEntitySameService.updateById(new DbEntitySame()
+        int num = dbEntitySameService.updateForSelectiveById(new DbEntitySame()
                 .setDbEntitySameId(list.get(0).getDbEntitySameId())
                 .setDeleteFlag(false)
                 .setTestVarchar("xxx_222")
@@ -61,7 +63,7 @@ public class BaseServiceUpdateTests extends AbstractTestNGSpringContextTests {
                 Assert.assertEquals(DbEntitySameTestEnum2Enum.OTHER, dbEntity.getTestEnum2());
                 Assert.assertEquals("xxx_222", dbEntity.getTestVarchar());
                 // 其他字段更新为 null
-                Assert.assertNull(dbEntity.getTestBoolean());
+                Assert.assertNotNull(dbEntity.getTestBoolean());
 
                 Assert.assertNotNull(dbEntity.getModifierId());
                 Assert.assertNull(dbEntity.getModifierName());
@@ -82,7 +84,7 @@ public class BaseServiceUpdateTests extends AbstractTestNGSpringContextTests {
     public void sameNotExist() {
         List<DbEntitySame> list = dataBasicService.save12Same();
 
-        int num = dbEntitySameService.updateById(new DbEntitySame()
+        int num = dbEntitySameService.updateForSelectiveById(new DbEntitySame()
                 .setDbEntitySameId("xxx_DbEntitySame")
                 .setDeleteFlag(false)
                 .setTestVarchar("xxx_222")
@@ -105,7 +107,7 @@ public class BaseServiceUpdateTests extends AbstractTestNGSpringContextTests {
     public void sameWithColumn() {
         List<DbEntitySame> list = dataBasicService.save12Same();
 
-        int num = dbEntitySameService.updateById(new DbEntitySame()
+        int num = dbEntitySameService.updateForSelectiveById(new DbEntitySame()
                 .setDbEntitySameId(list.get(0).getDbEntitySameId())
                 .setDeleteFlag(false)
                 .setTestVarchar("xxx_222")
@@ -119,8 +121,8 @@ public class BaseServiceUpdateTests extends AbstractTestNGSpringContextTests {
                 Assert.assertNull(dbEntity.getTestEnum2());
                 Assert.assertEquals("xxx_222", dbEntity.getTestVarchar());
                 // 其他字段更新为 null
-                Assert.assertNull(dbEntity.getTestBoolean());
-                Assert.assertNull(dbEntity.getTestEnum());
+                Assert.assertNotNull(dbEntity.getTestBoolean());
+                Assert.assertNotNull(dbEntity.getTestEnum());
 
                 Assert.assertNotNull(dbEntity.getModifierId());
                 Assert.assertNull(dbEntity.getModifierName());
@@ -141,19 +143,19 @@ public class BaseServiceUpdateTests extends AbstractTestNGSpringContextTests {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void notSameNull() {
-        dbEntityNotSameService.updateById(null);
+        dbEntityNotSameService.updateForSelectiveById(null);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void notSameNullId() {
-        dbEntityNotSameService.updateById(new DbEntityNotSame());
+        dbEntityNotSameService.updateForSelectiveById(new DbEntityNotSame());
     }
 
     @Test
     public void notSameExist() {
         List<DbEntityNotSame> list = dataBasicService.save12NotSame();
 
-        int num = dbEntityNotSameService.updateById(new DbEntityNotSame()
+        int num = dbEntityNotSameService.updateForSelectiveById(new DbEntityNotSame()
                 .setDbEntityNotSameId(list.get(0).getDbEntityNotSameId())
                 .setDeleteFlag(false)
                 .setTestVarchar("xxx_222"));
@@ -164,7 +166,7 @@ public class BaseServiceUpdateTests extends AbstractTestNGSpringContextTests {
             if (i == 0) {
                 Assert.assertEquals("xxx_222", dbEntity.getTestVarchar());
                 // 其他字段更新为 null
-                Assert.assertNull(dbEntity.getTestBoolean());
+                Assert.assertNotNull(dbEntity.getTestBoolean());
 
                 Assert.assertNotNull(dbEntity.getModifierId());
                 Assert.assertNotNull(dbEntity.getModifyTime());
@@ -182,7 +184,7 @@ public class BaseServiceUpdateTests extends AbstractTestNGSpringContextTests {
     public void notSameNotExist() {
         List<DbEntityNotSame> list = dataBasicService.save12NotSame();
 
-        int num = dbEntityNotSameService.updateById(new DbEntityNotSame()
+        int num = dbEntityNotSameService.updateForSelectiveById(new DbEntityNotSame()
                 .setDbEntityNotSameId("xxx_DbEntitySame")
                 .setDeleteFlag(false)
                 .setTestVarchar("xxx_222"));
@@ -202,7 +204,7 @@ public class BaseServiceUpdateTests extends AbstractTestNGSpringContextTests {
     public void notSameWithColumn() {
         List<DbEntityNotSame> list = dataBasicService.save12NotSame();
 
-        int num = dbEntityNotSameService.updateById(new DbEntityNotSame()
+        int num = dbEntityNotSameService.updateForSelectiveById(new DbEntityNotSame()
                 .setDbEntityNotSameId(list.get(0).getDbEntityNotSameId())
                 .setDeleteFlag(false)
                 .setTestVarchar("xxx_222")
@@ -214,7 +216,7 @@ public class BaseServiceUpdateTests extends AbstractTestNGSpringContextTests {
             if (i == 0) {
                 Assert.assertEquals("xxx_222", dbEntity.getTestVarchar());
                 // 其他字段更新为 null
-                Assert.assertNull(dbEntity.getTestBoolean());
+                Assert.assertNotNull(dbEntity.getTestBoolean());
                 Assert.assertEquals(list.get(0).getTestInt(), dbEntity.getTestInt());
 
                 Assert.assertNotNull(dbEntity.getModifierId());
@@ -229,5 +231,31 @@ public class BaseServiceUpdateTests extends AbstractTestNGSpringContextTests {
             }
         }
     }
+
+    @Test
+    public void notSameDefaultSettingDeleteFlag() {
+        List<DbEntityNotSame> list = dataBasicService.save12NotSame();
+        dbEntityNotSameService.logicDeleteBatchByIds(list.stream().map(DbEntityNotSamePO::getDbEntityNotSameId).collect(Collectors.toSet()));
+
+        int num = dbEntityNotSameService.updateForSelectiveById(new DbEntityNotSame()
+                .setDbEntityNotSameId(list.get(0).getDbEntityNotSameId())
+                .setTestVarchar("xxx_222")
+                .setTestInt(22222),  "test_varchar", "test_boolean");
+        Assert.assertEquals(num, 0 );
+    }
+
+    @Test
+    public void notSameDefaultSettingDeleteFlag2() {
+        List<DbEntityNotSame> list = dataBasicService.save12NotSame();
+        dbEntityNotSameService.logicDeleteBatchByIds(list.stream().map(DbEntityNotSamePO::getDbEntityNotSameId).collect(Collectors.toSet()));
+
+        int num = dbEntityNotSameService.updateForSelectiveById(new DbEntityNotSame()
+                .setDbEntityNotSameId(list.get(0).getDbEntityNotSameId())
+                .setDeleteFlag(false)
+                .setTestVarchar("xxx_222")
+                .setTestInt(22222),  false, "test_varchar", "test_boolean");
+        Assert.assertEquals(1, num);
+    }
+
 
 }

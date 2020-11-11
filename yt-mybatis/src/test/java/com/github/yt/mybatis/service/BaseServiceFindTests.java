@@ -150,6 +150,23 @@ public class BaseServiceFindTests extends AbstractTestNGSpringContextTests {
     }
 
     @Test
+    public void notSameDefaultSettingDeleteFlag() {
+        DbEntityNotSame entity = dataBasicService.saveOneNotSame();
+        dbEntityNotSameService.logicDelete(entity);
+
+
+        DbEntityNotSame dbEntity = dbEntityNotSameService.find(new DbEntityNotSame().setTestVarchar(entity.getTestVarchar()),
+                new Query().addWhere("test_varchar = #{testVarchar}")
+                        .addParam("testVarchar", entity.getTestVarchar()));
+        Assert.assertNull(dbEntity);
+
+        dbEntity = dbEntityNotSameService.find(new DbEntityNotSame().setTestVarchar(entity.getTestVarchar()),
+                new Query().addWhere("test_varchar = #{testVarchar}")
+                        .addParam("testVarchar", entity.getTestVarchar()), false);
+        Assert.assertNotNull(dbEntity);
+    }
+
+    @Test
     public void notSameQueryNotExist() {
         DbEntityNotSame entity = dataBasicService.saveOneNotSame();
         DbEntityNotSame dbEntity = dbEntityNotSameService.find(new DbEntityNotSame().setTestVarchar(entity.getTestVarchar()),

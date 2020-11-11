@@ -3,6 +3,7 @@ package com.github.yt.mybatis.service;
 import com.github.yt.mybatis.YtMybatisDemoApplication;
 import com.github.yt.mybatis.example.entity.DbEntityNotSame;
 import com.github.yt.mybatis.example.entity.DbEntitySame;
+import com.github.yt.mybatis.example.po.DbEntityNotSamePO;
 import com.github.yt.mybatis.example.po.DbEntitySameTestEnumEnum;
 import com.github.yt.mybatis.example.service.DataBasicService;
 import com.github.yt.mybatis.example.service.DbEntityNotSameService;
@@ -16,6 +17,7 @@ import org.testng.annotations.Test;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SpringBootTest(classes = {YtMybatisDemoApplication.class})
 public class BaseServiceFindListTests extends AbstractTestNGSpringContextTests {
@@ -119,8 +121,23 @@ public class BaseServiceFindListTests extends AbstractTestNGSpringContextTests {
                         .addParam("testBoolean", true));
         Assert.assertEquals(6, dbList.size());
         dbList = dbEntityNotSameService.findList(new Query().addWhere("test_boolean = #{testBoolean}")
-                        .addParam("testBoolean", true));
+                .addParam("testBoolean", true));
         Assert.assertEquals(6, dbList.size());
+    }
+
+    @Test
+    public void notSameDefaultSettingDeleteFlag() {
+        List<DbEntityNotSame> list = dataBasicService.save12NotSame();
+        dbEntityNotSameService.logicDeleteBatchByIds(list.stream().map(DbEntityNotSamePO::getDbEntityNotSameId).collect(Collectors.toSet()));
+        List<DbEntityNotSame> dbList = dbEntityNotSameService.findList(new DbEntityNotSame(),
+                new Query().addWhere("test_boolean = #{testBoolean}")
+                        .addParam("testBoolean", true));
+        Assert.assertEquals(dbList.size(), 0);
+        dbList = dbEntityNotSameService.findList(new DbEntityNotSame(),
+                new Query().addWhere("test_boolean = #{testBoolean}")
+                        .addParam("testBoolean", true), false);
+        Assert.assertEquals(dbList.size(), 6);
+
     }
 
     @Test

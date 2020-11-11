@@ -3,6 +3,7 @@ package com.github.yt.mybatis.service;
 import com.github.yt.mybatis.YtMybatisDemoApplication;
 import com.github.yt.mybatis.example.entity.DbEntityNotSame;
 import com.github.yt.mybatis.example.entity.DbEntitySame;
+import com.github.yt.mybatis.example.po.DbEntityNotSamePO;
 import com.github.yt.mybatis.example.po.DbEntitySameTestEnum2Enum;
 import com.github.yt.mybatis.example.po.DbEntitySameTestEnumEnum;
 import com.github.yt.mybatis.example.service.DataBasicService;
@@ -17,6 +18,7 @@ import org.testng.annotations.Test;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SpringBootTest(classes = {YtMybatisDemoApplication.class})
 public class BaseServiceUpdateByConditionTests extends AbstractTestNGSpringContextTests {
@@ -288,6 +290,32 @@ public class BaseServiceUpdateByConditionTests extends AbstractTestNGSpringConte
             }
         });
     }
+    @Test
+    public void notSameDefaultSettingDeleteFlag() {
+        List<DbEntityNotSame> list = dataBasicService.save12NotSame();
+        dbEntityNotSameService.logicDeleteBatchByIds(list.stream().map(DbEntityNotSamePO::getDbEntityNotSameId).collect(Collectors.toSet()));
+        int count = dbEntityNotSameService.update(new DbEntityNotSame().setTestBoolean(false),
+                new Query().addUpdate("test_int = #{testInt}")
+                        .addParam("testInt", 22222222)
+                        .addWhere("test_int = 0")
+        );
+        Assert.assertEquals(count, 0);
+        int dbCount = dbEntityNotSameService.count(new DbEntityNotSame().setTestInt(22222222), false);
+        Assert.assertEquals(dbCount, 0);
+    }
 
 
+    @Test
+    public void notSameDefaultSettingDeleteFlag2() {
+        List<DbEntityNotSame> list = dataBasicService.save12NotSame();
+        dbEntityNotSameService.logicDeleteBatchByIds(list.stream().map(DbEntityNotSamePO::getDbEntityNotSameId).collect(Collectors.toSet()));
+        int count = dbEntityNotSameService.update(new DbEntityNotSame().setTestBoolean(false),
+                new Query().addUpdate("test_int = #{testInt}")
+                        .addParam("testInt", 22222222)
+                        .addWhere("test_int = 0"), false
+        );
+        Assert.assertEquals(2, count);
+        int dbCount = dbEntityNotSameService.count(new DbEntityNotSame().setTestInt(22222222), false);
+        Assert.assertEquals(2, dbCount);
+    }
 }
