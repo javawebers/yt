@@ -62,6 +62,12 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         if (path.startsWith("/swagger")) {
             return false;
         }
+        if (path.startsWith("/v2/api-docs")) {
+            return false;
+        }
+        if (path.startsWith("/v3/api-docs")) {
+            return false;
+        }
         if (!(handler instanceof HandlerMethod)) {
             return false;
         }
