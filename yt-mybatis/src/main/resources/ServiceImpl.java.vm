@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @date    ${date}
  */
 @Service("${replaceSuffixLowerName}Service")
-@Transactional
+@Transactional(rollbackFor = Throwable.class)
 public class ${replaceSuffixClassName}ServiceImpl extends BaseService<${className}> implements ${replaceSuffixClassName}Service {
 
     @Resource
