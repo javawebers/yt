@@ -5,6 +5,9 @@ import com.github.yt.commons.exception.BaseExceptionConverter;
 import com.github.yt.commons.query.IPage;
 import com.github.yt.web.YtWebConfig;
 import com.github.yt.web.util.JsonUtils;
+import com.github.yt.web.util.SpringContextUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.MethodParameter;
@@ -44,6 +47,7 @@ import java.util.Objects;
 @Order(200)
 @ControllerAdvice
 public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, ApplicationContextAware {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static final String REQUEST_EXCEPTION = "yt:request_exception";
     public static final String REQUEST_RESULT_ENTITY = "yt:request_result_entity";
@@ -91,7 +95,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
      */
     @ExceptionHandler
     @PackageResponseBody(false)
-    public void handleExceptions(final Throwable e, HandlerMethod handlerMethod,
+    public HttpResultEntity handleExceptions(final Throwable e, HandlerMethod handlerMethod,
                                  HttpServletRequest request, HttpServletResponse response) throws Throwable {
         Throwable se = convertToKnownException(e);
         request.setAttribute(REQUEST_EXCEPTION, se);
@@ -102,7 +106,15 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         if (beforeBodyWrite != null) {
             throw se;
         }
-        HttpResultHandler.writeExceptionResult(se, request, response);
+
+        // 返回包装体
+        logger.error(e.getMessage(), e);
+        HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(e);
+        YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
+        response.setStatus(ytWebConfig.getResult().getErrorState());
+        response.addHeader("Content-type", "application/json;charset=UTF-8");
+        request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
+        return resultBody;
     }
 
 
@@ -135,7 +147,13 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
             return body;
         }
 
-        HttpResultEntity resultBody = HttpResultHandler.getSuccessSimpleResultBody(body);
+        HttpResultEntity resultBody;
+        // 返回的实体类是 HttpResultEntity 时，正常返回就不需要包装了
+        if (HttpResultEntity.class.isAssignableFrom(returnType.getMethod().getReturnType())) {
+            resultBody = (HttpResultEntity) body;
+        } else {
+            resultBody = HttpResultHandler.getSuccessSimpleResultBody(body);
+        }
         request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
         request.setAttribute(REQUEST_BEFORE_BODY_WRITE, new Object());
         serverHttpResponse.setStatusCode(HttpStatus.OK);
@@ -187,10 +205,6 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
             return false;
         }
         if (ResponseEntity.class.isAssignableFrom(method.getReturnType())) {
-            return false;
-        }
-        // 返回的实体类是 HttpResultEntity 时，正常返回就不需要包装了
-        if (HttpResultEntity.class.isAssignableFrom(method.getReturnType())) {
             return false;
         }
         return packageResponseBody(method);

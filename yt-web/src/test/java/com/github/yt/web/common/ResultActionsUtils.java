@@ -12,6 +12,10 @@ public class ResultActionsUtils {
             resultActions.andExpect(MockMvcResultMatchers.jsonPath(
                     "$." + HttpResultHandler.getResultConfig().getErrorCodeField(),
                     Matchers.equalTo(HttpResultHandler.getResultConfig().getDefaultSuccessCode())));
+            // uuid
+            resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                    "$." + HttpResultHandler.getResultConfig().getUuidField(),
+                    Matchers.notNullValue()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -26,6 +30,25 @@ public class ResultActionsUtils {
     }
 
 
+    public static void defaultErrorPackaged(ResultActions resultActions) {
+        try {
+            resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                    "$." + HttpResultHandler.getResultConfig().getErrorCodeField(),
+                    Matchers.equalTo(HttpResultHandler.getResultConfig().getDefaultErrorCode())));
+            resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                    "$." + HttpResultHandler.getResultConfig().getMessageField(),
+                    Matchers.equalTo(HttpResultHandler.getResultConfig().getDefaultErrorMessage())));
+
+            // uuid
+            resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                    "$." + HttpResultHandler.getResultConfig().getUuidField(),
+                    Matchers.notNullValue()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     public static void resultSinglePackage(ResultActions resultActions) {
         try {
             resultActions.andExpect(MockMvcResultMatchers.jsonPath(
@@ -34,6 +57,11 @@ public class ResultActionsUtils {
             resultActions.andExpect(MockMvcResultMatchers.jsonPath(
                     "$." + HttpResultHandler.getResultConfig().getResultField(),
                     Matchers.equalTo(1)));
+
+            // uuid
+            resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                    "$." + HttpResultHandler.getResultConfig().getUuidField(),
+                    Matchers.notNullValue()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

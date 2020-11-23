@@ -134,12 +134,8 @@ public class PackageResponseBodyFalseTest extends AbstractTestNGSpringContextTes
     @Test
     public void entityThrowException() throws Exception {
         ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/entityThrowException", HttpResultHandler.getResultConfig().getDefaultErrorCode());
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
-                "$." + HttpResultHandler.getResultConfig().getErrorCodeField(),
-                Matchers.equalTo(HttpResultHandler.getResultConfig().getDefaultErrorCode())));
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
-                "$." + HttpResultHandler.getResultConfig().getMessageField(),
-                Matchers.equalTo(HttpResultHandler.getResultConfig().getDefaultErrorMessage())));
+        ResultActionsUtils.defaultErrorPackaged(resultActions);
+
     }
 
     @Test(expectedExceptions = RuntimeException.class)

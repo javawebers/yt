@@ -27,7 +27,7 @@ import static com.github.yt.web.result.PackageResponseBodyAdvice.REQUEST_RESULT_
 public class HttpResultHandler {
     private static final Logger logger = LoggerFactory.getLogger(HttpResultHandler.class);
 
-    private static BaseResultConfig resultConfig;
+    private static volatile BaseResultConfig resultConfig;
 
     public static BaseResultConfig getResultConfig() {
         if (resultConfig == null) {
