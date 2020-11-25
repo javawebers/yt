@@ -100,7 +100,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         Throwable se = convertToKnownException(e);
         request.setAttribute(REQUEST_EXCEPTION, se);
         if (!exceptionPackageResponseBody(request, handlerMethod.getMethod())) {
-            throw e;
+            throw se;
         }
         Object beforeBodyWrite = request.getAttribute(REQUEST_BEFORE_BODY_WRITE);
         if (beforeBodyWrite != null) {
@@ -108,8 +108,8 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         }
 
         // 返回包装体
-        logger.error(e.getMessage(), e);
-        HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(e);
+        logger.error(se.getMessage(), se);
+        HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(se);
         YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
         response.setStatus(ytWebConfig.getResult().getErrorState());
         response.addHeader("Content-type", "application/json;charset=UTF-8");
