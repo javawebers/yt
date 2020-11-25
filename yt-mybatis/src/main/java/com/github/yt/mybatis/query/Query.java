@@ -203,11 +203,27 @@ public class Query implements MybatisQuery<Query> {
     }
 
     @Override
+    public Query equalNotNull(String columnName, Object value) {
+        if (value == null) {
+            return this;
+        }
+        return equal(columnName, value);
+    }
+
+    @Override
     public Query notEqual(String columnName, Object value) {
         String randomColumnName = "_notEqual_" + generateRandomColumn(columnName);
         this.addWhere(columnName + " != " + DialectHandler.getDialect().getFieldParam(randomColumnName));
         this.addParam(randomColumnName, value);
         return this;
+    }
+
+    @Override
+    public Query notEqualNotNull(String columnName, Object value) {
+        if (value == null) {
+            return this;
+        }
+        return notEqual(columnName, value);
     }
 
     @Override
@@ -217,6 +233,7 @@ public class Query implements MybatisQuery<Query> {
         this.addParam(randomColumnName, convertToCollection(firstValue, moreValues));
         return this;
     }
+
 
     @Override
     public Query notIn(String columnName, Object firstValue, Object... moreValues) {
@@ -234,9 +251,17 @@ public class Query implements MybatisQuery<Query> {
         return this;
     }
 
+    @Override
+    public Query updateNotNull(String columnName, Object value) {
+        if (value == null) {
+            return this;
+        }
+        return update(columnName, value);
+    }
+
     private Collection<?> convertToCollection(Object firstValue, Object... moreValues) {
         if (firstValue instanceof Collection) {
-            return (Collection<?>)firstValue;
+            return (Collection<?>) firstValue;
         } else if (firstValue.getClass().isArray()) {
             int length = Array.getLength(firstValue);
             Object[] os = new Object[length];

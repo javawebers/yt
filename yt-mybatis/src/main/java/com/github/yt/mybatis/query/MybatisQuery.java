@@ -191,6 +191,16 @@ public interface MybatisQuery<T extends MybatisQuery<?>> extends PageQuery<T> {
      */
     T equal(String columnName, Object value);
 
+
+    /**
+     * 常用操作，等于，如果值为空忽略
+     *
+     * @param columnName 字段
+     * @param value      值
+     * @return this
+     */
+    T equalNotNull(String columnName, Object value);
+
     /**
      * 常用操作，不等于
      *
@@ -199,6 +209,15 @@ public interface MybatisQuery<T extends MybatisQuery<?>> extends PageQuery<T> {
      * @return this
      */
     T notEqual(String columnName, Object value);
+
+    /**
+     * 常用操作，不等于，如果值为空忽略
+     *
+     * @param columnName 字段
+     * @param value      值
+     * @return this
+     */
+    T notEqualNotNull(String columnName, Object value);
 
     /**
      * 常用操作，in
@@ -228,6 +247,15 @@ public interface MybatisQuery<T extends MybatisQuery<?>> extends PageQuery<T> {
      * @return this
      */
     T update(String columnName, Object value);
+
+    /**
+     * 常用操作，更新，如果值为空忽略
+     *
+     * @param columnName 字段
+     * @param value      值
+     * @return this
+     */
+    T updateNotNull(String columnName, Object value);
 
     /**
      * 获取参数
