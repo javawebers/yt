@@ -86,6 +86,36 @@ public abstract class BaseService<T> implements IBaseService<T> {
     }
 
     @Override
+    public List<String> generateIdBatch(int num) {
+        String id = generateId();
+        List<String> idList = new ArrayList<>(num);
+        for (int i = 0; i < num; i++) {
+            idList.add(id + "_" + i);
+        }
+        return idList;
+    }
+
+    @Override
+    public String generateId() {
+        YtMybatisConfig ytMybatisConfig = SpringContextUtils.getBean(YtMybatisConfig.class);
+        YtMybatisConfig.IdGenerateRule idGenerateRule = ytMybatisConfig.getEntity().getIdGenerateRule();
+        Class<T> entityClass = getEntityClass();
+        String generateIdValue;
+        switch (idGenerateRule) {
+            case TABLE_DATE_RANDOM:
+                generateIdValue = EntityUtils.getTableName(entityClass) +
+                        "_" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) +
+                        "_" + randomString(ytMybatisConfig.getEntity().getIdRandomNum());
+                break;
+            case UUID:
+            default:
+                generateIdValue = UUID.randomUUID().toString().replace("-", "");
+                break;
+        }
+        return generateIdValue;
+    }
+
+    @Override
     public int save(T entity) {
         List<T> entityList = Collections.singletonList(entity);
         return saveBatch(entityList, false);
@@ -510,6 +540,7 @@ public abstract class BaseService<T> implements IBaseService<T> {
         return findPage(newEntityInstance(), query, defaultSettingDeleteFlag);
     }
 
+
     /**
      * id 为 String 类型，自动生成 uuid id
      * id 为空直接返回
@@ -530,24 +561,8 @@ public abstract class BaseService<T> implements IBaseService<T> {
             return;
         }
 
+        String generateIdValue = generateId();
         int i = 0;
-
-        YtMybatisConfig ytMybatisConfig = SpringContextUtils.getBean(YtMybatisConfig.class);
-        YtMybatisConfig.IdGenerateRule idGenerateRule = ytMybatisConfig.getEntity().getIdGenerateRule();
-
-        String generateIdValue;
-        switch (idGenerateRule) {
-            case TABLE_DATE_RANDOM:
-                generateIdValue = EntityUtils.getTableName(entityClass) +
-                        "_" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) +
-                        "_" + randomString(ytMybatisConfig.getEntity().getIdRandomNum());
-                break;
-            case UUID:
-            default:
-                generateIdValue = UUID.randomUUID().toString().replace("-", "");
-                break;
-        }
-
         for (T entity : entityCollection) {
             String idValue = (String) EntityUtils.getValue(entity, idField);
             if (idValue == null) {
@@ -565,6 +580,7 @@ public abstract class BaseService<T> implements IBaseService<T> {
             }
         }
     }
+
 
     /**
      * 设置创建人信息

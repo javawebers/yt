@@ -25,6 +25,23 @@ public interface IBaseService<T> {
      */
     <M extends BaseMapper<T>> M getMapper();
 
+    /**
+     * 批量生成 id
+     *
+     * @param num 生成的数量
+     * @return id 集合
+     */
+    List<String> generateIdBatch(int num);
+
+    /**
+     * 生成 id
+     * <p>
+     * 适用于在调用新增之前需要 id 的场景，解决保存子表数据还没有主表id的问题。
+     * 在新增主表数据的时候直接把 id 一起带到后端
+     *
+     * @return 生成的 id
+     */
+    String generateId();
 
     /**
      * 保存实体
