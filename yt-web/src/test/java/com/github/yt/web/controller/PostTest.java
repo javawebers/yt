@@ -34,7 +34,6 @@ public class PostTest extends AbstractTestNGSpringContextTests {
     public void param2() {
         ResultActions resultActions = ControllerTestHandler.post("/post/param", "{}");
         PostController.User user = HttpRestHandler.getResult(resultActions, PostController.User.class);
-        System.out.println(user);
     }
 
     @Test
@@ -42,7 +41,6 @@ public class PostTest extends AbstractTestNGSpringContextTests {
         ResultActions resultActions = ControllerTestHandler.post("/post/userList");
         List<PostController.User> userList = HttpRestHandler.getListResult(resultActions, PostController.User.class);
         userList.forEach(user -> System.out.println(user.getUsername()));
-        System.out.println(userList);
     }
 
     @Test
@@ -50,7 +48,6 @@ public class PostTest extends AbstractTestNGSpringContextTests {
         ResultActions resultActions = ControllerTestHandler.post("/post/userPage");
         List<PostController.User> userList = HttpRestHandler.getPageListResult(resultActions, PostController.User.class);
         userList.forEach(user -> System.out.println(user.getUsername()));
-        System.out.println(userList);
     }
 
 }

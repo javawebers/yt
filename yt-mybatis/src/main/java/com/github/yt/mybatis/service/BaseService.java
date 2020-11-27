@@ -37,7 +37,7 @@ public abstract class BaseService<T> implements IBaseService<T> {
 
     private Class<T> domainClass;
 
-    private BaseMapper<?> mapper;
+    private volatile BaseMapper<?> mapper;
 
     @Override
     @SuppressWarnings("unchecked")

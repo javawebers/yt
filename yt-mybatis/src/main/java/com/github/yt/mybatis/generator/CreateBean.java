@@ -1,6 +1,8 @@
 package com.github.yt.mybatis.generator;
 
 import com.github.yt.mybatis.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.sql.*;
@@ -11,11 +13,17 @@ import java.util.*;
  * @author sheng
  */
 public class CreateBean {
+    Logger logger = LoggerFactory.getLogger(CreateBean.class);
 
     private static String url;
     private static String username;
     private static String password;
     private static String dbInstance;
+
+
+    private String method;
+    private String argv;
+
 
 
     static {
@@ -34,7 +42,7 @@ public class CreateBean {
     }
 
     public Connection getConnection() throws SQLException {
-        System.out.println(url);
+        logger.info(url);
         return DriverManager.getConnection(url, username, password);
     }
 
@@ -69,10 +77,8 @@ public class CreateBean {
         }
         Connection con = this.getConnection();
         PreparedStatement ps = con.prepareStatement(sqlColumns);
-        List<ColumnData> columnList = new ArrayList<ColumnData>();
         ResultSet rs = ps.executeQuery();
-        StringBuffer str = new StringBuffer();
-        StringBuffer getset = new StringBuffer();
+        List<ColumnData> columnList = new ArrayList<>();
         while (rs.next()) {
             String name = rs.getString(1);
             String type = rs.getString(2);
@@ -85,11 +91,7 @@ public class CreateBean {
             type = this.getType(type);
 
             ColumnData cd = new ColumnData();
-            if (baseEntityFieldSet.contains(name)) {
-                cd.setBaseEntityColumn(true);
-            } else {
-                cd.setBaseEntityColumn(false);
-            }
+            cd.setBaseEntityColumn(baseEntityFieldSet.contains(name));
             cd.setTableName(tableName);
             cd.setClassName(getTablesNameToClassName(tableName));
             cd.setColumnName(name);
@@ -105,8 +107,8 @@ public class CreateBean {
             processEnumColumn(cd);
             columnList.add(cd);
         }
-        argv = str.toString();
-        method = getset.toString();
+        argv = "";
+        method = "";
         rs.close();
         ps.close();
         con.close();
@@ -115,7 +117,7 @@ public class CreateBean {
 
     /**
      * 枚举特殊处理
-     * @param cd
+     * @param cd cd
      */
     private void processEnumColumn(ColumnData cd) {
         if ("enum".equals(cd.getDataType())) {
@@ -136,13 +138,9 @@ public class CreateBean {
         }
     }
 
-    private String method;
-    private String argv;
-
-
-    public String getBeanFieldList(List<ColumnData> columnDataList) throws SQLException {
-        StringBuffer str = new StringBuffer();
-        StringBuffer getset = new StringBuffer();
+    public String getBeanFieldList(List<ColumnData> columnDataList) {
+        StringBuilder str = new StringBuilder();
+        StringBuilder getSet = new StringBuilder();
         for (ColumnData d : columnDataList) {
             if (d.getBaseEntityColumn()) {
                 continue;
@@ -162,23 +160,22 @@ public class CreateBean {
             if (!columnName.equals(fieldName)) {
                 str.append("\r\n    ").append("@Column(name = \"").append(columnName).append("\")");
             }
-            str.append("\r\n    ").append("private ").append(type + " ").append(fieldName).append(";");
-            String method = maxChar + fieldName.substring(1, fieldName.length());
-            getset.append("\r\n\r\n    ").append("public ").append(type + " ").append("get" + method + "() {\r\n    ");
-            getset.append("    return this.").append(fieldName).append(";\r\n    }");
-            getset.append("\r\n\r\n    ")
+            str.append("\r\n    ").append("private ").append(type).append(" ").append(fieldName).append(";");
+            String method = maxChar + fieldName.substring(1);
+            getSet.append("\r\n\r\n    ").append("public ").append(type).append(" ").append("get").append(method).append("() {\r\n    ");
+            getSet.append("    return this.").append(fieldName).append(";\r\n    }");
+            getSet.append("\r\n\r\n    ")
                     .append("@SuppressWarnings(\"unchecked\")")
-                    .append("\r\n    ")
-                    .append("public T set" + method + "(" + type + " " + fieldName + ") {\r\n    ");
-            getset.append("    this.").append(fieldName).append(" = ").append(fieldName).append(";\r\n        return (T) this;\r\n    }");
+                    .append("\r\n    ").append("public T set").append(method).append("(").append(type).append(" ").append(fieldName).append(") {\r\n    ");
+            getSet.append("    this.").append(fieldName).append(" = ").append(fieldName).append(";\r\n        return (T) this;\r\n    }");
         }
         argv = str.toString();
-        method = getset.toString();
+        method = getSet.toString();
         return argv + method;
     }
 
     public String getType(String type) {
-        switch (type = type.toLowerCase()) {
+        switch (type.toLowerCase()) {
             case "char":
             case "varchar":
             case "tinytext":
@@ -218,17 +215,15 @@ public class CreateBean {
     public String getTablesNameToClassName(String tableName) {
         String[] split = tableName.split("_");
         if (split.length > 1) {
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < split.length; i++) {
-                String tempTableName = split[i].substring(0, 1).toUpperCase()
-                        + split[i].substring(1).toLowerCase();
+            StringBuilder sb = new StringBuilder();
+            for (String s : split) {
+                String tempTableName = s.substring(0, 1).toUpperCase()
+                        + s.substring(1).toLowerCase();
                 sb.append(tempTableName);
             }
-            System.out.println(sb.toString());
             return sb.toString();
         } else {
-            String tempTables = split[0].substring(0, 1).toUpperCase() + split[0].substring(1, split[0].length());
-            return tempTables;
+            return split[0].substring(0, 1).toUpperCase() + split[0].substring(1);
         }
     }
 
@@ -236,43 +231,20 @@ public class CreateBean {
     public String getTablesColumnToAttributeName(String columnName) {
         String[] split = columnName.split("_");
         if (split.length > 1) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < split.length; i++) {
-                String tempTableName = "";
+                String tempTableName;
                 if (i == 0) {
-                    tempTableName = split[i].substring(0, 1).toLowerCase() + split[i].substring(1, split[i].length());
+                    tempTableName = split[i].substring(0, 1).toLowerCase() + split[i].substring(1);
                 } else {
-                    tempTableName = split[i].substring(0, 1).toUpperCase() + split[i].substring(1, split[i].length());
+                    tempTableName = split[i].substring(0, 1).toUpperCase() + split[i].substring(1);
                 }
                 sb.append(tempTableName);
             }
-            System.out.println(sb.toString());
             return sb.toString();
         } else {
-            String tempTables = split[0].substring(0, 1).toLowerCase() + split[0].substring(1, split[0].length());
-            return tempTables;
+            return split[0].substring(0, 1).toLowerCase() + split[0].substring(1);
         }
-    }
-
-    public String getColumnFields(String columns) throws SQLException {
-        String fields = columns;
-        if (fields != null && !"".equals(fields)) {
-            fields = fields.replaceAll("[|]", ",");
-        }
-        return fields;
-    }
-
-    public String[] getColumnList(String columns) throws SQLException {
-        String[] columnList = columns.split("[|]");
-        return columnList;
-    }
-
-    public String getColumnSplit(List<ColumnData> columnList) throws SQLException {
-        StringBuffer commonColumns = new StringBuffer();
-        for (ColumnData data : columnList) {
-            commonColumns.append(data.getColumnName() + "|");
-        }
-        return commonColumns.delete(commonColumns.length() - 1, commonColumns.length()).toString();
     }
 
 }

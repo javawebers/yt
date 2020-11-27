@@ -5,10 +5,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.Properties;
 
 
@@ -75,29 +72,26 @@ public class CommonPageParser {
     }
 
     public static void writerPage(VelocityContext context, String templateName, String fileDirPath, String targetFile) {
-        try {
-            File file = new File(fileDirPath + targetFile);
-            if (!file.exists()) {
-                new File(file.getParent()).mkdirs();
+        File file = new File(fileDirPath + targetFile);
+        if (!file.exists()) {
+            new File(file.getParent()).mkdirs();
+        } else {
+            if (isReplace) {
+                System.out.println("替换文件" + file.getAbsolutePath());
             } else {
-                if (isReplace) {
-                    System.out.println("替换文件" + file.getAbsolutePath());
-                } else {
-                    System.out.println("文件生成失败" + file.getAbsolutePath() + "文件已存在");
-                    return;
-                }
+                System.out.println("文件生成失败" + file.getAbsolutePath() + "文件已存在");
+                return;
             }
-            Template template = ve.getTemplate(templateName, CONTENT_ENCODING);
-            FileOutputStream fos = new FileOutputStream(file);
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos, CONTENT_ENCODING));
+        }
+        Template template = ve.getTemplate(templateName, CONTENT_ENCODING);
+        try (FileOutputStream fos = new FileOutputStream(file);
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos, CONTENT_ENCODING))) {
             template.merge(context, writer);
-            writer.flush();
-            writer.close();
-            fos.close();
             System.out.println("文件生成成功" + file.getAbsolutePath());
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
 }
