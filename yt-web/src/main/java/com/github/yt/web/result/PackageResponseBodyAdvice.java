@@ -158,7 +158,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         request.setAttribute(REQUEST_BEFORE_BODY_WRITE, new Object());
         serverHttpResponse.setStatusCode(HttpStatus.OK);
         serverHttpResponse.getHeaders().add("Content-type", "application/json;charset=UTF-8");
-        if (body instanceof String || returnType.getMethod().getReturnType().equals(String.class)) {
+        if (body instanceof String || String.class.equals(returnType.getMethod().getReturnType())) {
             return JsonUtils.toJsonString(resultBody);
         }
         return resultBody;
