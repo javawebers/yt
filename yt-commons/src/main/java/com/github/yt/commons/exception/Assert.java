@@ -18,7 +18,7 @@ public class Assert {
      */
     public static void notNull(Object object, Enum<?> exceptionEnum, Object... params) {
         if (object == null) {
-            throw new BaseAccidentException(exceptionEnum, params);
+            throw new BusinessException(exceptionEnum, params);
         }
     }
 
@@ -31,7 +31,7 @@ public class Assert {
      */
     public static void notNull(Object object, Enum<?> exceptionEnum) {
         if (object == null) {
-            throw new BaseAccidentException(exceptionEnum);
+            throw new BusinessException(exceptionEnum);
         }
     }
 
@@ -45,7 +45,7 @@ public class Assert {
      */
     public static void isNull(Object object, Enum<?> exceptionEnum, Object... params) {
         if (object != null) {
-            throw new BaseAccidentException(exceptionEnum, params);
+            throw new BusinessException(exceptionEnum, params);
         }
     }
 
@@ -58,7 +58,7 @@ public class Assert {
      */
     public static void notEmpty(String str, Enum<?> exceptionEnum, Object... params) {
         if (str == null || str.length() == 0) {
-            throw new BaseAccidentException(exceptionEnum, params);
+            throw new BusinessException(exceptionEnum, params);
         }
     }
 
@@ -71,7 +71,7 @@ public class Assert {
      */
     public static void empty(String str, Enum<?> exceptionEnum, Object... params) {
         if (!(str == null || str.length() == 0)) {
-            throw new BaseAccidentException(exceptionEnum, params);
+            throw new BusinessException(exceptionEnum, params);
         }
     }
 
@@ -84,7 +84,7 @@ public class Assert {
      */
     public static void notEmpty(Collection<?> collection, Enum<?> exceptionEnum, Object... params) {
         if (collection == null || collection.isEmpty()) {
-            throw new BaseAccidentException(exceptionEnum, params);
+            throw new BusinessException(exceptionEnum, params);
         }
     }
 
@@ -97,7 +97,7 @@ public class Assert {
      */
     public static void empty(Collection<?> collection, Enum<?> exceptionEnum, Object... params) {
         if (!(collection == null || collection.isEmpty())) {
-            throw new BaseAccidentException(exceptionEnum, params);
+            throw new BusinessException(exceptionEnum, params);
         }
     }
 
@@ -111,7 +111,7 @@ public class Assert {
      */
     public static void equals(Object object1, Object object2, Enum<?> exceptionEnum, Object... params) {
         if (!object1.equals(object2)) {
-            throw new BaseAccidentException(exceptionEnum, params);
+            throw new BusinessException(exceptionEnum, params);
         }
     }
 
@@ -125,7 +125,7 @@ public class Assert {
      */
     public static void notEquals(Object object1, Object object2, Enum<?> exceptionEnum, Object... params) {
         if (object1.equals(object2)) {
-            throw new BaseAccidentException(exceptionEnum, params);
+            throw new BusinessException(exceptionEnum, params);
         }
     }
 
@@ -138,7 +138,7 @@ public class Assert {
      */
     public static void isTrue(boolean expression, Enum<?> exceptionEnum, Object... params) {
         if (!expression) {
-            throw new BaseAccidentException(exceptionEnum, params);
+            throw new BusinessException(exceptionEnum, params);
         }
     }
 
@@ -151,7 +151,7 @@ public class Assert {
      */
     public static void notTrue(boolean expression, Enum<?> exceptionEnum, Object... params) {
         if (expression) {
-            throw new BaseAccidentException(exceptionEnum, params);
+            throw new BusinessException(exceptionEnum, params);
         }
     }
 
@@ -168,7 +168,7 @@ public class Assert {
         double n1 = number1.doubleValue();
         double n2 = number2.doubleValue();
         if (n1 >= n2) {
-            throw new BaseAccidentException(exceptionEnum, params);
+            throw new BusinessException(exceptionEnum, params);
         }
     }
 
@@ -186,7 +186,7 @@ public class Assert {
         double n1 = number1.doubleValue();
         double n2 = number2.doubleValue();
         if (n1 > n2) {
-            throw new BaseAccidentException(exceptionEnum, params);
+            throw new BusinessException(exceptionEnum, params);
         }
     }
 
@@ -203,7 +203,7 @@ public class Assert {
         double n1 = number1.doubleValue();
         double n2 = number2.doubleValue();
         if (n1 <= n2) {
-            throw new BaseAccidentException(exceptionEnum, params);
+            throw new BusinessException(exceptionEnum, params);
         }
     }
 
@@ -220,7 +220,7 @@ public class Assert {
         double n1 = number1.doubleValue();
         double n2 = number2.doubleValue();
         if (n1 < n2) {
-            throw new BaseAccidentException(exceptionEnum, params);
+            throw new BusinessException(exceptionEnum, params);
         }
     }
 

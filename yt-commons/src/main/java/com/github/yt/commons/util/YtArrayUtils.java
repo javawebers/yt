@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 
 /**
  * copy from org.apache.commons
+ * @author sheng
  */
 public class YtArrayUtils {
 

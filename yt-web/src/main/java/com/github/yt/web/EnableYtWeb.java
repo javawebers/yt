@@ -4,6 +4,7 @@ package com.github.yt.web;
 import com.github.yt.web.log.RequestLogFilter;
 import com.github.yt.web.query.QueryControllerAspect;
 import com.github.yt.web.result.JsonResultConfig;
+import com.github.yt.web.result.KnowExceptionConverter;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
 import com.github.yt.web.result.ValidatorExceptionConverter;
 import com.github.yt.web.util.SpringContextUtils;
@@ -30,6 +31,7 @@ import java.lang.annotation.*;
         RequestLogFilter.class,
         QueryControllerAspect.class,
         ValidatorExceptionConverter.class,
+        KnowExceptionConverter.class,
         SpringContextUtils.class,
 })
 public @interface EnableYtWeb {

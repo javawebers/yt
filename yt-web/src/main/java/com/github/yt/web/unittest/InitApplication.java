@@ -6,6 +6,10 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 
+/**
+ * 单元测试初始化 mock 对象
+ * @author sheng
+ */
 @Component("ytWebTestInitApplication")
 public class InitApplication {
     public final MockMvc mockMvc;

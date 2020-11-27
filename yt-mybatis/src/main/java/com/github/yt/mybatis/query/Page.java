@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author liujiasheng
  */
-public class Page<T> implements IPage {
+public class Page<T> implements IPage<T> {
 
     private static final long serialVersionUID = 80238317179585389L;
 
@@ -40,6 +40,7 @@ public class Page<T> implements IPage {
                 setData(data);
     }
 
+    @Override
     public int getPageNo() {
         return pageNo;
     }
@@ -49,6 +50,7 @@ public class Page<T> implements IPage {
         return this;
     }
 
+    @Override
     public int getPageSize() {
         return pageSize;
     }
@@ -58,6 +60,7 @@ public class Page<T> implements IPage {
         return this;
     }
 
+    @Override
     public int getTotalCount() {
         return totalCount;
     }
@@ -67,6 +70,7 @@ public class Page<T> implements IPage {
         return this;
     }
 
+    @Override
     public List<T> getData() {
         return data;
     }

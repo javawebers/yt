@@ -11,6 +11,7 @@ public enum YtWebExceptionEnum {
     CODE_11("参数错误:{0}"),
     CODE_12("参数错误:{0}"),
     CODE_13("上传的文件过大"),
+    CODE_14("不支持的操作"),
 
     // error
     CODE_79("实例化resultConfig对象异常，{0}"),

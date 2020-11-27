@@ -15,6 +15,12 @@ import org.springframework.util.MultiValueMap;
 import java.lang.reflect.Field;
 import java.util.*;
 
+/**
+ * controller 测试处理类
+ * 提供常用的 get post 方法
+ *
+ * @author sheng
+ */
 public class ControllerTestHandler {
 
     private static ResultActions getResultActions(String url, MultiValueMap<String, String> paramMap, Object code, boolean isPackaged) {

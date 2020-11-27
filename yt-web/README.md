@@ -119,8 +119,8 @@ public enum MyBusinessExceptionEnum {
 }
 ```
 
-* 业务中抛出异常。抛出的非 `BaseAccidentException` 返回给前端的异常码是 `1` ，异常信息是 `系统异常`。
-抛出`BaseAccidentException` ，返回的异常码是枚举的后面数字部分，异常信息是枚举的 `message` 内容，可以动态传参数，如：{0}
+* 业务中抛出异常。抛出的非 `BaseException (BusinessException 实现了 BaseException)` 返回给前端的异常码是 `1` ，异常信息是 `系统异常`。
+抛出`BaseException` ，返回的异常码是枚举的后面数字部分，异常信息是枚举的 `message` 内容，可以动态传参数，如：{0}
 ```java
 @GetMapping("autoPackageException")
 public void autoPackageException() {
@@ -129,7 +129,7 @@ public void autoPackageException() {
 
 @GetMapping("autoPackageException2")
 public void autoPackageException2() {
-    throw new BaseAccidentException(MyBusinessExceptionEnum.CODE_1004);
+    throw new BusinessException(MyBusinessExceptionEnum.CODE_1004);
 }
 ``` 
 * 分别请求：  

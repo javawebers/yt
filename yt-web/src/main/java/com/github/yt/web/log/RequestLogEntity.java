@@ -15,9 +15,13 @@ public class RequestLogEntity implements Serializable {
 
     private String classMethodName;
     private String headerParams;
-    // 问号之前
+    /**
+     * 问号之前
+     */
     private String requestUri;
-    // 问好之后
+    /**
+     * 问好之后
+     */
     private String urlParams;
     private String requestBody;
     private String responseBody;
@@ -26,8 +30,6 @@ public class RequestLogEntity implements Serializable {
     private String errorMessage;
     private String errorStackTrace;
 
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "GMT+8")
-//    @JSONField(format = "yyyy-MM-dd HH:mm:ss.SSS")
     private Date requestTime;
     private Integer invokingTime;
 

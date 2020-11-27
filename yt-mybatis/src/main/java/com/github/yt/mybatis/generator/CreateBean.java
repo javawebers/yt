@@ -6,7 +6,10 @@ import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.*;
 
-
+/**
+ * 创建文件
+ * @author sheng
+ */
 public class CreateBean {
 
     private static String url;
