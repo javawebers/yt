@@ -9,7 +9,6 @@ ${importBaseEntity}
  * ${codeName} PO
  *
  * @author  ${author}
- * @date    ${date}
  */
 ##@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 @Table(name = "${tableName}")
