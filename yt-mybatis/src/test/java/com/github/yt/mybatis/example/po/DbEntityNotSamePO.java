@@ -5,7 +5,6 @@ import javax.persistence.Column;
 
 import com.github.yt.mybatis.example.entity.BusinessBaseEntity;
 
-@Table(name = "db_entity_not_same")
 public class DbEntityNotSamePO<T extends DbEntityNotSamePO<T>> extends BusinessBaseEntity<T> {
 
     /** 

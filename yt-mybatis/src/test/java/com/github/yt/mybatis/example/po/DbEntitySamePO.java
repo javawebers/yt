@@ -6,7 +6,6 @@ import com.github.yt.mybatis.entity.BaseEntity;
 
 import java.io.Serializable;
 
-@Table(name = "DbEntitySame")
 public class DbEntitySamePO<T extends DbEntitySamePO<T>> extends BaseEntity<T> implements Serializable {
 
     /**

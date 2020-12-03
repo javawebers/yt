@@ -4,7 +4,6 @@ import javax.persistence.Table;
 
 import com.github.yt.mybatis.entity.BaseEntity;
 
-@Table(name = "IntId")
 public class IntIdPO<T extends  IntIdPO<T>> extends BaseEntity<T>{
     
     /** 

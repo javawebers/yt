@@ -1,11 +1,9 @@
 package com.github.yt.mybatis.example.po;
 
-import javax.persistence.Table;
-import javax.persistence.Column;
-
 import com.github.yt.mybatis.example.entity.BaseEntity;
 
-@Table(name = "mysql_example")
+import javax.persistence.Column;
+
 public class MysqlExamplePO<T extends MysqlExamplePO<T>> extends BaseEntity<T> {
 
     /** 
