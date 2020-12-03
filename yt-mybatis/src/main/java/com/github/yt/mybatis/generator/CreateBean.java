@@ -155,6 +155,8 @@ public class CreateBean {
                 type = d.getEnumClassName();
             }
             String comment = d.getColumnComment();
+            // 替换备注中的双引号字符为单引号
+            comment = comment.replace("\"", "'");
             String maxChar = fieldName.substring(0, 1).toUpperCase();
             str.append("\r\n    /** \r\n     * ").append(comment).append("  \r\n     */");
 
