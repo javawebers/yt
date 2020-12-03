@@ -6,7 +6,6 @@ import com.github.yt.commons.util.YtStringUtils;
 import org.apache.velocity.VelocityContext;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -141,41 +140,22 @@ public class JavaCodeGenerator {
         }
     }
 
-    /**
-     * @param tableName     表名
-     * @param codeName      表名对应的中文注释
-     * @param modulePackage 模块包：com.fdcz.pro.system
-     * @param moduleName    模块名
-     * @param templates     生成那些模板
-     */
-    @Deprecated
-    public void create(String tableName, String codeName, String moduleName, String modulePackage, String... templates) {
-        if (YtArrayUtils.isEmpty(templates)) {
-            return;
-        }
-        TemplateEnum[] templateEnums = new TemplateEnum[templates.length];
-        for (int i = 0; i < templates.length; i++) {
-            templateEnums[i] = TemplateEnum.valueOf(templates[i].toUpperCase());
-        }
-        create(tableName, codeName, modulePackage, CodePath.SRC_MAIN, null, templateEnums);
-    }
-
     public void create(String tableName, String modulePackage, TemplateEnum... templates) {
-        create(tableName, null, modulePackage, CodePath.SRC_TEST, null, templates);
+        create(tableName, modulePackage, CodePath.SRC_TEST, null, false, templates);
     }
 
     /**
      * 代码生成
      *
      * @param tableName       表名
-     * @param tableDesc       表名对应的注释
      * @param modulePackage   生成在包下：com.fdcz.pro.system
      * @param codePath        代码生成的位置
      * @param baseEntityClass 指定继承的 BaseEntity
+     * @param withSwagger     是否生成 swagger 字段注解
      * @param templates       生成哪些模板
      */
-    public void create(String tableName, String tableDesc, String modulePackage,
-                       CodePath codePath, Class<?> baseEntityClass,
+    public void create(String tableName, String modulePackage,
+                       CodePath codePath, Class<?> baseEntityClass, boolean withSwagger,
                        TemplateEnum... templates) {
         if (YtStringUtils.isBlank(tableName)) {
             return;
@@ -218,14 +198,7 @@ public class JavaCodeGenerator {
         String controllerPath = File.separator + packageController + File.separator + replaceSuffixClassName + "Controller.java";
         String htmlPath = File.separator + replaceSuffixLowerName + ".html";
 
-        try {
-            if (YtStringUtils.isBlank(tableDesc)) {
-                tableDesc = createBean.getTableComment(tableName);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return;
-        }
+        String tableDesc = createBean.getTableComment(tableName);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         VelocityContext context = new VelocityContext();
         context.put("date", sdf.format(new Date()));
@@ -257,15 +230,11 @@ public class JavaCodeGenerator {
         List<ColumnData> columnDataList = null;
 
         /****************************** 生成bean字段 *********************************/
-        try {
-            columnDataList = createBean.getColumnDataList(tableName, baseEntityClass);
-            String fieldList = createBean.getBeanFieldList(columnDataList);
-            context.put("columnDataList", columnDataList);
-            context.put("fieldList", fieldList);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        columnDataList = createBean.getColumnDataList(tableName, baseEntityClass);
+        String fieldList = createBean.getBeanFieldList(columnDataList, withSwagger);
+        context.put("columnDataList", columnDataList);
+        context.put("fieldList", fieldList);
+
         /******************************* 生成sql语句 **********************************/
 
 

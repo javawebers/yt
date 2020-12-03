@@ -10,6 +10,7 @@ import java.util.*;
 
 /**
  * 创建文件
+ *
  * @author sheng
  */
 public class CreateBean {
@@ -23,7 +24,6 @@ public class CreateBean {
 
     private String method;
     private String argv;
-
 
 
     static {
@@ -47,23 +47,23 @@ public class CreateBean {
     }
 
 
-    public String getTableComment(String tableName) throws SQLException {
+    public String getTableComment(String tableName) {
         String sqlTable = "SELECT distinct TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES WHERE table_name='" + tableName + "' " + "and table_schema='" + dbInstance + "' ";
-        Connection con = this.getConnection();
-        PreparedStatement ps = con.prepareStatement(sqlTable);
-        ResultSet rs = ps.executeQuery();
-        String comment = tableName;
-        while (rs.next()) {
-            comment = rs.getString(1);
+        try (Connection con = this.getConnection();
+             PreparedStatement ps = con.prepareStatement(sqlTable);
+             ResultSet rs = ps.executeQuery()) {
+            String comment = tableName;
+            while (rs.next()) {
+                comment = rs.getString(1);
+            }
+            return comment;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        rs.close();
-        ps.close();
-        con.close();
-        return comment;
     }
 
 
-    public List<ColumnData> getColumnDataList(String tableName, Class<?> baseEntityClass) throws SQLException {
+    public List<ColumnData> getColumnDataList(String tableName, Class<?> baseEntityClass) {
         String sqlColumns = "SELECT distinct COLUMN_NAME, DATA_TYPE, COLUMN_COMMENT,COLUMN_KEY,CHARACTER_MAXIMUM_LENGTH" +
                 ",IS_NULLABLE,COLUMN_DEFAULT, COLUMN_TYPE  FROM information_schema.columns WHERE table_name =  '" + tableName + "' " + "and table_schema='" + dbInstance + "' ";
         // 忽略父类中的字段
@@ -75,48 +75,51 @@ public class CreateBean {
                 baseEntityFieldSet.add(baseColumnName);
             });
         }
-        Connection con = this.getConnection();
-        PreparedStatement ps = con.prepareStatement(sqlColumns);
-        ResultSet rs = ps.executeQuery();
-        List<ColumnData> columnList = new ArrayList<>();
-        while (rs.next()) {
-            String name = rs.getString(1);
-            String type = rs.getString(2);
-            String comment = rs.getString(3);
-            String priKey = rs.getString(4);
-            Long length = rs.getLong(5);
-            String isNullable = rs.getString(6);
-            String columnDefault = rs.getString(7);
-            String columnType = rs.getString(8);
-            type = this.getType(type);
+        try (Connection con = this.getConnection();
+             PreparedStatement ps = con.prepareStatement(sqlColumns);
+             ResultSet rs = ps.executeQuery()) {
 
-            ColumnData cd = new ColumnData();
-            cd.setBaseEntityColumn(baseEntityFieldSet.contains(name));
-            cd.setTableName(tableName);
-            cd.setClassName(getTablesNameToClassName(tableName));
-            cd.setColumnName(name);
-            cd.setFieldName(getTablesColumnToAttributeName(name));
-            cd.setDataType(type);
-            cd.setColumnComment(comment);
-            cd.setColumnNameContainEntity("${entity." + name + " }");
-            cd.setPriKey("PRI".equals(priKey));
-            cd.setColumnLength(length);
-            cd.setNullable("NO".equals(isNullable));
-            cd.setColumnDefault(columnDefault);
-            cd.setColumnType(columnType);
-            processEnumColumn(cd);
-            columnList.add(cd);
+
+            List<ColumnData> columnList = new ArrayList<>();
+            while (rs.next()) {
+                String name = rs.getString(1);
+                String type = rs.getString(2);
+                String comment = rs.getString(3);
+                String priKey = rs.getString(4);
+                Long length = rs.getLong(5);
+                String isNullable = rs.getString(6);
+                String columnDefault = rs.getString(7);
+                String columnType = rs.getString(8);
+                type = this.getType(type);
+
+                ColumnData cd = new ColumnData();
+                cd.setBaseEntityColumn(baseEntityFieldSet.contains(name));
+                cd.setTableName(tableName);
+                cd.setClassName(getTablesNameToClassName(tableName));
+                cd.setColumnName(name);
+                cd.setFieldName(getTablesColumnToAttributeName(name));
+                cd.setDataType(type);
+                cd.setColumnComment(comment);
+                cd.setColumnNameContainEntity("${entity." + name + " }");
+                cd.setPriKey("PRI".equals(priKey));
+                cd.setColumnLength(length);
+                cd.setNullable("NO".equals(isNullable));
+                cd.setColumnDefault(columnDefault);
+                cd.setColumnType(columnType);
+                processEnumColumn(cd);
+                columnList.add(cd);
+            }
+            argv = "";
+            method = "";
+            return columnList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        argv = "";
-        method = "";
-        rs.close();
-        ps.close();
-        con.close();
-        return columnList;
     }
 
     /**
      * 枚举特殊处理
+     *
      * @param cd cd
      */
     private void processEnumColumn(ColumnData cd) {
@@ -138,7 +141,7 @@ public class CreateBean {
         }
     }
 
-    public String getBeanFieldList(List<ColumnData> columnDataList) {
+    public String getBeanFieldList(List<ColumnData> columnDataList, boolean withSwagger) {
         StringBuilder str = new StringBuilder();
         StringBuilder getSet = new StringBuilder();
         for (ColumnData d : columnDataList) {
@@ -154,11 +157,15 @@ public class CreateBean {
             String comment = d.getColumnComment();
             String maxChar = fieldName.substring(0, 1).toUpperCase();
             str.append("\r\n    /** \r\n     * ").append(comment).append("  \r\n     */");
+
             if (d.getPriKey()) {
                 str.append("\r\n    @javax.persistence.Id");
             }
+            if (withSwagger) {
+                str.append("\r\n    @io.swagger.annotations.ApiModelProperty(\"").append(comment).append("\")");
+            }
             if (!columnName.equals(fieldName)) {
-                str.append("\r\n    ").append("@Column(name = \"").append(columnName).append("\")");
+                str.append("\r\n    ").append("@javax.persistence.Column(name = \"").append(columnName).append("\")");
             }
             str.append("\r\n    ").append("private ").append(type).append(" ").append(fieldName).append(";");
             String method = maxChar + fieldName.substring(1);

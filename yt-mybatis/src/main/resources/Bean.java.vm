@@ -1,6 +1,5 @@
 package ${modulePackage}.${packageEntity};
 
-import javax.persistence.Table;
 import ${modulePackage}.${packagePO}.${poClassName};
 
 /**
@@ -10,7 +9,7 @@ import ${modulePackage}.${packagePO}.${poClassName};
  * @date    ${date}
 */
 ##@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
-@Table(name = "${tableName}")
+@javax.persistence.Table(name = "${tableName}")
 public class ${className} extends ${poClassName}<${className}> {
 
     // 扩展字段，一对一对象等。字段上加 @Transient 注解

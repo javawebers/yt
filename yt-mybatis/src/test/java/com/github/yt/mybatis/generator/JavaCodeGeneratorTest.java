@@ -33,38 +33,35 @@ public class JavaCodeGeneratorTest {
 
     public void createSame() {
         javaCodeGenerator.create("DbEntitySame",
-                "数据库属性和bean字段名一致",
                 "com.github.yt.mybatis.business",
                 JavaCodeGenerator.CodePath.SRC_TEST,
-                BaseEntity.class
+                BaseEntity.class, true
 //                ,JavaCodeGenerator.TemplateEnum.PO
 //                ,JavaCodeGenerator.TemplateEnum.BEAN
-                ,JavaCodeGenerator.TemplateEnum.MAPPER
+                , JavaCodeGenerator.TemplateEnum.MAPPER
 //                , JavaCodeGenerator.TemplateEnum.MAPPER_XML
-                ,JavaCodeGenerator.TemplateEnum.SERVICE
+                , JavaCodeGenerator.TemplateEnum.SERVICE
         );
     }
 
     public void createIntId() {
         javaCodeGenerator.create("IntId",
-                "int 主键",
                 "com.github.yt.mybatis.business",
                 JavaCodeGenerator.CodePath.SRC_TEST,
-                BaseEntity.class
+                BaseEntity.class, true
 //                , JavaCodeGenerator.TemplateEnum.PO
 //                , JavaCodeGenerator.TemplateEnum.BEAN
-                ,JavaCodeGenerator.TemplateEnum.MAPPER
+                , JavaCodeGenerator.TemplateEnum.MAPPER
 //                ,JavaCodeGenerator.TemplateEnum.MAPPER_XML
-                ,JavaCodeGenerator.TemplateEnum.SERVICE
+                , JavaCodeGenerator.TemplateEnum.SERVICE
         );
     }
 
     public void createNotSame() {
         javaCodeGenerator.create("db_entity_not_same",
-                "db_entity_not_same 中文描述",
                 "com.github.yt.mybatis.business",
                 JavaCodeGenerator.CodePath.SRC_TEST,
-                BusinessBaseEntity.class
+                BusinessBaseEntity.class, true
 
                 , JavaCodeGenerator.TemplateEnum.PO
 //                , JavaCodeGenerator.TemplateEnum.BEAN

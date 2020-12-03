@@ -14,15 +14,15 @@ public class ExampleCodeGeneratorExample {
                 "root",
                 "yt-mybatis",
                 "jdbc:mysql://b.jeecode.com:3306/yt-mybatis?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC");
-        javaCodeGenerator.create("db_entity_not_same", "", "com.github.yt.mybatis.example2",
+        javaCodeGenerator.create("db_entity_not_same", "com.github.yt.mybatis.example2",
                 JavaCodeGenerator.CodePath.SRC_TEST,
-                BaseEntity.class
-                ,JavaCodeGenerator.TemplateEnum.PO
-                ,JavaCodeGenerator.TemplateEnum.BEAN
-                ,JavaCodeGenerator.TemplateEnum.MAPPER
+                BaseEntity.class, true
+                , JavaCodeGenerator.TemplateEnum.PO
+                , JavaCodeGenerator.TemplateEnum.BEAN
+                , JavaCodeGenerator.TemplateEnum.MAPPER
                 , JavaCodeGenerator.TemplateEnum.MAPPER_XML
-                ,JavaCodeGenerator.TemplateEnum.SERVICE_ONLY_IMPL
-                ,JavaCodeGenerator.TemplateEnum.SERVICE
+                , JavaCodeGenerator.TemplateEnum.SERVICE_ONLY_IMPL
+                , JavaCodeGenerator.TemplateEnum.SERVICE
 //                ,JavaCodeGenerator.TemplateEnum.CONTROLLER
         );
     }
