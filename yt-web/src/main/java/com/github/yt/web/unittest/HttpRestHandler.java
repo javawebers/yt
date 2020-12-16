@@ -11,6 +11,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -49,7 +50,7 @@ public class HttpRestHandler {
                 return objectMapper.readValue(JsonUtils.toJsonString(result), resultType);
             }
             return (T) result;
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -87,7 +88,7 @@ public class HttpRestHandler {
                 try {
                     T t = objectMapper.readValue(JsonUtils.toJsonString(resultEntity), resultType);
                     resultList.add(t);
-                } catch (JsonProcessingException e) {
+                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             });
@@ -138,7 +139,7 @@ public class HttpRestHandler {
             HashMap jsonObject = objectMapper.readValue(json, HashMap.class);
             BaseResultConfig baseResultConfig = HttpResultHandler.getResultConfig();
             return jsonObject.get(baseResultConfig.getResultField());
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
