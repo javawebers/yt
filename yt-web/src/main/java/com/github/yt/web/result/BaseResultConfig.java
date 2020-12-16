@@ -49,6 +49,22 @@ public interface BaseResultConfig {
         return "requestUuid";
     }
 
+    /**
+     * 响应时间字段
+     * @return 响应时间字段
+     */
+    default String getResponseTimeField()  {
+        return "responseTime";
+    }
+
+    /**
+     * 请求时间字段
+     * @return 请求时间字段
+     */
+    default String getRequestTimeField()  {
+        return "requestTime";
+    }
+
     // default
 
     /**

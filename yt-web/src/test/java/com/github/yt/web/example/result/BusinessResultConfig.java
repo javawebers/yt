@@ -53,4 +53,14 @@ public class BusinessResultConfig implements BaseResultConfig {
     public Object convertErrorCode(Object errorCode) {
         return errorCode;
     }
+
+    @Override
+    public String getResponseTimeField() {
+        return null;
+    }
+
+    @Override
+    public String getRequestTimeField() {
+        return null;
+    }
 }

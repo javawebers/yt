@@ -41,6 +41,8 @@ public class QueryControllerAspect {
 
     @Pointcut("@annotation(org.springframework.web.bind.annotation.RequestMapping) || " +
             "@annotation(org.springframework.web.bind.annotation.GetMapping) || " +
+            "@annotation(org.springframework.web.bind.annotation.PutMapping) || " +
+            "@annotation(org.springframework.web.bind.annotation.DeleteMapping) || " +
             "@annotation(org.springframework.web.bind.annotation.PostMapping)")
     public void allController() {
     }

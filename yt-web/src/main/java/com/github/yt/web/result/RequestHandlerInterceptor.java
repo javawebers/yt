@@ -1,6 +1,5 @@
 package com.github.yt.web.result;
 
-import com.github.yt.web.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,15 +15,17 @@ import java.util.UUID;
  *
  * @author 刘加胜
  */
-public class RequestUuidInterceptor implements HandlerInterceptor {
+public class RequestHandlerInterceptor implements HandlerInterceptor {
 
-    private final Logger logger = LoggerFactory.getLogger(RequestUuidInterceptor.class);
+    private final Logger logger = LoggerFactory.getLogger(RequestHandlerInterceptor.class);
 
     public static final String REQUEST_UUID = "__REQUEST_UUID__";
+    public static final String REQUEST_TIME = "__REQUEST_TIME__";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         request.setAttribute(REQUEST_UUID, UUID.randomUUID().toString().replace("-", ""));
+        request.setAttribute(REQUEST_TIME, new Date());
         return true;
     }
 

@@ -24,7 +24,7 @@ public class ExceptionConverterTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void unsupportedOperationException() throws Exception {
-        ResultActions resultActions = ControllerTestHandler.get("/exceptionConverter/unsupportedOperationException", YtWebExceptionEnum.CODE_14);
+        ResultActions resultActions = ControllerTestHandler.get("/exceptionConverter/unsupportedOperationExceptionNoMessage", YtWebExceptionEnum.CODE_14);
         resultActions.andExpect(MockMvcResultMatchers.jsonPath(
                 "$." + resultConfig.getMessageField(),
                 Matchers.equalTo("不支持的操作")));
