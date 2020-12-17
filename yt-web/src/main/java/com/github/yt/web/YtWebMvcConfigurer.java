@@ -22,8 +22,8 @@ public class YtWebMvcConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new RequestHandlerInterceptor()).order(100).excludePathPatterns("/error");
-        registry.addInterceptor(new RequestLogInterceptor()).order(200).excludePathPatterns("/error");
+        registry.addInterceptor(new RequestHandlerInterceptor()).excludePathPatterns("/error");
+        registry.addInterceptor(new RequestLogInterceptor()).excludePathPatterns("/error");
 
     }
 

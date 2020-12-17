@@ -1,6 +1,7 @@
 package com.github.yt.web.log;
 
 import com.github.yt.web.YtWebConfig;
+import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
 import com.github.yt.web.util.JsonUtils;
 import com.github.yt.web.util.SpringContextUtils;
@@ -27,17 +28,6 @@ import java.util.Map;
 public class RequestLogInterceptor implements HandlerInterceptor {
 
     private final Logger logger = LoggerFactory.getLogger(RequestLogInterceptor.class);
-
-    /**
-     * 读取post的body参数
-     */
-    private String getInputStr(HttpServletRequest httpServletRequest) {
-        if ("POST".equalsIgnoreCase(httpServletRequest.getMethod())) {
-            return HttpHelper.getBodyString(httpServletRequest);
-        }
-        return "";
-    }
-
 
     /**
      * 获取IP地址
@@ -107,6 +97,9 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         if (!isLog(request, handler)) {
             return;
         }
+        if(!logger.isDebugEnabled()) {
+            return;
+        }
         Date requestTime = (Date) request.getAttribute("requestTime");
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         RequestLogEntity requestLogEntity = new RequestLogEntity();
@@ -130,19 +123,12 @@ public class RequestLogInterceptor implements HandlerInterceptor {
             requestLogEntity.setUrlParams(JsonUtils.toJsonString(request.getParameterMap()));
         }
 
-        YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
-        if (ytWebConfig.getRequest().isRequestLogBody()) {
-            requestLogEntity.setRequestBody(getInputStr(request));
-        }
-
         requestLogEntity.setInvokingTime((int) (System.currentTimeMillis() - requestLogEntity.getRequestTime().getTime()));
         requestLogEntity.setResponseBody(JsonUtils.toJsonString(request.getAttribute(PackageResponseBodyAdvice.REQUEST_RESULT_ENTITY)));
         Exception e = (Exception) request.getAttribute(PackageResponseBodyAdvice.REQUEST_EXCEPTION);
         if (e != null) {
             requestLogEntity.setError(true);
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw, true));
-            requestLogEntity.setErrorStackTrace(sw.getBuffer().toString());
+            requestLogEntity.setErrorStackTrace(HttpResultHandler.getAndSetExceptionStrToRequest(e));
             requestLogEntity.setErrorMessage(e.toString());
         } else {
             requestLogEntity.setError(false);

@@ -78,27 +78,6 @@ public class HttpResultHandler {
     }
 
     /**
-     * 设置扩展字段
-     * 包含 uuid、请求时间、响应时间
-     *
-     * @param resultBody HttpResultEntity
-     */
-    private static void setExpandField(HttpResultEntity resultBody) {
-        String uuidField = getResultConfig().getUuidField();
-        if (YtStringUtils.isNotBlank(uuidField)) {
-            resultBody.put(uuidField, getRequest().getAttribute(RequestHandlerInterceptor.REQUEST_UUID));
-        }
-        String requestTimeField = getResultConfig().getRequestTimeField();
-        if (YtStringUtils.isNotBlank(requestTimeField)) {
-            resultBody.put(requestTimeField, getRequest().getAttribute(RequestHandlerInterceptor.REQUEST_TIME));
-        }
-        String responseTimeField = getResultConfig().getResponseTimeField();
-        if (YtStringUtils.isNotBlank(responseTimeField)) {
-            resultBody.put(responseTimeField, new Date());
-        }
-    }
-
-    /**
      * 请求失败封装返回对象
      *
      * @param exception 异常
@@ -122,13 +101,51 @@ public class HttpResultHandler {
         YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
         String stackTraceField = getResultConfig().getStackTraceField();
         if (ytWebConfig.getResult().isReturnStackTrace() && YtStringUtils.isNotBlank(stackTraceField)) {
-            StringWriter stringWriter = new StringWriter();
-            exception.printStackTrace(new PrintWriter(stringWriter, true));
-            resultBody.put(stackTraceField, stringWriter.getBuffer());
+            resultBody.put(stackTraceField, getAndSetExceptionStrToRequest(exception));
         }
         return resultBody;
     }
 
+    /**
+     * 从 request 中获取 异常栈 信息，如果没有则设置到 request 中，如果存在则直接返回
+     *
+     * @param exception 异常
+     * @return 异常栈
+     */
+    public static String getAndSetExceptionStrToRequest(Throwable exception) {
+        final String REQUEST_EXCEPTION_STR = "__REQUEST_EXCEPTION_STR__";
+        HttpServletRequest request = getRequest();
+        String exceptionStr = (String) request.getAttribute(REQUEST_EXCEPTION_STR);
+        if (exceptionStr == null) {
+            StringWriter stringWriter = new StringWriter();
+            exception.printStackTrace(new PrintWriter(stringWriter, true));
+            exceptionStr = stringWriter.getBuffer().toString();
+            request.setAttribute(REQUEST_EXCEPTION_STR, exceptionStr);
+        }
+        return exceptionStr;
+    }
+
+
+    /**
+     * 设置扩展字段
+     * 包含 uuid、请求时间、响应时间
+     *
+     * @param resultBody HttpResultEntity
+     */
+    private static void setExpandField(HttpResultEntity resultBody) {
+        String uuidField = getResultConfig().getUuidField();
+        if (YtStringUtils.isNotBlank(uuidField)) {
+            resultBody.put(uuidField, getRequest().getAttribute(RequestHandlerInterceptor.REQUEST_UUID));
+        }
+        String requestTimeField = getResultConfig().getRequestTimeField();
+        if (YtStringUtils.isNotBlank(requestTimeField)) {
+            resultBody.put(requestTimeField, getRequest().getAttribute(RequestHandlerInterceptor.REQUEST_TIME));
+        }
+        String responseTimeField = getResultConfig().getResponseTimeField();
+        if (YtStringUtils.isNotBlank(responseTimeField)) {
+            resultBody.put(responseTimeField, new Date());
+        }
+    }
 
     public static void writeExceptionResult(final Throwable e, HttpServletRequest request, HttpServletResponse response) {
         // 当不向上抛异常时主动打印异常
