@@ -28,9 +28,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 
 /**
@@ -57,10 +55,28 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
 
     private final YtWebConfig ytWebConfig;
 
+    private ArrayList<Class<?>> ignorePackageResultTypeList;
+
     public PackageResponseBodyAdvice(YtWebConfig ytWebConfig) {
         this.ytWebConfig = ytWebConfig;
     }
 
+
+    private ArrayList<Class<?>> getIgnorePackageResultTypes() {
+        if (ignorePackageResultTypeList == null) {
+            synchronized (this) {
+                Class<?>[] ignorePackageResultTypes = ytWebConfig.getResult().getIgnorePackageResultTypes();
+                if (ignorePackageResultTypes != null && ignorePackageResultTypes.length != 0) {
+                    ignorePackageResultTypeList = new ArrayList<>(ignorePackageResultTypes.length + 1);
+                    ignorePackageResultTypeList.addAll(Arrays.asList(ignorePackageResultTypes));
+                } else {
+                    ignorePackageResultTypeList = new ArrayList<>(1);
+                }
+                ignorePackageResultTypeList.add(ResponseEntity.class);
+            }
+        }
+        return ignorePackageResultTypeList;
+    }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
@@ -96,7 +112,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
     @ExceptionHandler
     @PackageResponseBody(false)
     public HttpResultEntity handleExceptions(final Throwable e, HandlerMethod handlerMethod,
-                                 HttpServletRequest request, HttpServletResponse response) throws Throwable {
+                                             HttpServletRequest request, HttpServletResponse response) throws Throwable {
         Throwable se = convertToKnownException(e);
         request.setAttribute(REQUEST_EXCEPTION, se);
         if (!exceptionPackageResponseBody(request, handlerMethod.getMethod())) {
@@ -188,12 +204,14 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         if (path.startsWith("/actuator")) {
             return false;
         }
-        if (ResponseEntity.class.isAssignableFrom(method.getReturnType())) {
-            return false;
-        }
         // 返回的实体类是 HttpResultEntity 时，抛出异常也需要包装
         if (HttpResultEntity.class.isAssignableFrom(method.getReturnType())) {
             return true;
+        }
+        for (Class<?> ignorePackageResultType : getIgnorePackageResultTypes()) {
+            if (ignorePackageResultType.isAssignableFrom(method.getReturnType())) {
+                return false;
+            }
         }
         return packageResponseBody(method);
     }
@@ -204,8 +222,11 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         if (path.startsWith("/actuator")) {
             return false;
         }
-        if (ResponseEntity.class.isAssignableFrom(method.getReturnType())) {
-            return false;
+
+        for (Class<?> ignorePackageResultType : getIgnorePackageResultTypes()) {
+            if (ignorePackageResultType.isAssignableFrom(method.getReturnType())) {
+                return false;
+            }
         }
         return packageResponseBody(method);
     }

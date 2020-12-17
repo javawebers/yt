@@ -8,6 +8,9 @@ import org.springframework.boot.context.properties.DeprecatedConfigurationProper
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author sheng
  */
@@ -95,6 +98,16 @@ public class YtWebConfig {
          * 返回体配置类
          */
         private Class<? extends BaseResultConfig> resultConfigClass = SimpleResultConfig.class;
+
+        private Class<?>[] ignorePackageResultTypes;
+
+        public Class<?>[] getIgnorePackageResultTypes() {
+            return ignorePackageResultTypes;
+        }
+
+        public void setIgnorePackageResultTypes(Class<?>[] ignorePackageResultTypes) {
+            this.ignorePackageResultTypes = ignorePackageResultTypes;
+        }
 
         public boolean isPackageResponseBody() {
             return packageResponseBody;
