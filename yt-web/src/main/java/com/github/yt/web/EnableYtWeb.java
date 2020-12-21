@@ -2,7 +2,6 @@ package com.github.yt.web;
 
 
 import com.github.yt.web.query.QueryControllerAspect;
-import com.github.yt.web.result.JsonResultConfig;
 import com.github.yt.web.result.KnowExceptionConverter;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
 import com.github.yt.web.result.ValidatorExceptionConverter;
@@ -26,7 +25,6 @@ import java.lang.annotation.*;
         YtWebConfig.class,
         PackageResponseBodyAdvice.class,
         YtWebMvcConfigurer.class,
-        JsonResultConfig.class,
         QueryControllerAspect.class,
         ValidatorExceptionConverter.class,
         KnowExceptionConverter.class,

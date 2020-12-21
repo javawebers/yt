@@ -11,7 +11,9 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
 import org.testng.annotations.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @ActiveProfiles("default")
 @SpringBootTest(classes = {YtWetDemoApplication.class})
@@ -25,8 +27,9 @@ public class PostTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void param() {
-        PostController.User user = new PostController.User();
-        user.setUsername("李四");
+        Map<String, Object> user = new HashMap<>();
+        user.put("username", "张三");
+        user.put("password", "123456");
         ResultActions resultActions = ControllerTestHandler.post("/post/param", user);
     }
 

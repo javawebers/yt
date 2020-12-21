@@ -45,7 +45,7 @@ import java.util.*;
 @Order(200)
 @ControllerAdvice
 public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, ApplicationContextAware {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static final String REQUEST_EXCEPTION = "yt:request_exception";
     public static final String REQUEST_RESULT_ENTITY = "yt:request_result_entity";
@@ -113,11 +113,13 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
     @PackageResponseBody(false)
     public HttpResultEntity handleExceptions(final Throwable e, HandlerMethod handlerMethod,
                                              HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        if (!exceptionPackageResponseBody(request, handlerMethod.getMethod())) {
+            // 不需要包装时直接返回异常对象
+            request.setAttribute(REQUEST_EXCEPTION, e);
+            throw e;
+        }
         Throwable se = convertToKnownException(e);
         request.setAttribute(REQUEST_EXCEPTION, se);
-        if (!exceptionPackageResponseBody(request, handlerMethod.getMethod())) {
-            throw se;
-        }
         Object beforeBodyWrite = request.getAttribute(REQUEST_BEFORE_BODY_WRITE);
         if (beforeBodyWrite != null) {
             throw se;
