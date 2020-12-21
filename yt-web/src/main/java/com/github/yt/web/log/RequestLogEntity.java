@@ -23,7 +23,6 @@ public class RequestLogEntity implements Serializable {
      * 问好之后
      */
     private String urlParams;
-    private String requestBody;
     private String responseBody;
 
     private Boolean isError;
@@ -85,15 +84,6 @@ public class RequestLogEntity implements Serializable {
 
     public RequestLogEntity setUrlParams(String urlParams) {
         this.urlParams = urlParams;
-        return this;
-    }
-
-    public String getRequestBody() {
-        return requestBody;
-    }
-
-    public RequestLogEntity setRequestBody(String requestBody) {
-        this.requestBody = requestBody;
         return this;
     }
 
