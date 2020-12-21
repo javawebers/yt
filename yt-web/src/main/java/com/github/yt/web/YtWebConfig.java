@@ -3,13 +3,7 @@ package com.github.yt.web;
 import com.github.yt.web.result.BaseResultConfig;
 import com.github.yt.web.result.SimpleResultConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
-import org.springframework.boot.context.properties.DeprecatedConfigurationProperty;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.stereotype.Component;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author sheng
@@ -54,10 +48,7 @@ public class YtWebConfig {
          * 是否记录请求日志
          */
         private boolean requestLog = true;
-        /**
-         * 是否记录 body 中信息，对文件上传有影响
-         */
-        private boolean requestLogBody = false;
+
 
         public boolean isRequestLog() {
             return requestLog;
@@ -65,15 +56,6 @@ public class YtWebConfig {
 
         public Request setRequestLog(boolean requestLog) {
             this.requestLog = requestLog;
-            return this;
-        }
-
-        public boolean isRequestLogBody() {
-            return requestLogBody;
-        }
-
-        public Request setRequestLogBody(boolean requestLogBody) {
-            this.requestLogBody = requestLogBody;
             return this;
         }
     }
