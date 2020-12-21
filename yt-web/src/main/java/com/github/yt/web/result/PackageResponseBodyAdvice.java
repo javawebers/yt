@@ -107,6 +107,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
      * @param handlerMethod controller 方法
      * @param request       request
      * @param response      response
+     * @return HttpResultEntity
      * @throws Exception 不进行处理的异常重新抛出
      */
     @ExceptionHandler

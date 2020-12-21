@@ -1,6 +1,5 @@
 package com.github.yt.web.unittest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.yt.web.YtWebConfig;
 import com.github.yt.web.result.BaseResultConfig;
@@ -31,15 +30,23 @@ public class HttpRestHandler {
 
     /**
      * 获取接口返回结果
-     *
+     * @param resultActions resultActions
+     * @param resultType resultType
+     * @param <T> T
+     * @return return
      */
     public static <T> T getResult(ResultActions resultActions, Class<T> resultType) {
         return getResult(responseToString(resultActions), resultType);
     }
 
+
     /**
      * 获取接口返回结果
      *
+     * @param json json
+     * @param resultType resultType
+     * @param <T> T
+     * @return T
      */
     @SuppressWarnings("unchecked")
     public static <T> T getResult(String json, Class<T> resultType) {
@@ -57,7 +64,10 @@ public class HttpRestHandler {
 
     /**
      * 获取接口返回结果（列表）
-     *
+     * @param resultActions resultActions
+     * @param resultType resultType
+     * @param <T> T
+     * @return return
      */
     public static <T> List<T> getListResult(ResultActions resultActions, Class<T> resultType) {
         String jsonResult = responseToString(resultActions);
@@ -67,7 +77,10 @@ public class HttpRestHandler {
 
     /**
      * 获取接口返回结果（分页）
-     *
+     * @param resultActions resultActions
+     * @param resultType resultType
+     * @param <T> T
+     * @return return
      */
     public static <T> List<T> getPageListResult(ResultActions resultActions, Class<T> resultType) {
         String jsonResult = responseToString(resultActions);
@@ -80,6 +93,13 @@ public class HttpRestHandler {
         throw new RuntimeException("结果集不是集合类型");
     }
 
+    /**
+     * 获取接口返回结果
+     * @param listData listData
+     * @param resultType resultType
+     * @param <T> <T>
+     * @return return
+     */
     private static <T> List<T> getListResult(Object listData, Class<T> resultType){
         ObjectMapper objectMapper = new ObjectMapper();
         if (listData instanceof List) {
@@ -98,6 +118,12 @@ public class HttpRestHandler {
     }
 
 
+    /**
+     * 获取属性值
+     * @param source source
+     * @param fieldName fieldName
+     * @return value
+     */
     private static Object getValue(Object source, String fieldName) {
         try {
             Field field = getField(source.getClass(), fieldName);
@@ -136,7 +162,7 @@ public class HttpRestHandler {
     private static Object getResult(String json) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            HashMap jsonObject = objectMapper.readValue(json, HashMap.class);
+            HashMap<?, ?> jsonObject = objectMapper.readValue(json, HashMap.class);
             BaseResultConfig baseResultConfig = HttpResultHandler.getResultConfig();
             return jsonObject.get(baseResultConfig.getResultField());
         } catch (IOException e) {

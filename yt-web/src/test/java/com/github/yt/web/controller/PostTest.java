@@ -1,6 +1,6 @@
 package com.github.yt.web.controller;
 
-import com.github.yt.web.YtWetDemoApplication;
+import com.github.yt.web.YtWebDemoApplication;
 import com.github.yt.web.example.controller.PostController;
 import com.github.yt.web.unittest.ControllerTestHandler;
 import com.github.yt.web.unittest.HttpRestHandler;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @ActiveProfiles("default")
-@SpringBootTest(classes = {YtWetDemoApplication.class})
+@SpringBootTest(classes = {YtWebDemoApplication.class})
 @AutoConfigureMockMvc
 public class PostTest extends AbstractTestNGSpringContextTests {
 
