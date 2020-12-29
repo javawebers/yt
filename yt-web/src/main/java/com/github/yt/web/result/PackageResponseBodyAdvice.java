@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -239,16 +240,18 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
      */
     private boolean packageResponseBody(Method method) {
         PackageResponseBody methodPackageResponseBody = method.getAnnotation(PackageResponseBody.class);
-        PackageResponseBody classPackageResponseBody = method.getDeclaringClass().getAnnotation(PackageResponseBody.class);
+        PackageResponseBody classPackageResponseBody = AnnotationUtils.findAnnotation(method.getDeclaringClass(), PackageResponseBody.class);
         if (methodPackageResponseBody != null) {
             // 判断方法配置(默认true)
             return methodPackageResponseBody.value();
-        } else // 判断全局配置(默认true)
+        } else {
+            // 判断全局配置(默认true)
             if (classPackageResponseBody != null) {
                 // 判断类配置(默认true)
                 return classPackageResponseBody.value();
             } else {
                 return ytWebConfig.getResult().isPackageResponseBody();
             }
+        }
     }
 }
