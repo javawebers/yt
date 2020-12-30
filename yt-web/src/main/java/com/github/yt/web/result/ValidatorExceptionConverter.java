@@ -36,16 +36,16 @@ public class ValidatorExceptionConverter implements BaseExceptionConverter {
             Set<ConstraintViolation<?>> cvSet = cve.getConstraintViolations();
             List<String> errorMessageList = cvSet.stream().map(ConstraintViolation::getMessage).collect(Collectors.toList());
             return new BaseAccidentException(YtWebExceptionEnum.CODE_11, e, YtStringUtils.join(errorMessageList, ", "));
-        } else if (e instanceof BindException) {
-            // controller校验异常拦截，类参数异常拦截
-            BindException be = (BindException) e;
-            List<ObjectError> errorList = be.getAllErrors();
-            List<String> errorMessageList = errorList.stream().map(ObjectError::getDefaultMessage).collect(Collectors.toList());
-            return new BaseAccidentException(YtWebExceptionEnum.CODE_11, e, YtStringUtils.join(errorMessageList, ", "));
         } else if (e instanceof MethodArgumentNotValidException) {
             // controller校验异常拦截，RequestBody校验失败
             MethodArgumentNotValidException exception = (MethodArgumentNotValidException) e;
             List<ObjectError> errorList = exception.getBindingResult().getAllErrors();
+            List<String> errorMessageList = errorList.stream().map(ObjectError::getDefaultMessage).collect(Collectors.toList());
+            return new BaseAccidentException(YtWebExceptionEnum.CODE_11, e, YtStringUtils.join(errorMessageList, ", "));
+        } else if (e instanceof BindException) {
+            // controller校验异常拦截，类参数异常拦截
+            BindException be = (BindException) e;
+            List<ObjectError> errorList = be.getAllErrors();
             List<String> errorMessageList = errorList.stream().map(ObjectError::getDefaultMessage).collect(Collectors.toList());
             return new BaseAccidentException(YtWebExceptionEnum.CODE_11, e, YtStringUtils.join(errorMessageList, ", "));
         } else if (e instanceof HttpMessageNotReadableException) {

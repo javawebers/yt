@@ -61,6 +61,14 @@ public class YtWebConfig {
     }
 
     public static class Result {
+
+        /**
+         * 始终包装异常，优先级高于 packageResponseBody
+         * true：发生异常不判断 全局 packageResponseBody 和 @PackageResponseBody，始终包装异常
+         * false：发生异常判断 全局 packageResponseBody 和 @PackageResponseBody 来确定是否包装异常
+         */
+        private boolean alwaysPackageException = false;
+
         /**
          * 是否自动包装返回体
          * 默认为 true
@@ -80,6 +88,15 @@ public class YtWebConfig {
          * 返回体配置类
          */
         private Class<? extends BaseResultConfig> resultConfigClass = SimpleResultConfig.class;
+
+        public boolean isAlwaysPackageException() {
+            return alwaysPackageException;
+        }
+
+        public Result setAlwaysPackageException(boolean alwaysPackageException) {
+            this.alwaysPackageException = alwaysPackageException;
+            return this;
+        }
 
         private Class<?>[] ignorePackageResultTypes;
 

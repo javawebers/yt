@@ -212,6 +212,9 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         if (HttpResultEntity.class.isAssignableFrom(method.getReturnType())) {
             return true;
         }
+        if (ytWebConfig.getResult().isAlwaysPackageException()) {
+            return true;
+        }
         for (Class<?> ignorePackageResultType : getIgnorePackageResultTypes()) {
             if (ignorePackageResultType.isAssignableFrom(method.getReturnType())) {
                 return false;
