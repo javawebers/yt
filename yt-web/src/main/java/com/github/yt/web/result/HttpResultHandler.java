@@ -78,6 +78,32 @@ public class HttpResultHandler {
     }
 
     /**
+     * 设置 response 到 header 中，方便 feign 调用进行统一判断
+     * @param resultBody 返回的 map 对象
+     * @param response response
+     */
+    public static void setResponseToHeader(HttpResultEntity resultBody, HttpServletResponse response, Throwable exception) {
+        YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
+        boolean setResponseToHeader = ytWebConfig.getResult().isSetResponseToHeader();
+        if (setResponseToHeader) {
+            HttpResultEntity headerResultBody = new HttpResultEntity();
+            headerResultBody.put(getResultConfig().getErrorCodeField(), resultBody.get(getResultConfig().getErrorCodeField()));
+            headerResultBody.put(getResultConfig().getMessageField(), resultBody.get(getResultConfig().getMessageField()));
+            headerResultBody.put(getResultConfig().getResultField(), resultBody.get(getResultConfig().getResultField()));
+            setExpandField(headerResultBody);
+
+            boolean setStackTraceToHeader = ytWebConfig.getResult().isSetStackTraceToHeader();
+            String stackTraceField = getResultConfig().getStackTraceField();
+            if (setStackTraceToHeader) {
+                headerResultBody.put(stackTraceField, getAndSetExceptionStrToRequest(exception));
+            }
+            response.addHeader("ExceptionResultBody", JsonUtils.toJsonString(headerResultBody));
+        }
+
+
+    }
+
+    /**
      * 请求失败封装返回对象
      *
      * @param exception 异常

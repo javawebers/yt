@@ -130,6 +130,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         // 返回包装体
         logger.error(se.getMessage(), se);
         HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(se);
+        HttpResultHandler.setResponseToHeader(resultBody, response, se);
         YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
         response.setStatus(ytWebConfig.getResult().getErrorState());
         response.addHeader("Content-type", "application/json;charset=UTF-8");
