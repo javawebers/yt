@@ -85,33 +85,33 @@ public class YtWebConfig {
         private int errorState = 500;
 
         /**
-         * 发生异常时，把异常码和异常信息设置到返回体中
+         * 发生异常时，把异常码返回体设置到 header 中
          */
-        private boolean setResponseToHeader = false;
+        private boolean exceptionBodyToHeader = false;
         /**
          * 设置异常栈信息到 header 中，不依赖于 returnStackTrace
          */
-        private boolean setStackTraceToHeader = false;
+        private boolean stackTraceToHeader = false;
 
         /**
          * 返回体配置类
          */
         private Class<? extends BaseResultConfig> resultConfigClass = SimpleResultConfig.class;
 
-        public boolean isSetResponseToHeader() {
-            return setResponseToHeader;
+        public boolean isExceptionBodyToHeader() {
+            return exceptionBodyToHeader;
         }
 
-        public void setSetResponseToHeader(boolean setResponseToHeader) {
-            this.setResponseToHeader = setResponseToHeader;
+        public void setExceptionBodyToHeader(boolean exceptionBodyToHeader) {
+            this.exceptionBodyToHeader = exceptionBodyToHeader;
         }
 
-        public boolean isSetStackTraceToHeader() {
-            return setStackTraceToHeader;
+        public boolean isStackTraceToHeader() {
+            return stackTraceToHeader;
         }
 
-        public void setSetStackTraceToHeader(boolean setStackTraceToHeader) {
-            this.setStackTraceToHeader = setStackTraceToHeader;
+        public void setStackTraceToHeader(boolean stackTraceToHeader) {
+            this.stackTraceToHeader = stackTraceToHeader;
         }
 
         public boolean isAlwaysPackageException() {

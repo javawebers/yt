@@ -84,16 +84,18 @@ public class HttpResultHandler {
         return resultBody;
     }
 
-    /**
+    /*
      * 设置 response 到 header 中，方便 feign 调用进行统一判断
      *
      * @param resultBody 返回的 map 对象
      * @param response   response
+     * @param exception exception
      */
+
     public static void setResponseToHeader(HttpResultEntity resultBody,
             HttpServletResponse response, Throwable exception) {
         YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
-        boolean setResponseToHeader = ytWebConfig.getResult().isSetResponseToHeader();
+        boolean setResponseToHeader = ytWebConfig.getResult().isExceptionBodyToHeader();
         if (setResponseToHeader) {
             HttpResultEntity headerResultBody = new HttpResultEntity();
             headerResultBody.put(getResultConfig().getErrorCodeField(),
@@ -104,7 +106,7 @@ public class HttpResultHandler {
                     resultBody.get(getResultConfig().getResultField()));
             setExpandField(headerResultBody);
 
-            boolean setStackTraceToHeader = ytWebConfig.getResult().isSetStackTraceToHeader();
+            boolean setStackTraceToHeader = ytWebConfig.getResult().isStackTraceToHeader();
             String stackTraceField = getResultConfig().getStackTraceField();
             if (setStackTraceToHeader) {
                 headerResultBody.put(stackTraceField, getAndSetExceptionStrToRequest(exception));
