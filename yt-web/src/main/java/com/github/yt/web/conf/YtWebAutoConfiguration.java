@@ -15,8 +15,6 @@ import org.springframework.context.annotation.Configuration;
  * starter
  *
  * @author sheng
- * @version 1.0
- * @date 2021-03-04 22:41
  */
 @Configuration
 @EnableConfigurationProperties(YtWebProperties.class)
