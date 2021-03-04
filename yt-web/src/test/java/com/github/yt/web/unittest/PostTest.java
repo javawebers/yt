@@ -1,4 +1,4 @@
-package com.github.yt.web.controller;
+package com.github.yt.web.unittest;
 
 import com.github.yt.web.YtWebDemoApplication;
 import com.github.yt.web.example.controller.PostController;

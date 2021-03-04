@@ -1,4 +1,4 @@
-package com.github.yt.web.controller;
+package com.github.yt.web.unittest;
 
 import com.github.yt.web.YtWebDemoApplication;
 import com.github.yt.web.exception.MyBusinessExceptionEnum;
@@ -16,10 +16,11 @@ import com.github.yt.web.unittest.ControllerTestHandler;
 /**
  * 和 ResultClassBusinessTest 互斥，不能同时执行
  */
-@ActiveProfiles("default")
+@ActiveProfiles("returnStackTrace")
 @SpringBootTest(classes = {YtWebDemoApplication.class})
 @AutoConfigureMockMvc
-public class ReturnStackTraceDefaultTest extends AbstractTestNGSpringContextTests {
+public class ReturnStackTraceTrueTest extends AbstractTestNGSpringContextTests {
+
 
     @Test
     public void success() throws Exception {
@@ -32,13 +33,17 @@ public class ReturnStackTraceDefaultTest extends AbstractTestNGSpringContextTest
     public void error() throws Exception {
         ResultActions resultActions = ControllerTestHandler.get("/returnStackTrace/error", HttpResultHandler.getResultConfig().getDefaultErrorCode());
         resultActions.andExpect(MockMvcResultMatchers.jsonPath("$",
-                Matchers.not(Matchers.hasKey(HttpResultHandler.getResultConfig().getStackTraceField()))));
+                Matchers.hasKey(HttpResultHandler.getResultConfig().getStackTraceField())));
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                "$." + HttpResultHandler.getResultConfig().getStackTraceField(),
+                Matchers.notNullValue()));
     }
 
     @Test
     public void knowException() throws Exception {
         ResultActions resultActions = ControllerTestHandler.get("/returnStackTrace/knowException", MyBusinessExceptionEnum.CODE_1003);
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$",
-                Matchers.not(Matchers.hasKey(HttpResultHandler.getResultConfig().getStackTraceField()))));
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                "$." + HttpResultHandler.getResultConfig().getStackTraceField(),
+                Matchers.notNullValue()));
     }
 }

@@ -1,4 +1,4 @@
-package com.github.yt.web.controller;
+package com.github.yt.web.unittest;
 
 import com.github.yt.web.YtWebExceptionEnum;
 import com.github.yt.web.YtWebDemoApplication;
