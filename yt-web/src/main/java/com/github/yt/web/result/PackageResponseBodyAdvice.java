@@ -58,8 +58,20 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
 
     private ArrayList<Class<?>> ignorePackageResultTypeList;
 
+    private ArrayList<String> ignorePackageStartsWithList;
+
     public PackageResponseBodyAdvice(YtWebConfig ytWebConfig) {
         this.ytWebConfig = ytWebConfig;
+    }
+
+    private ArrayList<String> getIgnorePackageStartsWithList() {
+        if (ignorePackageStartsWithList == null) {
+            synchronized (this) {
+                ignorePackageStartsWithList = new ArrayList<>(16);
+                ignorePackageStartsWithList.add("/actuator");
+            }
+        }
+        return ignorePackageStartsWithList;
     }
 
 
@@ -115,7 +127,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
     @PackageResponseBody(false)
     public HttpResultEntity handleExceptions(final Throwable e, HandlerMethod handlerMethod,
                                              HttpServletRequest request, HttpServletResponse response) throws Throwable {
-        if (!exceptionPackageResponseBody(request, handlerMethod.getMethod())) {
+        if (!exceptionPackageResponseBody(request, handlerMethod.getBeanType(), handlerMethod.getMethod())) {
             // 不需要包装时直接返回异常对象
             request.setAttribute(REQUEST_EXCEPTION, e);
             throw e;
@@ -133,7 +145,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         HttpResultHandler.setResponseToHeader(resultBody, response, se);
         YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
         response.setStatus(ytWebConfig.getResult().getErrorState());
-        response.addHeader("Content-type", "application/json;charset=UTF-8");
+        response.addHeader("Content-Type", "application/json;charset=UTF-8");
         request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
         return resultBody;
     }
@@ -164,7 +176,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
 
         request.setAttribute(REQUEST_RESULT_ENTITY, body);
 
-        if (!successPackageResponseBody(request, Objects.requireNonNull(returnType.getMethod()))) {
+        if (!successPackageResponseBody(request, returnType.getContainingClass(), Objects.requireNonNull(returnType.getMethod()))) {
             return body;
         }
 
@@ -178,7 +190,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
         request.setAttribute(REQUEST_BEFORE_BODY_WRITE, new Object());
         serverHttpResponse.setStatusCode(HttpStatus.OK);
-        serverHttpResponse.getHeaders().add("Content-type", "application/json;charset=UTF-8");
+        serverHttpResponse.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
         if (body instanceof String || String.class.equals(returnType.getMethod().getReturnType())) {
             return JsonUtils.toJsonString(resultBody);
         }
@@ -203,10 +215,24 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         return e;
     }
 
-    private boolean exceptionPackageResponseBody(HttpServletRequest request, Method method) {
+    /**
+     * 排除目录
+     * @param path 请求的 url
+     * @return 是否排除包装
+     */
+    private boolean ignorePath(String path) {
+        ArrayList<String> ignorePackageStartsWithList = getIgnorePackageStartsWithList();
+        for (String ignorePackageStartsWith : ignorePackageStartsWithList) {
+            if (path.startsWith(ignorePackageStartsWith)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean exceptionPackageResponseBody(HttpServletRequest request, Class<?> beanType, Method method) {
         String path = request.getServletPath();
-        // 排除 actuator
-        if (path.startsWith("/actuator")) {
+        if (ignorePath(path)) {
             return false;
         }
         // 返回的实体类是 HttpResultEntity 时，抛出异常也需要包装
@@ -221,30 +247,33 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
                 return false;
             }
         }
-        return packageResponseBody(method);
+        return packageResponseBody(beanType, method);
     }
 
-    private boolean successPackageResponseBody(HttpServletRequest request, Method method) {
+    private boolean successPackageResponseBody(HttpServletRequest request, Class<?> beanType, Method method) {
         String path = request.getServletPath();
-        // 排除 actuator
-        if (path.startsWith("/actuator")) {
+        if (ignorePath(path)) {
             return false;
         }
-
         for (Class<?> ignorePackageResultType : getIgnorePackageResultTypes()) {
             if (ignorePackageResultType.isAssignableFrom(method.getReturnType())) {
                 return false;
             }
         }
-        return packageResponseBody(method);
+        return packageResponseBody(beanType, method);
     }
 
     /**
      * 通过全局配置或者注解判断是否包装返回体
+     * @param beanType 对象类型，这里不能从 method 中获取对象类型。
+     *                 beanType 传入子类类型
+     *                 当对象存在继承的情况，方法没有重新实现，从 method 中获取的对象类型是父类的类型，无法获取到子类中的注解。
+     * @param method 方法
+     * @return 是否进行包装
      */
-    private boolean packageResponseBody(Method method) {
+    private boolean packageResponseBody(Class<?> beanType, Method method) {
         PackageResponseBody methodPackageResponseBody = method.getAnnotation(PackageResponseBody.class);
-        PackageResponseBody classPackageResponseBody = AnnotationUtils.findAnnotation(method.getDeclaringClass(), PackageResponseBody.class);
+        PackageResponseBody classPackageResponseBody = AnnotationUtils.findAnnotation(beanType, PackageResponseBody.class);
         if (methodPackageResponseBody != null) {
             // 判断方法配置(默认true)
             return methodPackageResponseBody.value();
