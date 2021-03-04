@@ -1,4 +1,4 @@
-package com.github.yt.web;
+package com.github.yt.web.test;
 
 import com.github.yt.mybatis.YtMybatisProperties;
 import com.github.yt.mybatis.util.SpringContextUtils;

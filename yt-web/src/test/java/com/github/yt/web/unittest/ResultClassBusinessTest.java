@@ -1,7 +1,7 @@
 package com.github.yt.web.unittest;
 
 
-import com.github.yt.web.YtWebDemoApplication;
+import com.github.yt.web.test.YtWebDemoApplication;
 import com.github.yt.web.test.example.result.BusinessResultConfig;
 import com.github.yt.web.test.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.result.HttpResultHandler;

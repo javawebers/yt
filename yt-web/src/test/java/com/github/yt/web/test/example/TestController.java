@@ -1,4 +1,4 @@
-package com.github.yt.web.test;
+package com.github.yt.web.test.example;
 
 import com.github.yt.web.controller.BaseController;
 import com.github.yt.web.result.HttpResultEntity;

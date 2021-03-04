@@ -1,7 +1,8 @@
-package com.github.yt.web.util;
+package com.github.yt.web.test.util;
 
 import com.github.yt.web.test.example.entity.CircularReferenceA;
 import com.github.yt.web.test.example.entity.CircularReferenceB;
+import com.github.yt.web.util.JsonUtils;
 import org.testng.annotations.Test;
 
 public class JsonUtilsTests {

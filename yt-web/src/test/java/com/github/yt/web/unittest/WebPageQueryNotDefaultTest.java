@@ -1,6 +1,6 @@
 package com.github.yt.web.unittest;
 
-import com.github.yt.web.YtWebDemoApplication;
+import com.github.yt.web.test.YtWebDemoApplication;
 import com.github.yt.web.result.SimpleResultConfig;
 import org.hamcrest.Matchers;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,7 +10,6 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testng.annotations.Test;
-import com.github.yt.web.unittest.ControllerTestHandler;
 
 /**
  * 和 ResultClassBusinessTest 互斥，不能同时执行

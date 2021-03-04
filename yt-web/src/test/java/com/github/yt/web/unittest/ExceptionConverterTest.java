@@ -1,7 +1,7 @@
 package com.github.yt.web.unittest;
 
 import com.github.yt.web.enums.YtWebExceptionEnum;
-import com.github.yt.web.YtWebDemoApplication;
+import com.github.yt.web.test.YtWebDemoApplication;
 import com.github.yt.web.result.SimpleResultConfig;
 import org.hamcrest.Matchers;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

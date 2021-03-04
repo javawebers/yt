@@ -1,4 +1,4 @@
-package com.github.yt.web.query;
+package com.github.yt.web.test.query;
 
 import com.github.yt.commons.query.PageQuery;
 
