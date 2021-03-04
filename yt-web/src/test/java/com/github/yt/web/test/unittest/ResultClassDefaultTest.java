@@ -1,6 +1,6 @@
 package com.github.yt.web.test.unittest;
 
-import com.github.yt.web.test.YtWebDemoApplication;
+import com.github.yt.web.test.YtWebTestApplication;
 import com.github.yt.web.test.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.result.SimpleResultConfig;
@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
  * 和 ResultClassBusinessTest 互斥，不能同时执行
  */
 @ActiveProfiles("resultClassDefault")
-@SpringBootTest(classes = {YtWebDemoApplication.class})
+@SpringBootTest(classes = { YtWebTestApplication.class})
 @AutoConfigureMockMvc
 public class ResultClassDefaultTest extends AbstractTestNGSpringContextTests {
     private SimpleResultConfig resultConfig = new SimpleResultConfig();

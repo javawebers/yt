@@ -1,6 +1,6 @@
 package com.github.yt.web.test.unittest;
 
-import com.github.yt.web.test.YtWebDemoApplication;
+import com.github.yt.web.test.YtWebTestApplication;
 import com.github.yt.web.test.common.ResultActionsUtils;
 import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.unittest.ControllerTestHandler;
@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.testng.annotations.Test;
 
 @ActiveProfiles("packageResponseBodyFalse")
-@SpringBootTest(classes = {YtWebDemoApplication.class})
+@SpringBootTest(classes = { YtWebTestApplication.class})
 @Test(priority = 2)
 @AutoConfigureMockMvc
 public class PackageResponseBodyFalseTest extends AbstractTestNGSpringContextTests {

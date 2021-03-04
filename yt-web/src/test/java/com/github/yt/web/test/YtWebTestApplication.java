@@ -15,8 +15,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 })
 @EnableSwagger2
 @EnableYtWebTest
-public class YtWebDemoApplication {
+public class YtWebTestApplication {
     public static void main(String[] args) {
-        SpringApplication.run(YtWebDemoApplication.class, args);
+        SpringApplication.run(YtWebTestApplication.class, args);
     }
 }

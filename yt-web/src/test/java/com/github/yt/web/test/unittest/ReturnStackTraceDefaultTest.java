@@ -1,6 +1,6 @@
 package com.github.yt.web.test.unittest;
 
-import com.github.yt.web.test.YtWebDemoApplication;
+import com.github.yt.web.test.YtWebTestApplication;
 import com.github.yt.web.test.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.unittest.ControllerTestHandler;
@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
  * 和 ResultClassBusinessTest 互斥，不能同时执行
  */
 @ActiveProfiles("default")
-@SpringBootTest(classes = {YtWebDemoApplication.class})
+@SpringBootTest(classes = { YtWebTestApplication.class})
 @AutoConfigureMockMvc
 public class ReturnStackTraceDefaultTest extends AbstractTestNGSpringContextTests {
 

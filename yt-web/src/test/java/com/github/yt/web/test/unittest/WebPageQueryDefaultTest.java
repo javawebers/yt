@@ -1,6 +1,6 @@
 package com.github.yt.web.test.unittest;
 
-import com.github.yt.web.test.YtWebDemoApplication;
+import com.github.yt.web.test.YtWebTestApplication;
 import com.github.yt.web.result.SimpleResultConfig;
 import com.github.yt.web.unittest.ControllerTestHandler;
 import org.hamcrest.Matchers;
@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
  * 和 ResultClassBusinessTest 互斥，不能同时执行
  */
 @ActiveProfiles("webPageQueryDefault")
-@SpringBootTest(classes = {YtWebDemoApplication.class})
+@SpringBootTest(classes = { YtWebTestApplication.class})
 @Test(priority = 1)
 @AutoConfigureMockMvc
 public class WebPageQueryDefaultTest extends AbstractTestNGSpringContextTests {

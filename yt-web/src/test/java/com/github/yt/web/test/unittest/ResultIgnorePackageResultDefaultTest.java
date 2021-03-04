@@ -1,6 +1,6 @@
 package com.github.yt.web.test.unittest;
 
-import com.github.yt.web.test.YtWebDemoApplication;
+import com.github.yt.web.test.YtWebTestApplication;
 import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.result.SimpleResultConfig;
 import com.github.yt.web.unittest.ControllerTestHandler;
@@ -20,7 +20,7 @@ import java.lang.reflect.Field;
  * 忽略配置类型返回值的包装
  */
 @ActiveProfiles("ignorePackageResultType")
-@SpringBootTest(classes = {YtWebDemoApplication.class})
+@SpringBootTest(classes = { YtWebTestApplication.class})
 @AutoConfigureMockMvc
 public class ResultIgnorePackageResultDefaultTest extends AbstractTestNGSpringContextTests {
     private SimpleResultConfig resultConfig = new SimpleResultConfig();

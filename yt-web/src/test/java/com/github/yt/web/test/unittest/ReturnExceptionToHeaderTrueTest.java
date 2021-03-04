@@ -1,6 +1,6 @@
 package com.github.yt.web.test.unittest;
 
-import com.github.yt.web.test.YtWebDemoApplication;
+import com.github.yt.web.test.YtWebTestApplication;
 import com.github.yt.web.test.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.unittest.ControllerTestHandler;
@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testng.annotations.Test;
 
 @ActiveProfiles("returnExceptionToHeader")
-@SpringBootTest(classes = {YtWebDemoApplication.class})
+@SpringBootTest(classes = { YtWebTestApplication.class})
 @AutoConfigureMockMvc
 public class ReturnExceptionToHeaderTrueTest extends AbstractTestNGSpringContextTests {
 
