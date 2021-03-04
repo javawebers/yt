@@ -2,7 +2,7 @@ package com.github.yt.web.result;
 
 import com.github.yt.commons.exception.BaseException;
 import com.github.yt.commons.util.YtStringUtils;
-import com.github.yt.web.YtWebConfig;
+import com.github.yt.web.conf.YtWebProperties;
 import com.github.yt.web.util.JsonUtils;
 import com.github.yt.web.util.SpringContextUtils;
 import org.slf4j.Logger;
@@ -39,8 +39,8 @@ public class HttpResultHandler {
         if (resultConfig == null) {
             synchronized (HttpResultHandler.class) {
                 try {
-                    YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
-                    resultConfig = ytWebConfig.getResult().getResultConfigClass().newInstance();
+                    YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
+                    resultConfig = ytWebProperties.getResult().getResultConfigClass().newInstance();
                 } catch (InstantiationException | IllegalAccessException e) {
                     throw new RuntimeException("实例化 BaseResultConfig 类异常", e);
                 }
@@ -94,8 +94,8 @@ public class HttpResultHandler {
 
     public static void setResponseToHeader(HttpResultEntity resultBody,
             HttpServletResponse response, Throwable exception) {
-        YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
-        boolean setResponseToHeader = ytWebConfig.getResult().isExceptionBodyToHeader();
+        YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
+        boolean setResponseToHeader = ytWebProperties.getResult().isExceptionBodyToHeader();
         if (setResponseToHeader) {
             HttpResultEntity headerResultBody = new HttpResultEntity();
             headerResultBody.put(getResultConfig().getErrorCodeField(),
@@ -106,7 +106,7 @@ public class HttpResultHandler {
                     resultBody.get(getResultConfig().getResultField()));
             setExpandField(headerResultBody);
 
-            boolean setStackTraceToHeader = ytWebConfig.getResult().isStackTraceToHeader();
+            boolean setStackTraceToHeader = ytWebProperties.getResult().isStackTraceToHeader();
             String stackTraceField = getResultConfig().getStackTraceField();
             if (setStackTraceToHeader) {
                 headerResultBody.put(stackTraceField, getAndSetExceptionStrToRequest(exception));
@@ -144,9 +144,9 @@ public class HttpResultHandler {
         setExpandField(resultBody);
 
         // 返回异常堆栈到前端
-        YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
+        YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
         String stackTraceField = getResultConfig().getStackTraceField();
-        if (ytWebConfig.getResult().isReturnStackTrace() && YtStringUtils
+        if (ytWebProperties.getResult().isReturnStackTrace() && YtStringUtils
                 .isNotBlank(stackTraceField)) {
             resultBody.put(stackTraceField, getAndSetExceptionStrToRequest(exception));
         }
@@ -200,8 +200,8 @@ public class HttpResultHandler {
         // 当不向上抛异常时主动打印异常
         logger.error(e.getMessage(), e);
         HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(e);
-        YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
-        response.setStatus(ytWebConfig.getResult().getErrorState());
+        YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
+        response.setStatus(ytWebProperties.getResult().getErrorState());
         response.addHeader("Content-type", "application/json;charset=UTF-8");
         request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
         String result = JsonUtils.toJsonString(resultBody);

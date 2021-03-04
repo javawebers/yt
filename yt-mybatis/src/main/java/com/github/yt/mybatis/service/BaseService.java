@@ -3,7 +3,7 @@ package com.github.yt.mybatis.service;
 import com.github.yt.commons.exception.Assert;
 import com.github.yt.mybatis.query.Page;
 import com.github.yt.mybatis.query.PageUtils;
-import com.github.yt.mybatis.YtMybatisConfig;
+import com.github.yt.mybatis.YtMybatisProperties;
 import com.github.yt.mybatis.YtMybatisExceptionEnum;
 import com.github.yt.mybatis.dialect.DialectHandler;
 import com.github.yt.mybatis.entity.YtColumnType;
@@ -97,15 +97,15 @@ public abstract class BaseService<T> implements IBaseService<T> {
 
     @Override
     public String generateId() {
-        YtMybatisConfig ytMybatisConfig = SpringContextUtils.getBean(YtMybatisConfig.class);
-        YtMybatisConfig.IdGenerateRule idGenerateRule = ytMybatisConfig.getEntity().getIdGenerateRule();
+        YtMybatisProperties ytMybatisProperties = SpringContextUtils.getBean(YtMybatisProperties.class);
+        YtMybatisProperties.IdGenerateRule idGenerateRule = ytMybatisProperties.getEntity().getIdGenerateRule();
         Class<T> entityClass = getEntityClass();
         String generateIdValue;
         switch (idGenerateRule) {
             case TABLE_DATE_RANDOM:
                 generateIdValue = EntityUtils.getTableName(entityClass) +
                         "_" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) +
-                        "_" + randomString(ytMybatisConfig.getEntity().getIdRandomNum());
+                        "_" + randomString(ytMybatisProperties.getEntity().getIdRandomNum());
                 break;
             case UUID:
             default:

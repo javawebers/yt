@@ -1,6 +1,6 @@
 package com.github.yt.mybatis.util;
 
-import com.github.yt.mybatis.YtMybatisConfig;
+import com.github.yt.mybatis.YtMybatisProperties;
 import com.github.yt.mybatis.entity.BaseEntityValue;
 
 /**
@@ -21,8 +21,8 @@ public class BaseEntityHandler {
             synchronized (BaseEntityHandler.class) {
                 if (baseEntityValue == null) {
                     try {
-                        YtMybatisConfig ytMybatisConfig = SpringContextUtils.getBean(YtMybatisConfig.class);
-                        baseEntityValue = ytMybatisConfig.getEntity().getBaseEntityValue().newInstance();
+                        YtMybatisProperties ytMybatisProperties = SpringContextUtils.getBean(YtMybatisProperties.class);
+                        baseEntityValue = ytMybatisProperties.getEntity().getBaseEntityValue().newInstance();
                     } catch (InstantiationException | IllegalAccessException e) {
                         throw new RuntimeException("实例化 BaseEntityValue 类异常", e);
                     }

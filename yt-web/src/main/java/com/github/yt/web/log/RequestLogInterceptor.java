@@ -1,6 +1,6 @@
 package com.github.yt.web.log;
 
-import com.github.yt.web.YtWebConfig;
+import com.github.yt.web.conf.YtWebProperties;
 import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
 import com.github.yt.web.util.JsonUtils;
@@ -13,8 +13,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -76,8 +74,8 @@ public class RequestLogInterceptor implements HandlerInterceptor {
             // 判断类配置(默认true)
             return classRequestLog.value();
         } else {
-            YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
-            return ytWebConfig.getRequest().isRequestLog();
+            YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
+            return ytWebProperties.getRequest().isRequestLog();
         }
     }
 

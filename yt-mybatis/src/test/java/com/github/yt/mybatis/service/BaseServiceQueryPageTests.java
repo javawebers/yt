@@ -1,6 +1,6 @@
 package com.github.yt.mybatis.service;
 
-import com.github.yt.mybatis.YtMybatisConfig;
+import com.github.yt.mybatis.YtMybatisProperties;
 import com.github.yt.mybatis.YtMybatisDemoApplication;
 import com.github.yt.mybatis.example.entity.DbEntityNotSame;
 import com.github.yt.mybatis.example.entity.DbEntitySame;
@@ -24,7 +24,7 @@ public class BaseServiceQueryPageTests extends AbstractTestNGSpringContextTests 
     private DataBasicService dataBasicService;
 
     @Resource
-    private YtMybatisConfig ytMybatisConfig;
+    private YtMybatisProperties ytMybatisProperties;
 
     @Resource
     DbEntitySameService dbEntitySameService;

@@ -1,6 +1,8 @@
 package com.github.yt.web;
 
 
+import com.github.yt.web.conf.YtWebMvcConfigurer;
+import com.github.yt.web.conf.YtWebProperties;
 import com.github.yt.web.query.QueryControllerAspect;
 import com.github.yt.web.result.KnowExceptionConverter;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
@@ -22,7 +24,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import({
-        YtWebConfig.class,
+        YtWebProperties.class,
         PackageResponseBodyAdvice.class,
         YtWebMvcConfigurer.class,
         QueryControllerAspect.class,

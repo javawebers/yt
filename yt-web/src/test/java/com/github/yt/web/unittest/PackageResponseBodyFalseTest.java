@@ -1,9 +1,8 @@
 package com.github.yt.web.unittest;
 
 import com.github.yt.web.YtWebDemoApplication;
-import com.github.yt.web.common.ResultActionsUtils;
+import com.github.yt.web.test.common.ResultActionsUtils;
 import com.github.yt.web.result.HttpResultHandler;
-import com.github.yt.web.unittest.ControllerTestHandler;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;

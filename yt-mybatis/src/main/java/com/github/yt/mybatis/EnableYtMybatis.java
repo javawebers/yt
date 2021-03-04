@@ -15,7 +15,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import({SpringContextUtils.class,
-        YtMybatisConfig.class,
+        YtMybatisProperties.class,
         DatabaseExceptionConverter.class,
 })
 public @interface EnableYtMybatis {

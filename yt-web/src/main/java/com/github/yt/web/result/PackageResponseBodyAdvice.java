@@ -3,7 +3,7 @@ package com.github.yt.web.result;
 import com.github.yt.commons.exception.BaseException;
 import com.github.yt.commons.exception.BaseExceptionConverter;
 import com.github.yt.commons.query.IPage;
-import com.github.yt.web.YtWebConfig;
+import com.github.yt.web.conf.YtWebProperties;
 import com.github.yt.web.util.JsonUtils;
 import com.github.yt.web.util.SpringContextUtils;
 import org.slf4j.Logger;
@@ -54,14 +54,14 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
 
     private ApplicationContext applicationContext;
 
-    private final YtWebConfig ytWebConfig;
+    private final YtWebProperties ytWebProperties;
 
     private ArrayList<Class<?>> ignorePackageResultTypeList;
 
     private ArrayList<String> ignorePackageStartsWithList;
 
-    public PackageResponseBodyAdvice(YtWebConfig ytWebConfig) {
-        this.ytWebConfig = ytWebConfig;
+    public PackageResponseBodyAdvice(YtWebProperties ytWebProperties) {
+        this.ytWebProperties = ytWebProperties;
     }
 
     private ArrayList<String> getIgnorePackageStartsWithList() {
@@ -78,7 +78,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
     private ArrayList<Class<?>> getIgnorePackageResultTypes() {
         if (ignorePackageResultTypeList == null) {
             synchronized (this) {
-                Class<?>[] ignorePackageResultTypes = ytWebConfig.getResult().getIgnorePackageResultTypes();
+                Class<?>[] ignorePackageResultTypes = ytWebProperties.getResult().getIgnorePackageResultTypes();
                 if (ignorePackageResultTypes != null && ignorePackageResultTypes.length != 0) {
                     ignorePackageResultTypeList = new ArrayList<>(ignorePackageResultTypes.length + 1);
                     ignorePackageResultTypeList.addAll(Arrays.asList(ignorePackageResultTypes));
@@ -143,8 +143,8 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         logger.error(se.getMessage(), se);
         HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(se);
         HttpResultHandler.setResponseToHeader(resultBody, response, se);
-        YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
-        response.setStatus(ytWebConfig.getResult().getErrorState());
+        YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
+        response.setStatus(ytWebProperties.getResult().getErrorState());
         response.addHeader("Content-Type", "application/json;charset=UTF-8");
         request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
         return resultBody;
@@ -163,7 +163,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         HttpServletRequest request = ((ServletServerHttpRequest) serverHttpRequest).getServletRequest();
 
         // 如果返回的对象是 Page 类型，将对象转换成 map ，并设置 配置中的属性
-        YtWebConfig.Page pageConfig = ytWebConfig.getPage();
+        YtWebProperties.Page pageConfig = ytWebProperties.getPage();
         if (pageConfig.isConvertPage() && body instanceof IPage) {
             IPage<?> page = (IPage<?>) body;
             LinkedHashMap<Object, Object> pageResultEntity = new LinkedHashMap<>();
@@ -239,7 +239,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         if (HttpResultEntity.class.isAssignableFrom(method.getReturnType())) {
             return true;
         }
-        if (ytWebConfig.getResult().isAlwaysPackageException()) {
+        if (ytWebProperties.getResult().isAlwaysPackageException()) {
             return true;
         }
         for (Class<?> ignorePackageResultType : getIgnorePackageResultTypes()) {
@@ -283,7 +283,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
                 // 判断类配置(默认true)
                 return classPackageResponseBody.value();
             } else {
-                return ytWebConfig.getResult().isPackageResponseBody();
+                return ytWebProperties.getResult().isPackageResponseBody();
             }
         }
     }

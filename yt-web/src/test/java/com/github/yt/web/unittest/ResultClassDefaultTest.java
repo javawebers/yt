@@ -1,7 +1,7 @@
 package com.github.yt.web.unittest;
 
 import com.github.yt.web.YtWebDemoApplication;
-import com.github.yt.web.exception.MyBusinessExceptionEnum;
+import com.github.yt.web.test.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.result.SimpleResultConfig;
 import org.hamcrest.Matchers;
@@ -15,7 +15,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Field;
-import com.github.yt.web.unittest.ControllerTestHandler;
 
 /**
  * 和 ResultClassBusinessTest 互斥，不能同时执行

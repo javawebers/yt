@@ -1,6 +1,6 @@
 package com.github.yt.mybatis.dialect;
 
-import com.github.yt.mybatis.YtMybatisConfig;
+import com.github.yt.mybatis.YtMybatisProperties;
 import com.github.yt.mybatis.util.SpringContextUtils;
 
 /**
@@ -25,8 +25,8 @@ public class DialectHandler {
             synchronized (DialectHandler.class) {
                 if (dialect == null) {
                     try {
-                        YtMybatisConfig ytMybatisConfig = SpringContextUtils.getBean(YtMybatisConfig.class);
-                        dialect = ytMybatisConfig.getMybatis().getDialect().newInstance();
+                        YtMybatisProperties ytMybatisProperties = SpringContextUtils.getBean(YtMybatisProperties.class);
+                        dialect = ytMybatisProperties.getMybatis().getDialect().newInstance();
                     } catch (InstantiationException | IllegalAccessException e) {
                         throw new RuntimeException("实例化方言类异常", e);
                     }

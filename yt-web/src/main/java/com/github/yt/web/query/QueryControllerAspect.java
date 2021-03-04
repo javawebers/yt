@@ -1,7 +1,7 @@
 package com.github.yt.web.query;
 
 import com.github.yt.commons.query.PageQuery;
-import com.github.yt.web.YtWebConfig;
+import com.github.yt.web.conf.YtWebProperties;
 import com.github.yt.web.util.SpringContextUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -67,9 +67,9 @@ public class QueryControllerAspect {
             if (QUERY_METHOD_MAP.containsKey(currentMethod)) {
                 RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
                 HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(requestAttributes)).getRequest();
-                YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
-                String pageNoStr = request.getParameter(ytWebConfig.getPage().getPageNoName());
-                String pageSizeStr = request.getParameter(ytWebConfig.getPage().getPageSizeName());
+                YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
+                String pageNoStr = request.getParameter(ytWebProperties.getPage().getPageNoName());
+                String pageSizeStr = request.getParameter(ytWebProperties.getPage().getPageSizeName());
                 PageQuery<?> pageQuery = (PageQuery<?>) proceedingJoinPoint.getArgs()[QUERY_METHOD_MAP.get(currentMethod)];
                 int pageSizeNum;
                 try {

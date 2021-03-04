@@ -1,7 +1,7 @@
 package com.github.yt.web.unittest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.yt.web.YtWebConfig;
+import com.github.yt.web.conf.YtWebProperties;
 import com.github.yt.web.result.BaseResultConfig;
 import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.util.JsonUtils;
@@ -86,8 +86,8 @@ public class HttpRestHandler {
         String jsonResult = responseToString(resultActions);
         Object result = getResult(jsonResult);
         if (result instanceof Map) {
-            YtWebConfig ytWebConfig = SpringContextUtils.getBean(YtWebConfig.class);
-            Object listData = ((Map<?, ?>) result).get(ytWebConfig.getPage().getPageDataName());
+            YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
+            Object listData = ((Map<?, ?>) result).get(ytWebProperties.getPage().getPageDataName());
             return getListResult(listData, resultType);
         }
         throw new RuntimeException("结果集不是集合类型");

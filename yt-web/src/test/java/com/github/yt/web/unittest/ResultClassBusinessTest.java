@@ -2,8 +2,8 @@ package com.github.yt.web.unittest;
 
 
 import com.github.yt.web.YtWebDemoApplication;
-import com.github.yt.web.example.result.BusinessResultConfig;
-import com.github.yt.web.exception.MyBusinessExceptionEnum;
+import com.github.yt.web.test.example.result.BusinessResultConfig;
+import com.github.yt.web.test.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.result.HttpResultHandler;
 import org.hamcrest.Matchers;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,7 +16,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Field;
-import com.github.yt.web.unittest.ControllerTestHandler;
 
 /**
  * 和 ResultClassDefaultTest 互斥，不能同时执行
