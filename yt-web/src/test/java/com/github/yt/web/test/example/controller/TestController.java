@@ -8,7 +8,7 @@ import com.github.yt.web.test.example.entity.CircularReferenceA;
 import com.github.yt.web.test.example.entity.CircularReferenceB;
 import com.github.yt.web.test.exception.MyBusinessExceptionEnum;
 import com.github.yt.web.log.RequestLog;
-import com.github.yt.web.query.WebQuery;
+import com.github.yt.web.test.query.WebQuery;
 import com.github.yt.web.result.HttpResultEntity;
 import com.github.yt.web.result.PackageResponseBody;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,7 +1,8 @@
-package com.github.yt.web.unittest;
+package com.github.yt.web.test.unittest;
 
 import com.github.yt.web.test.YtWebDemoApplication;
 import com.github.yt.web.result.SimpleResultConfig;
+import com.github.yt.web.unittest.ControllerTestHandler;
 import org.hamcrest.Matchers;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,16 +15,15 @@ import org.testng.annotations.Test;
 /**
  * 和 ResultClassBusinessTest 互斥，不能同时执行
  */
-@ActiveProfiles("webPageQueryDefault")
+@ActiveProfiles("webPageQuery")
 @SpringBootTest(classes = {YtWebDemoApplication.class})
-@Test(priority = 1)
 @AutoConfigureMockMvc
-public class WebPageQueryDefaultTest extends AbstractTestNGSpringContextTests {
+public class WebPageQueryNotDefaultTest extends AbstractTestNGSpringContextTests {
     private SimpleResultConfig resultConfig = new SimpleResultConfig();
 
     @Test
     public void test1() throws Exception {
-        ResultActions resultActions = ControllerTestHandler.get("/webPageQuery/success?pageNo=2&pageSize=3");
+        ResultActions resultActions = ControllerTestHandler.get("/webPageQuery/success?myPageNo=2&myPageSize=3");
         resultActions.andExpect(MockMvcResultMatchers.jsonPath(
                 "$." + resultConfig.getResultField() + ".pageNo",
                 Matchers.equalTo(2)));
@@ -34,7 +34,7 @@ public class WebPageQueryDefaultTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void test2() throws Exception {
-        ResultActions resultActions = ControllerTestHandler.get("/webPageQuery/success?pageSize=3");
+        ResultActions resultActions = ControllerTestHandler.get("/webPageQuery/success?myPageSize=3");
         resultActions.andExpect(MockMvcResultMatchers.jsonPath(
                 "$." + resultConfig.getResultField() + ".pageNo",
                 Matchers.equalTo(1)));
@@ -56,7 +56,7 @@ public class WebPageQueryDefaultTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void test4() throws Exception {
-        ResultActions resultActions = ControllerTestHandler.get("/webPageQuery/success?myPageNo=2&myPageSize=3");
+        ResultActions resultActions = ControllerTestHandler.get("/webPageQuery/success?pageNo=2&pageSize=3");
         resultActions.andExpect(MockMvcResultMatchers.jsonPath(
                 "$." + resultConfig.getResultField() + ".pageNo",
                 Matchers.equalTo(1)));
@@ -70,14 +70,15 @@ public class WebPageQueryDefaultTest extends AbstractTestNGSpringContextTests {
     public void test5() throws Exception {
         ResultActions resultActions = ControllerTestHandler.get("/webPageQuery/pageResult");
         resultActions.andExpect(MockMvcResultMatchers.jsonPath(
-                "$." + resultConfig.getResultField() + ".pageNo",
+                "$." + resultConfig.getResultField() + ".myPageNo",
                 Matchers.equalTo(1)));
         resultActions.andExpect(MockMvcResultMatchers.jsonPath(
-                "$." + resultConfig.getResultField() + ".pageSize",
+                "$." + resultConfig.getResultField() + ".myPageSize",
                 Matchers.equalTo(2)));
         resultActions.andExpect(MockMvcResultMatchers.jsonPath(
-                "$." + resultConfig.getResultField() + ".totalCount",
+                "$." + resultConfig.getResultField() + ".myTotal",
                 Matchers.equalTo(3)));
     }
+
 
 }

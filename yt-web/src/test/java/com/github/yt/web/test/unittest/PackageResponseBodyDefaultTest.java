@@ -1,8 +1,9 @@
-package com.github.yt.web.unittest;
+package com.github.yt.web.test.unittest;
 
 import com.github.yt.web.test.YtWebDemoApplication;
 import com.github.yt.web.test.common.ResultActionsUtils;
 import com.github.yt.web.result.HttpResultHandler;
+import com.github.yt.web.unittest.ControllerTestHandler;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -10,10 +11,10 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
 import org.testng.annotations.Test;
 
-@ActiveProfiles("packageResponseBodyTrue")
+@ActiveProfiles("default")
 @SpringBootTest(classes = {YtWebDemoApplication.class})
 @AutoConfigureMockMvc
-public class PackageResponseBodyTrueTest extends AbstractTestNGSpringContextTests {
+public class PackageResponseBodyDefaultTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void classDefaultMethodDefault() {
@@ -48,7 +49,6 @@ public class PackageResponseBodyTrueTest extends AbstractTestNGSpringContextTest
 
     @Test
     public void classTrueMethodFalse() {
-
         ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/methodFalse", false);
         ResultActionsUtils.notPackaged(resultActions);
     }

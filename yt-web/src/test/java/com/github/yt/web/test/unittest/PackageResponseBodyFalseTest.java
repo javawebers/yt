@@ -1,8 +1,9 @@
-package com.github.yt.web.unittest;
+package com.github.yt.web.test.unittest;
 
 import com.github.yt.web.test.YtWebDemoApplication;
 import com.github.yt.web.test.common.ResultActionsUtils;
 import com.github.yt.web.result.HttpResultHandler;
+import com.github.yt.web.unittest.ControllerTestHandler;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -10,15 +11,16 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
 import org.testng.annotations.Test;
 
-@ActiveProfiles("default")
+@ActiveProfiles("packageResponseBodyFalse")
 @SpringBootTest(classes = {YtWebDemoApplication.class})
+@Test(priority = 2)
 @AutoConfigureMockMvc
-public class PackageResponseBodyExtendTrueTest extends AbstractTestNGSpringContextTests {
+public class PackageResponseBodyFalseTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void classDefaultMethodDefault() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/methodDefault");
-        ResultActionsUtils.packaged(resultActions);
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/methodDefault", false);
+        ResultActionsUtils.notPackaged(resultActions);
     }
 
     @Test
@@ -36,20 +38,20 @@ public class PackageResponseBodyExtendTrueTest extends AbstractTestNGSpringConte
 
     @Test
     public void classTrueMethodDefault() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassExtendTrue/methodDefault", false);
-        ResultActionsUtils.notPackaged(resultActions);
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/methodDefault");
+        ResultActionsUtils.packaged(resultActions);
     }
 
     @Test
     public void classTrueMethodTrue() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassExtendTrue/methodTrue");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/methodTrue");
         ResultActionsUtils.packaged(resultActions);
     }
 
     @Test
     public void classTrueMethodFalse() {
 
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassExtendTrue/methodFalse", false);
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/methodFalse", false);
         ResultActionsUtils.notPackaged(resultActions);
     }
 
@@ -92,19 +94,19 @@ public class PackageResponseBodyExtendTrueTest extends AbstractTestNGSpringConte
 
     @Test
     public void classTrueEntityMethodDefault() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassExtendTrue/entityMethodDefault");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/entityMethodDefault");
         ResultActionsUtils.resultSinglePackage(resultActions);
     }
 
     @Test
     public void classTrueEntityMethodTrue() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassExtendTrue/entityMethodTrue");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/entityMethodTrue");
         ResultActionsUtils.resultSinglePackage(resultActions);
     }
 
     @Test
     public void classTrueEntityMethodFalse() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassExtendTrue/entityMethodFalse");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/entityMethodFalse");
         ResultActionsUtils.resultSinglePackage(resultActions);
     }
 
@@ -128,7 +130,7 @@ public class PackageResponseBodyExtendTrueTest extends AbstractTestNGSpringConte
     }
 
     @Test
-    public void entityThrowException() {
+    public void entityThrowException() throws Exception {
         ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/entityThrowException", HttpResultHandler.getResultConfig().getDefaultErrorCode());
         ResultActionsUtils.defaultErrorPackaged(resultActions);
 

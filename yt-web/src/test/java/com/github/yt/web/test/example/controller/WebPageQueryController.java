@@ -3,7 +3,7 @@ package com.github.yt.web.test.example.controller;
 import com.github.yt.mybatis.query.Page;
 import com.github.yt.mybatis.query.PageUtils;
 import com.github.yt.web.test.example.entity.WebQueryEntity;
-import com.github.yt.web.query.WebQuery;
+import com.github.yt.web.test.query.WebQuery;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

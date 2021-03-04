@@ -1,8 +1,9 @@
-package com.github.yt.web.unittest;
+package com.github.yt.web.test.unittest;
 
 import com.github.yt.web.test.YtWebDemoApplication;
 import com.github.yt.web.test.common.ResultActionsUtils;
 import com.github.yt.web.result.HttpResultHandler;
+import com.github.yt.web.unittest.ControllerTestHandler;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -10,15 +11,16 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
 import org.testng.annotations.Test;
 
-@ActiveProfiles("default")
+@ActiveProfiles("alwaysPackageException")
 @SpringBootTest(classes = {YtWebDemoApplication.class})
+@Test(priority = 2)
 @AutoConfigureMockMvc
-public class PackageResponseBodyDefaultTest extends AbstractTestNGSpringContextTests {
+public class AlwaysPackageExceptionTest extends AbstractTestNGSpringContextTests {
 
     @Test
     public void classDefaultMethodDefault() {
-        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/methodDefault");
-        ResultActionsUtils.packaged(resultActions);
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/methodDefault", false);
+        ResultActionsUtils.notPackaged(resultActions);
     }
 
     @Test
@@ -48,6 +50,7 @@ public class PackageResponseBodyDefaultTest extends AbstractTestNGSpringContextT
 
     @Test
     public void classTrueMethodFalse() {
+
         ResultActions resultActions = ControllerTestHandler.get("/packageClassTrue/methodFalse", false);
         ResultActionsUtils.notPackaged(resultActions);
     }
@@ -130,12 +133,14 @@ public class PackageResponseBodyDefaultTest extends AbstractTestNGSpringContextT
     public void entityThrowException() throws Exception {
         ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/entityThrowException", HttpResultHandler.getResultConfig().getDefaultErrorCode());
         ResultActionsUtils.defaultErrorPackaged(resultActions);
-
     }
 
-    @Test(expectedExceptions = RuntimeException.class)
+
+    @Test
     public void responseEntityThrowException() {
-        ControllerTestHandler.get("/packageClassDefault/responseEntityThrowException");
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/responseEntityThrowException", HttpResultHandler.getResultConfig().getDefaultErrorCode());
+        ResultActionsUtils.defaultErrorPackaged(resultActions);
+
     }
 
 }
