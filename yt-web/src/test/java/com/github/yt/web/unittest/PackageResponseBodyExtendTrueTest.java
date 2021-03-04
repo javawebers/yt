@@ -128,7 +128,7 @@ public class PackageResponseBodyExtendTrueTest extends AbstractTestNGSpringConte
     }
 
     @Test
-    public void entityThrowException() throws Exception {
+    public void entityThrowException() {
         ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/entityThrowException", HttpResultHandler.getResultConfig().getDefaultErrorCode());
         ResultActionsUtils.defaultErrorPackaged(resultActions);
 
