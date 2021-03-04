@@ -2,7 +2,7 @@ package com.github.yt.mybatis.exception;
 
 import com.github.yt.commons.exception.BaseAccidentException;
 import com.github.yt.commons.exception.BaseExceptionConverter;
-import com.github.yt.mybatis.YtMybatisExceptionEnum;
+import com.github.yt.mybatis.enums.YtMybatisExceptionEnum;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;

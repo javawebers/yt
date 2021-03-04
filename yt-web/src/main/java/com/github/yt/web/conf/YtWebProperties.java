@@ -33,6 +33,8 @@ public class YtWebProperties {
 		 * 是否记录请求日志
 		 */
 		private boolean requestLog = true;
+
+		private boolean autoSetPageInfo = false;
 	}
 
 	@Data

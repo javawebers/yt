@@ -35,7 +35,8 @@ public class YtWebAutoConfiguration {
 	}
 	@Bean
 	@ConditionalOnMissingBean
-	public QueryControllerAspect queryControllerAspect(YtWebProperties ytWebProperties) {
+	@ConditionalOnProperty(name = "yt.request.auto-set-page-info")
+	public QueryControllerAspect queryControllerAspect() {
 		return new QueryControllerAspect();
 	}
 	@Bean
@@ -52,7 +53,7 @@ public class YtWebAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public SpringContextUtils springContextUtils() {
+	public SpringContextUtils ytWebSpringContextUtils() {
 		return new SpringContextUtils();
 	}
 

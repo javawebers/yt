@@ -1,6 +1,6 @@
 package com.github.yt.web.test;
 
-import com.github.yt.mybatis.YtMybatisProperties;
+import com.github.yt.mybatis.conf.YtMybatisProperties;
 import com.github.yt.mybatis.util.SpringContextUtils;
 import com.github.yt.web.unittest.EnableYtWebTest;
 import org.springframework.boot.SpringApplication;

@@ -5,7 +5,6 @@ import com.github.yt.commons.exception.BaseExceptionConverter;
 import com.github.yt.commons.util.YtStringUtils;
 import com.github.yt.web.enums.YtWebExceptionEnum;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.stereotype.Component;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
  *
  * @author liujiasheng
  */
-@Component
 public class ValidatorExceptionConverter implements BaseExceptionConverter {
 
     @Override

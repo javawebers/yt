@@ -90,7 +90,7 @@ CREATE TABLE  if not exists `mysql_example` (
 ```
 * ## 定义 BaseEntity，代码生成时指定 （可选）
 ```java
-package com.github.yt.mybatis.example.entity;
+package com.github.yt.mybatis.test.example.entity;
 
 import com.github.yt.mybatis.entity.YtBaseEntityColumn;
 import com.github.yt.mybatis.entity.YtColumnType;
@@ -209,7 +209,7 @@ public class BaseEntity<T extends BaseEntity<T>> implements Serializable {
 ```java
 package com.github.yt.mybatis.generator;
 
-import com.github.yt.mybatis.example.entity.BaseEntity;
+import com.github.yt.mybatis.test.example.entity.BaseEntity;
 
 public class ExampleCodeGeneratorExample {
 
@@ -223,7 +223,7 @@ public class ExampleCodeGeneratorExample {
                 "root",
                 "yt-mybatis",
                 "jdbc:mysql://localhost:3306/yt-mybatis?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC");
-        javaCodeGenerator.create("mysql_example", "", "com.github.yt.mybatis.example",
+        javaCodeGenerator.create("mysql_example", "", "com.github.yt.mybatis.test.example",
                 JavaCodeGenerator.CodePath.SRC_TEST,
                 BaseEntity.class
                 ,JavaCodeGenerator.TemplateEnum.PO
@@ -238,12 +238,12 @@ public class ExampleCodeGeneratorExample {
   
 * #### PO：对应数据库的实体类，时刻和数据库保持一致，不可手动修改，每次代码生成
 ```java
-package com.github.yt.mybatis.example.po;
+package com.github.yt.mybatis.test.example.po;
 
 import javax.persistence.Table;
 import javax.persistence.Column;
 
-import com.github.yt.mybatis.example.entity.BaseEntity;
+import com.github.yt.mybatis.test.example.entity.BaseEntity;
 
 @Table(name = "mysql_example")
 public class MysqlExamplePO<T extends MysqlExamplePO<T>> extends BaseEntity<T> {
@@ -324,12 +324,11 @@ public class MysqlExamplePO<T extends MysqlExamplePO<T>> extends BaseEntity<T> {
   
 * #### entity：PO 的扩展类，针对此类编程。用于查询时的扩展字段等
 ```java
-package com.github.yt.mybatis.example.entity;
+package com.github.yt.mybatis.test.example.entity;
 
 import javax.persistence.Table;
-import javax.persistence.Column;
-import com.github.yt.mybatis.example.entity.BaseEntity;
-import com.github.yt.mybatis.example.po.MysqlExamplePO;
+import com.github.yt.mybatis.test.example.entity.BaseEntity;
+import com.github.yt.mybatis.test.example.po.MysqlExamplePO;
 
 /**
 * PO 类的扩展类
@@ -344,9 +343,9 @@ public class MysqlExample extends MysqlExamplePO<MysqlExample> {
   
 * #### dao： 继承BaseMapper\<T\>（空类，无需任何实现）
 ```java
-package com.github.yt.mybatis.example.dao;
+package com.github.yt.mybatis.test.example.dao;
 
-import com.github.yt.mybatis.example.entity.MysqlExample;
+import com.github.yt.mybatis.test.example.entity.MysqlExample;
 import com.github.yt.mybatis.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -364,13 +363,11 @@ public interface MysqlExampleMapper extends BaseMapper<MysqlExample> {
     
 * #### service 继承BaseService\<T\>（空类，无需任何实现）
 ```java
-package com.github.yt.mybatis.example.service;
+package com.github.yt.mybatis.test.example.service;
 
 import com.github.yt.mybatis.service.IBaseService;
-import com.github.yt.mybatis.example.dao.MysqlExampleMapper;
-import com.github.yt.mybatis.example.entity.MysqlExample;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.github.yt.mybatis.test.example.dao.MysqlExampleMapper;
+import com.github.yt.mybatis.test.example.entity.MysqlExample;
 
 /**
  * 示例服务层
@@ -382,12 +379,12 @@ public interface MysqlExampleService extends IBaseService<MysqlExample> {
 ```
 
 ```java
-package com.github.yt.mybatis.example.service.impl;
+package com.github.yt.mybatis.test.example.service.impl;
 
 import com.github.yt.mybatis.service.BaseService;
-import com.github.yt.mybatis.example.dao.MysqlExampleMapper;
-import com.github.yt.mybatis.example.entity.MysqlExample;
-import com.github.yt.mybatis.example.service.MysqlExampleService;
+import com.github.yt.mybatis.test.example.dao.MysqlExampleMapper;
+import com.github.yt.mybatis.test.example.entity.MysqlExample;
+import com.github.yt.mybatis.test.example.service.MysqlExampleService;
 
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -406,8 +403,8 @@ public class MysqlExampleServiceImpl extends BaseService<MysqlExample> implement
 ```java
 package com.github.yt.mybatis.service;
 
-import com.github.yt.mybatis.YtMybatisDemoApplication;
-import com.github.yt.mybatis.example.service.MysqlExampleService;
+import com.github.yt.mybatis.test.YtMybatisDemoApplication;
+import com.github.yt.mybatis.test.example.service.MysqlExampleService;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import javax.annotation.Resource;
@@ -749,7 +746,7 @@ public void findListExcludeSelectColumn() {
 * ##### updateBaseColumn 是否更新基础字段。默认更新 modify_time、modifier_id、modifier_name
 ###### 实现获取默认值的方式
 ```java
-package com.github.yt.mybatis.example.entity;
+package com.github.yt.mybatis.test.example.entity;
 
 import com.github.yt.mybatis.entity.BaseEntityValue;
 
@@ -783,7 +780,7 @@ public class BusinessBaseEntityValue implements BaseEntityValue {
 ```
 ###### 添加全局配置 application.properties
 ```properties
-yt.entity.baseEntityValue=com.github.yt.mybatis.example.entity.BusinessBaseEntityValue
+yt.entity.baseEntityValue=com.github.yt.mybatis.test.example.entity.BusinessBaseEntityValue
 ```
 ###### 更新
 ```java

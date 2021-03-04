@@ -1,6 +1,6 @@
 package com.github.yt.mybatis.dialect;
 
-import com.github.yt.mybatis.YtMybatisProperties;
+import com.github.yt.mybatis.conf.YtMybatisProperties;
 import com.github.yt.mybatis.util.SpringContextUtils;
 
 /**
