@@ -22,7 +22,7 @@ public class YtWebProperties {
 	@Data
 	public static class Web {
 		/**
-		 * 开启
+		 * 是否开启 yt-web
 		 */
 		private boolean enable = true;
 	}

@@ -78,7 +78,7 @@ public class EntityUtils {
      * @param fieldName 字段名
      * @return 是否包含
      */
-    public static boolean hasField(Class clazz, String fieldName) {
+    public static boolean hasField(Class<?> clazz, String fieldName) {
         for (Field field : clazz.getDeclaredFields()) {
             if (field.getName().equals(fieldName)) {
                 return true;
