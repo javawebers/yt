@@ -1,8 +1,8 @@
 package com.github.yt.web.test.unittest;
 
+import com.github.yt.web.result.PackageResponseBodyAdvice;
 import com.github.yt.web.test.YtWebTestApplication;
 import com.github.yt.web.test.exception.MyBusinessExceptionEnum;
-import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.unittest.ControllerTestHandler;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,14 +21,12 @@ public class ReturnExceptionToHeaderDefaultTest extends AbstractTestNGSpringCont
     @Test
     public void success() throws Exception {
         ResultActions resultActions = ControllerTestHandler.get("/returnStackTrace/success");
-        resultActions.andExpect(MockMvcResultMatchers.header().doesNotExist(HttpResultHandler.HEADER_BUSINESS_OCCUR_EXCEPTION));
-        resultActions.andExpect(MockMvcResultMatchers.header().doesNotExist(HttpResultHandler.HEADER_BUSINESS_EXCEPTION_RESULT_BODY));
+        resultActions.andExpect(MockMvcResultMatchers.header().exists(PackageResponseBodyAdvice.HEADER_YT_WEB_EXCEPTION));
     }
 
     @Test
     public void knowException() throws Exception {
         ResultActions resultActions = ControllerTestHandler.get("/returnStackTrace/knowException", MyBusinessExceptionEnum.CODE_1003);
-        resultActions.andExpect(MockMvcResultMatchers.header().doesNotExist(HttpResultHandler.HEADER_BUSINESS_OCCUR_EXCEPTION));
-        resultActions.andExpect(MockMvcResultMatchers.header().doesNotExist(HttpResultHandler.HEADER_BUSINESS_EXCEPTION_RESULT_BODY));
+        resultActions.andExpect(MockMvcResultMatchers.header().exists(PackageResponseBodyAdvice.HEADER_YT_WEB_EXCEPTION));
     }
 }

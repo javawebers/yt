@@ -63,15 +63,6 @@ public class YtWebProperties {
 		private int errorState = 500;
 
 		/**
-		 * 发生异常时，把异常码返回体设置到 header 中
-		 */
-		private boolean exceptionBodyToHeader = false;
-		/**
-		 * 设置异常栈信息到 header 中，不依赖于 returnStackTrace
-		 */
-		private boolean stackTraceToHeader = false;
-
-		/**
 		 * 返回体配置类
 		 */
 		private Class<? extends BaseResultConfig> resultConfigClass = SimpleResultConfig.class;

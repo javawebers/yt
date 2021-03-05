@@ -1,20 +1,33 @@
 package com.github.yt.web.test.unittest;
 
+import com.github.yt.web.result.HttpResultHandler;
+import com.github.yt.web.result.SimpleResultConfig;
 import com.github.yt.web.test.YtWebTestApplication;
 import com.github.yt.web.test.common.ResultActionsUtils;
-import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.unittest.ControllerTestHandler;
+import org.hamcrest.Matchers;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testng.annotations.Test;
 
 @ActiveProfiles("default")
 @SpringBootTest(classes = { YtWebTestApplication.class})
 @AutoConfigureMockMvc
 public class PackageResponseBodyDefaultTest extends AbstractTestNGSpringContextTests {
+    private SimpleResultConfig resultConfig = new SimpleResultConfig();
+
+    @Test
+    public void classDefaultMethodDefaultStringResult() throws Exception {
+        ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/methodDefaultStringResult");
+        ResultActionsUtils.packaged(resultActions);
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath(
+                "$." + resultConfig.getResultField(),
+                Matchers.equalTo("222")));
+    }
 
     @Test
     public void classDefaultMethodDefault() {
@@ -128,7 +141,7 @@ public class PackageResponseBodyDefaultTest extends AbstractTestNGSpringContextT
     }
 
     @Test
-    public void entityThrowException() throws Exception {
+    public void entityThrowException() {
         ResultActions resultActions = ControllerTestHandler.get("/packageClassDefault/entityThrowException", HttpResultHandler.getResultConfig().getDefaultErrorCode());
         ResultActionsUtils.defaultErrorPackaged(resultActions);
 

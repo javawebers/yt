@@ -30,8 +30,6 @@ import static com.github.yt.web.result.PackageResponseBodyAdvice.REQUEST_RESULT_
 public class HttpResultHandler {
     private static final Logger logger = LoggerFactory.getLogger(HttpResultHandler.class);
 
-    public static final String HEADER_BUSINESS_EXCEPTION_RESULT_BODY = "Business-Exception-Result-Body";
-    public static final String HEADER_BUSINESS_OCCUR_EXCEPTION = "Business-Occur-Exception";
 
     private static volatile BaseResultConfig resultConfig;
 
@@ -82,42 +80,6 @@ public class HttpResultHandler {
             resultBody.put(getResultConfig().getMoreResultField(), moreResult);
         }
         return resultBody;
-    }
-
-    /*
-     * 设置 response 到 header 中，方便 feign 调用进行统一判断
-     *
-     * @param resultBody 返回的 map 对象
-     * @param response   response
-     * @param exception exception
-     */
-
-    public static void setResponseToHeader(HttpResultEntity resultBody,
-            HttpServletResponse response, Throwable exception) {
-        YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
-        boolean setResponseToHeader = ytWebProperties.getResult().isExceptionBodyToHeader();
-        if (setResponseToHeader) {
-            HttpResultEntity headerResultBody = new HttpResultEntity();
-            headerResultBody.put(getResultConfig().getErrorCodeField(),
-                    resultBody.get(getResultConfig().getErrorCodeField()));
-            headerResultBody.put(getResultConfig().getMessageField(),
-                    resultBody.get(getResultConfig().getMessageField()));
-            headerResultBody.put(getResultConfig().getResultField(),
-                    resultBody.get(getResultConfig().getResultField()));
-            setExpandField(headerResultBody);
-
-            boolean setStackTraceToHeader = ytWebProperties.getResult().isStackTraceToHeader();
-            String stackTraceField = getResultConfig().getStackTraceField();
-            if (setStackTraceToHeader) {
-                headerResultBody.put(stackTraceField, getAndSetExceptionStrToRequest(exception));
-            }
-
-            byte[] headerResultBodyByte = Base64.getEncoder()
-                    .encode(JsonUtils.toJsonString(headerResultBody).getBytes());
-            response.addHeader(HEADER_BUSINESS_EXCEPTION_RESULT_BODY, new String(headerResultBodyByte));
-            response.addHeader(HEADER_BUSINESS_OCCUR_EXCEPTION, "true");
-        }
-
     }
 
     /**

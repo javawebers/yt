@@ -48,6 +48,15 @@ import java.util.*;
 public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, ApplicationContextAware {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /**
+     * 用来标记是否发生异常
+     */
+    public static final String HEADER_YT_WEB_EXCEPTION = "Yt-Web-Exception";
+    /**
+     * 用来标记是否进行自动包装
+     */
+    public static final String HEADER_YT_WEB_AUTO_PACKAGE = "Yt-Web-Auto-Package";
+
     public static final String REQUEST_EXCEPTION = "yt:request_exception";
     public static final String REQUEST_RESULT_ENTITY = "yt:request_result_entity";
     public static final String REQUEST_BEFORE_BODY_WRITE = "yt:request_before_body_write";
@@ -127,6 +136,11 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
     @PackageResponseBody(false)
     public HttpResultEntity handleExceptions(final Throwable e, HandlerMethod handlerMethod,
                                              HttpServletRequest request, HttpServletResponse response) throws Throwable {
+
+        response.addHeader(HEADER_YT_WEB_EXCEPTION, "true");
+        // 默认没有进行包装
+        response.addHeader(HEADER_YT_WEB_AUTO_PACKAGE, "false");
+
         if (!exceptionPackageResponseBody(request, handlerMethod.getBeanType(), handlerMethod.getMethod())) {
             // 不需要包装时直接返回异常对象
             request.setAttribute(REQUEST_EXCEPTION, e);
@@ -142,7 +156,8 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         // 返回包装体
         logger.error(se.getMessage(), se);
         HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(se);
-        HttpResultHandler.setResponseToHeader(resultBody, response, se);
+        // 设置自动包装标记到 header
+        response.addHeader(HEADER_YT_WEB_AUTO_PACKAGE, "true");
         YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
         response.setStatus(ytWebProperties.getResult().getErrorState());
         response.addHeader("Content-Type", "application/json;charset=UTF-8");
@@ -161,6 +176,9 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
         HttpServletRequest request = ((ServletServerHttpRequest) serverHttpRequest).getServletRequest();
+        serverHttpResponse.getHeaders().add(HEADER_YT_WEB_EXCEPTION, "false");
+        // 默认没有进行包装
+        serverHttpResponse.getHeaders().add(HEADER_YT_WEB_AUTO_PACKAGE, "false");
 
         // 如果返回的对象是 Page 类型，将对象转换成 map ，并设置 配置中的属性
         YtWebProperties.Page pageConfig = ytWebProperties.getPage();
@@ -185,6 +203,8 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         if (HttpResultEntity.class.isAssignableFrom(returnType.getMethod().getReturnType())) {
             resultBody = (HttpResultEntity) body;
         } else {
+            // 设置自动包装标记到 header
+            serverHttpResponse.getHeaders().add(HEADER_YT_WEB_AUTO_PACKAGE, "true");
             resultBody = HttpResultHandler.getSuccessSimpleResultBody(body);
         }
         request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);

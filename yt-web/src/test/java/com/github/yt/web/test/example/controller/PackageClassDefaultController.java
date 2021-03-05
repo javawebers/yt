@@ -17,6 +17,11 @@ public class PackageClassDefaultController extends BaseController {
 
     }
 
+    @GetMapping("methodDefaultStringResult")
+    public Object methodDefaultStringResult() {
+        return "222";
+    }
+
     @GetMapping("methodTrue")
     @PackageResponseBody
     public void methodTrue() {
