@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
 
@@ -164,7 +163,7 @@ public class HttpResultHandler {
         HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(e);
         YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
         response.setStatus(ytWebProperties.getResult().getErrorState());
-        response.addHeader("Content-type", "application/json;charset=UTF-8");
+        response.setHeader("Content-Type", "application/json;charset=UTF-8");
         request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
         String result = JsonUtils.toJsonString(resultBody);
         try {

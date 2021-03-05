@@ -20,6 +20,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -136,10 +137,9 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
     @PackageResponseBody(false)
     public HttpResultEntity handleExceptions(final Throwable e, HandlerMethod handlerMethod,
                                              HttpServletRequest request, HttpServletResponse response) throws Throwable {
-
-        response.addHeader(HEADER_YT_WEB_EXCEPTION, "true");
+        response.setHeader(HEADER_YT_WEB_EXCEPTION, "true");
         // 默认没有进行包装
-        response.addHeader(HEADER_YT_WEB_AUTO_PACKAGE, "false");
+        response.setHeader(HEADER_YT_WEB_AUTO_PACKAGE, "false");
 
         if (!exceptionPackageResponseBody(request, handlerMethod.getBeanType(), handlerMethod.getMethod())) {
             // 不需要包装时直接返回异常对象
@@ -157,10 +157,10 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         logger.error(se.getMessage(), se);
         HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(se);
         // 设置自动包装标记到 header
-        response.addHeader(HEADER_YT_WEB_AUTO_PACKAGE, "true");
+        response.setHeader(HEADER_YT_WEB_AUTO_PACKAGE, "true");
         YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
         response.setStatus(ytWebProperties.getResult().getErrorState());
-        response.addHeader("Content-Type", "application/json;charset=UTF-8");
+        response.setHeader("Content-Type", "application/json;charset=UTF-8");
         request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
         return resultBody;
     }
@@ -176,11 +176,15 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
         HttpServletRequest request = ((ServletServerHttpRequest) serverHttpRequest).getServletRequest();
-        serverHttpResponse.getHeaders().add(HEADER_YT_WEB_EXCEPTION, "false");
-        // 默认没有进行包装
-        serverHttpResponse.getHeaders().add(HEADER_YT_WEB_AUTO_PACKAGE, "false");
+        HttpServletResponse response = ((ServletServerHttpResponse) serverHttpResponse).getServletResponse();
 
-        // 如果返回的对象是 Page 类型，将对象转换成 map ，并设置 配置中的属性
+        if (request.getAttribute(REQUEST_EXCEPTION) == null) {
+            response.setHeader(HEADER_YT_WEB_EXCEPTION, "false");
+            // 默认没有进行包装
+            response.setHeader(HEADER_YT_WEB_AUTO_PACKAGE, "false");
+        }
+
+        // 如果返回的对象是 Page 类型，将对象转换成 map，并设置配置中的属性
         YtWebProperties.Page pageConfig = ytWebProperties.getPage();
         if (pageConfig.isConvertPage() && body instanceof IPage) {
             IPage<?> page = (IPage<?>) body;
@@ -204,13 +208,13 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
             resultBody = (HttpResultEntity) body;
         } else {
             // 设置自动包装标记到 header
-            serverHttpResponse.getHeaders().add(HEADER_YT_WEB_AUTO_PACKAGE, "true");
+            response.setHeader(HEADER_YT_WEB_AUTO_PACKAGE, "true");
             resultBody = HttpResultHandler.getSuccessSimpleResultBody(body);
         }
         request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
         request.setAttribute(REQUEST_BEFORE_BODY_WRITE, new Object());
         serverHttpResponse.setStatusCode(HttpStatus.OK);
-        serverHttpResponse.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
+        serverHttpResponse.getHeaders().set("Content-Type", "application/json;charset=UTF-8");
         if (body instanceof String || String.class.equals(returnType.getMethod().getReturnType())) {
             return JsonUtils.toJsonString(resultBody);
         }
