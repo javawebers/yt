@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Date;
 import java.util.Objects;
 
 import static com.github.yt.web.result.PackageResponseBodyAdvice.REQUEST_RESULT_ENTITY;
@@ -74,7 +73,6 @@ public class HttpResultHandler {
         resultBody.put(getResultConfig().getMessageField(),
                 getResultConfig().getDefaultSuccessMessage());
         resultBody.put(getResultConfig().getResultField(), result);
-        setExpandField(resultBody);
         if (withMore) {
             resultBody.put(getResultConfig().getMoreResultField(), moreResult);
         }
@@ -102,7 +100,6 @@ public class HttpResultHandler {
                     getResultConfig().getDefaultErrorMessage());
             resultBody.put(getResultConfig().getResultField(), null);
         }
-        setExpandField(resultBody);
 
         // 返回异常堆栈到前端
         YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
@@ -131,29 +128,6 @@ public class HttpResultHandler {
             request.setAttribute(REQUEST_EXCEPTION_STR, exceptionStr);
         }
         return exceptionStr;
-    }
-
-    /**
-     * 设置扩展字段
-     * 包含 uuid、请求时间、响应时间
-     *
-     * @param resultBody HttpResultEntity
-     */
-    private static void setExpandField(HttpResultEntity resultBody) {
-        String uuidField = getResultConfig().getUuidField();
-        if (YtStringUtils.isNotBlank(uuidField)) {
-            resultBody.put(uuidField,
-                    getRequest().getAttribute(RequestHandlerInterceptor.REQUEST_UUID));
-        }
-        String requestTimeField = getResultConfig().getRequestTimeField();
-        if (YtStringUtils.isNotBlank(requestTimeField)) {
-            resultBody.put(requestTimeField,
-                    getRequest().getAttribute(RequestHandlerInterceptor.REQUEST_TIME));
-        }
-        String responseTimeField = getResultConfig().getResponseTimeField();
-        if (YtStringUtils.isNotBlank(responseTimeField)) {
-            resultBody.put(responseTimeField, new Date());
-        }
     }
 
     public static void writeExceptionResult(final Throwable e, HttpServletRequest request,
