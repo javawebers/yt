@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.util.*;
 
-
 /**
  * 1.返回体拦截器 实现ResponseBodyAdvice接口的supports和beforeBodyWrite方法
  * 2.异常拦截器 @ExceptionHandler作用的handleExceptions方法
@@ -46,7 +45,8 @@ import java.util.*;
  */
 @Order(200)
 @ControllerAdvice
-public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, ApplicationContextAware {
+public class PackageResponseBodyAdvice
+        implements ResponseBodyAdvice<Object>, ApplicationContextAware {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
@@ -84,13 +84,14 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         return ignorePackageStartsWithList;
     }
 
-
     private ArrayList<Class<?>> getIgnorePackageResultTypes() {
         if (ignorePackageResultTypeList == null) {
             synchronized (this) {
-                Class<?>[] ignorePackageResultTypes = ytWebProperties.getResult().getIgnorePackageResultTypes();
+                Class<?>[] ignorePackageResultTypes = ytWebProperties.getResult()
+                        .getIgnorePackageResultTypes();
                 if (ignorePackageResultTypes != null && ignorePackageResultTypes.length != 0) {
-                    ignorePackageResultTypeList = new ArrayList<>(ignorePackageResultTypes.length + 1);
+                    ignorePackageResultTypeList = new ArrayList<>(
+                            ignorePackageResultTypes.length + 1);
                     ignorePackageResultTypeList.addAll(Arrays.asList(ignorePackageResultTypes));
                 } else {
                     ignorePackageResultTypeList = new ArrayList<>(1);
@@ -105,7 +106,6 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
-
 
     /**
      * 405 异常直接抛出
@@ -136,12 +136,13 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
     @ExceptionHandler
     @PackageResponseBody(false)
     public HttpResultEntity handleExceptions(final Throwable e, HandlerMethod handlerMethod,
-                                             HttpServletRequest request, HttpServletResponse response) throws Throwable {
+            HttpServletRequest request, HttpServletResponse response) throws Throwable {
         response.setHeader(HEADER_YT_WEB_EXCEPTION, "true");
         // 默认没有进行包装
         response.setHeader(HEADER_YT_WEB_AUTO_PACKAGE, "false");
 
-        if (!exceptionPackageResponseBody(request, handlerMethod.getBeanType(), handlerMethod.getMethod())) {
+        if (!exceptionPackageResponseBody(request, handlerMethod.getBeanType(),
+                handlerMethod.getMethod())) {
             // 不需要包装时直接返回异常对象
             request.setAttribute(REQUEST_EXCEPTION, e);
             throw e;
@@ -156,6 +157,9 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         // 返回包装体
         logger.error(se.getMessage(), se);
         HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(se);
+
+        expandResultBody(resultBody);
+
         // 设置自动包装标记到 header
         response.setHeader(HEADER_YT_WEB_AUTO_PACKAGE, "true");
         YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
@@ -165,18 +169,21 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         return resultBody;
     }
 
-
     @Override
-    public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
+    public boolean supports(MethodParameter returnType,
+            Class<? extends HttpMessageConverter<?>> converterType) {
         return true;
     }
 
     @Override
-    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
-                                  Class<? extends HttpMessageConverter<?>> selectedConverterType,
-                                  ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
-        HttpServletRequest request = ((ServletServerHttpRequest) serverHttpRequest).getServletRequest();
-        HttpServletResponse response = ((ServletServerHttpResponse) serverHttpResponse).getServletResponse();
+    public Object beforeBodyWrite(Object body, MethodParameter returnType,
+            MediaType selectedContentType,
+            Class<? extends HttpMessageConverter<?>> selectedConverterType,
+            ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
+        HttpServletRequest request = ((ServletServerHttpRequest) serverHttpRequest)
+                .getServletRequest();
+        HttpServletResponse response = ((ServletServerHttpResponse) serverHttpResponse)
+                .getServletResponse();
 
         if (request.getAttribute(REQUEST_EXCEPTION) == null) {
             response.setHeader(HEADER_YT_WEB_EXCEPTION, "false");
@@ -198,7 +205,8 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
 
         request.setAttribute(REQUEST_RESULT_ENTITY, body);
 
-        if (!successPackageResponseBody(request, returnType.getContainingClass(), Objects.requireNonNull(returnType.getMethod()))) {
+        if (!successPackageResponseBody(request, returnType.getContainingClass(),
+                Objects.requireNonNull(returnType.getMethod()))) {
             return body;
         }
 
@@ -211,6 +219,9 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
             response.setHeader(HEADER_YT_WEB_AUTO_PACKAGE, "true");
             resultBody = HttpResultHandler.getSuccessSimpleResultBody(body);
         }
+
+        expandResultBody(resultBody);
+
         request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
         request.setAttribute(REQUEST_BEFORE_BODY_WRITE, new Object());
         serverHttpResponse.setStatusCode(HttpStatus.OK);
@@ -221,6 +232,19 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         return resultBody;
     }
 
+    /**
+     * 扩展返回结果
+     *
+     * @param resultBody 返回结果
+     */
+    private void expandResultBody(HttpResultEntity resultBody) {
+        Map<String, BaseExpandResultBodyHandler> expandResultBodyHandlerMap = applicationContext
+                .getBeansOfType(BaseExpandResultBodyHandler.class);
+        for (BaseExpandResultBodyHandler expandResultBodyHandler : expandResultBodyHandlerMap
+                .values()) {
+            expandResultBodyHandler.expandResultBody(resultBody);
+        }
+    }
 
     /**
      * 将异常转换为BaseException
@@ -229,7 +253,8 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         if (e instanceof BaseException) {
             return e;
         }
-        Map<String, BaseExceptionConverter> exceptionConverterMap = applicationContext.getBeansOfType(BaseExceptionConverter.class);
+        Map<String, BaseExceptionConverter> exceptionConverterMap = applicationContext
+                .getBeansOfType(BaseExceptionConverter.class);
         for (BaseExceptionConverter baseExceptionConverter : exceptionConverterMap.values()) {
             Throwable knownException = baseExceptionConverter.convertToBaseException(e);
             if (knownException instanceof BaseException) {
@@ -241,6 +266,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
 
     /**
      * 排除目录
+     *
      * @param path 请求的 url
      * @return 是否排除包装
      */
@@ -254,7 +280,8 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         return false;
     }
 
-    private boolean exceptionPackageResponseBody(HttpServletRequest request, Class<?> beanType, Method method) {
+    private boolean exceptionPackageResponseBody(HttpServletRequest request, Class<?> beanType,
+            Method method) {
         String path = request.getServletPath();
         if (ignorePath(path)) {
             return false;
@@ -274,7 +301,8 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
         return packageResponseBody(beanType, method);
     }
 
-    private boolean successPackageResponseBody(HttpServletRequest request, Class<?> beanType, Method method) {
+    private boolean successPackageResponseBody(HttpServletRequest request, Class<?> beanType,
+            Method method) {
         String path = request.getServletPath();
         if (ignorePath(path)) {
             return false;
@@ -289,15 +317,18 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object>, Ap
 
     /**
      * 通过全局配置或者注解判断是否包装返回体
+     *
      * @param beanType 对象类型，这里不能从 method 中获取对象类型。
      *                 beanType 传入子类类型
      *                 当对象存在继承的情况，方法没有重新实现，从 method 中获取的对象类型是父类的类型，无法获取到子类中的注解。
-     * @param method 方法
+     * @param method   方法
      * @return 是否进行包装
      */
     private boolean packageResponseBody(Class<?> beanType, Method method) {
-        PackageResponseBody methodPackageResponseBody = method.getAnnotation(PackageResponseBody.class);
-        PackageResponseBody classPackageResponseBody = AnnotationUtils.findAnnotation(beanType, PackageResponseBody.class);
+        PackageResponseBody methodPackageResponseBody = method
+                .getAnnotation(PackageResponseBody.class);
+        PackageResponseBody classPackageResponseBody = AnnotationUtils
+                .findAnnotation(beanType, PackageResponseBody.class);
         if (methodPackageResponseBody != null) {
             // 判断方法配置(默认true)
             return methodPackageResponseBody.value();
