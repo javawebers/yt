@@ -2,12 +2,14 @@ package com.github.yt.web.util;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 /**
  * @author liujiasheng
  */
+@Component("ytWebSpringContextUtils")
 public class SpringContextUtils implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;

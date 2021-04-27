@@ -1,6 +1,8 @@
 package com.github.yt.web.conf;
 
+import com.github.yt.commons.exception.BaseExceptionConverter;
 import com.github.yt.web.query.QueryControllerAspect;
+import com.github.yt.web.result.BaseExpandResultBodyHandler;
 import com.github.yt.web.result.KnowExceptionConverter;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
 import com.github.yt.web.result.ValidatorExceptionConverter;
@@ -10,6 +12,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 /**
  * starter
@@ -23,8 +27,11 @@ public class YtWebAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	public PackageResponseBodyAdvice packageResponseBodyAdvice(YtWebProperties ytWebProperties) {
-		return new PackageResponseBodyAdvice(ytWebProperties);
+	public PackageResponseBodyAdvice packageResponseBodyAdvice(YtWebProperties ytWebProperties,
+			List<BaseExpandResultBodyHandler> expandResultBodyHandlerList,
+			List<BaseExceptionConverter> exceptionConverterList) {
+		return new PackageResponseBodyAdvice(ytWebProperties, expandResultBodyHandlerList,
+				exceptionConverterList);
 	}
 	@Bean
 	@ConditionalOnMissingBean

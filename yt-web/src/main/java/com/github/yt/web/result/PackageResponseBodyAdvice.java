@@ -8,8 +8,6 @@ import com.github.yt.web.util.JsonUtils;
 import com.github.yt.web.util.SpringContextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
@@ -35,9 +33,6 @@ import java.util.*;
 /**
  * 1.返回体拦截器 实现ResponseBodyAdvice接口的supports和beforeBodyWrite方法
  * 2.异常拦截器 @ExceptionHandler作用的handleExceptions方法
- * <p>
- * ApplicationContextAware 的作用是可以获取spring管理的bean
- * <p>
  * 正常返回和异常返回分别被该类处理
  * 拦截返回结果或者异常包装成HttpResultEntity
  *
@@ -45,8 +40,7 @@ import java.util.*;
  */
 @Order(200)
 @ControllerAdvice
-public class PackageResponseBodyAdvice
-        implements ResponseBodyAdvice<Object>, ApplicationContextAware {
+public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
@@ -62,16 +56,22 @@ public class PackageResponseBodyAdvice
     public static final String REQUEST_RESULT_ENTITY = "yt:request_result_entity";
     public static final String REQUEST_BEFORE_BODY_WRITE = "yt:request_before_body_write";
 
-    private ApplicationContext applicationContext;
-
     private final YtWebProperties ytWebProperties;
 
     private ArrayList<Class<?>> ignorePackageResultTypeList;
 
     private ArrayList<String> ignorePackageStartsWithList;
 
-    public PackageResponseBodyAdvice(YtWebProperties ytWebProperties) {
+    private final List<BaseExpandResultBodyHandler> expandResultBodyHandlerList;
+
+    private final List<BaseExceptionConverter> exceptionConverterList;
+
+    public PackageResponseBodyAdvice(YtWebProperties ytWebProperties,
+            List<BaseExpandResultBodyHandler> expandResultBodyHandlerList,
+            List<BaseExceptionConverter> exceptionConverterList) {
         this.ytWebProperties = ytWebProperties;
+        this.expandResultBodyHandlerList = expandResultBodyHandlerList;
+        this.exceptionConverterList = exceptionConverterList;
     }
 
     private ArrayList<String> getIgnorePackageStartsWithList() {
@@ -100,11 +100,6 @@ public class PackageResponseBodyAdvice
             }
         }
         return ignorePackageResultTypeList;
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
     }
 
     /**
@@ -238,10 +233,7 @@ public class PackageResponseBodyAdvice
      * @param resultBody 返回结果
      */
     private void expandResultBody(HttpResultEntity resultBody) {
-        Map<String, BaseExpandResultBodyHandler> expandResultBodyHandlerMap = applicationContext
-                .getBeansOfType(BaseExpandResultBodyHandler.class);
-        for (BaseExpandResultBodyHandler expandResultBodyHandler : expandResultBodyHandlerMap
-                .values()) {
+        for (BaseExpandResultBodyHandler expandResultBodyHandler : expandResultBodyHandlerList) {
             expandResultBodyHandler.expandResultBody(resultBody);
         }
     }
@@ -253,9 +245,7 @@ public class PackageResponseBodyAdvice
         if (e instanceof BaseException) {
             return e;
         }
-        Map<String, BaseExceptionConverter> exceptionConverterMap = applicationContext
-                .getBeansOfType(BaseExceptionConverter.class);
-        for (BaseExceptionConverter baseExceptionConverter : exceptionConverterMap.values()) {
+        for (BaseExceptionConverter baseExceptionConverter : exceptionConverterList) {
             Throwable knownException = baseExceptionConverter.convertToBaseException(e);
             if (knownException instanceof BaseException) {
                 return knownException;
