@@ -1,7 +1,6 @@
 package com.github.yt.web.conf;
 
 import com.github.yt.web.log.RequestLogInterceptor;
-import com.github.yt.web.result.RequestHandlerInterceptor;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.validation.MessageCodesResolver;
@@ -29,9 +28,7 @@ public class YtWebMvcConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new RequestHandlerInterceptor()).excludePathPatterns("/error");
         registry.addInterceptor(new RequestLogInterceptor()).excludePathPatterns("/error");
-
     }
 
     //////////////////////

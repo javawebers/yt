@@ -5,8 +5,7 @@ import com.github.yt.web.result.HttpResultHandler;
 import com.github.yt.web.result.PackageResponseBodyAdvice;
 import com.github.yt.web.util.JsonUtils;
 import com.github.yt.web.util.SpringContextUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -23,9 +22,8 @@ import java.util.Map;
  *
  * @author 刘加胜
  */
+@Slf4j
 public class RequestLogInterceptor implements HandlerInterceptor {
-
-    private final Logger logger = LoggerFactory.getLogger(RequestLogInterceptor.class);
 
     /**
      * 获取IP地址
@@ -59,7 +57,7 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod)) {
             return false;
         }
-        if (!logger.isDebugEnabled()) {
+        if (!log.isDebugEnabled()) {
             return false;
         }
         /// 判断是否记录日志
@@ -95,7 +93,7 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         if (!isLog(request, handler)) {
             return;
         }
-        if(!logger.isDebugEnabled()) {
+        if(!log.isDebugEnabled()) {
             return;
         }
         Date requestTime = (Date) request.getAttribute("requestTime");
@@ -132,8 +130,8 @@ public class RequestLogInterceptor implements HandlerInterceptor {
             requestLogEntity.setError(false);
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(JsonUtils.toJsonString(requestLogEntity));
+        if (log.isDebugEnabled()) {
+            log.debug(JsonUtils.toJsonString(requestLogEntity));
         }
     }
 }

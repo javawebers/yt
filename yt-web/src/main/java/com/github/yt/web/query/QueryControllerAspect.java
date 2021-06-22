@@ -3,6 +3,7 @@ package com.github.yt.web.query;
 import com.github.yt.commons.query.PageQuery;
 import com.github.yt.web.conf.YtWebProperties;
 import com.github.yt.web.util.SpringContextUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -35,8 +36,8 @@ import java.util.Set;
  */
 @Aspect
 @Order(1000)
+@Slf4j
 public class QueryControllerAspect {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final Set<Method> METHOD_SET = new HashSet<>();
     private static final Map<Method, Integer> QUERY_METHOD_MAP = new HashMap<>();
@@ -89,7 +90,7 @@ public class QueryControllerAspect {
                 pageQuery.makePageSize(pageSizeNum);
             }
         } catch (Exception e) {
-            logger.warn("设置 Query 的 pageNo、pageSize 异常", e);
+            log.warn("设置 Query 的 pageNo、pageSize 异常", e);
         }
         return proceedingJoinPoint.proceed();
     }

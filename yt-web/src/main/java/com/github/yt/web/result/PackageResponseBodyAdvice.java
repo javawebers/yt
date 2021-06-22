@@ -6,8 +6,7 @@ import com.github.yt.commons.query.IPage;
 import com.github.yt.web.conf.YtWebProperties;
 import com.github.yt.web.util.JsonUtils;
 import com.github.yt.web.util.SpringContextUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
@@ -40,8 +39,8 @@ import java.util.*;
  */
 @Order(200)
 @ControllerAdvice
+@Slf4j
 public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 用来标记是否发生异常
@@ -150,7 +149,7 @@ public class PackageResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         }
 
         // 返回包装体
-        logger.error(se.getMessage(), se);
+        log.error(se.getMessage(), se);
         HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(se);
 
         expandResultBody(resultBody);

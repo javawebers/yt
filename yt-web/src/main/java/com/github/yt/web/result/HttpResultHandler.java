@@ -5,8 +5,7 @@ import com.github.yt.commons.util.YtStringUtils;
 import com.github.yt.web.conf.YtWebProperties;
 import com.github.yt.web.util.JsonUtils;
 import com.github.yt.web.util.SpringContextUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -25,9 +24,8 @@ import static com.github.yt.web.result.PackageResponseBodyAdvice.REQUEST_RESULT_
  *
  * @author liujiasheng
  */
+@Slf4j
 public class HttpResultHandler {
-    private static final Logger logger = LoggerFactory.getLogger(HttpResultHandler.class);
-
 
     private static volatile BaseResultConfig resultConfig;
 
@@ -133,7 +131,7 @@ public class HttpResultHandler {
     public static void writeExceptionResult(final Throwable e, HttpServletRequest request,
             HttpServletResponse response) {
         // 当不向上抛异常时主动打印异常
-        logger.error(e.getMessage(), e);
+        log.error(e.getMessage(), e);
         HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(e);
         YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
         response.setStatus(ytWebProperties.getResult().getErrorState());
