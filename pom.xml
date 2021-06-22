@@ -15,7 +15,6 @@
     <modules>
         <module>yt-commons</module>
         <module>yt-web</module>
-        <module>yt-mybatis</module>
     </modules>
     <scm>
         <connection>scm:git@github.com:javawebers/yt.git</connection>
@@ -57,9 +56,9 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.github.javawebers</groupId>
-                <artifactId>yt-mybatis</artifactId>
-                <version>${project.version}</version>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.20</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -94,14 +94,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.javawebers</groupId>
-            <artifactId>yt-mybatis</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.18</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

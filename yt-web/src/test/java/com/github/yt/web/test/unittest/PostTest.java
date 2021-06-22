@@ -46,11 +46,4 @@ public class PostTest extends AbstractTestNGSpringContextTests {
         userList.forEach(user -> System.out.println(user.getUsername()));
     }
 
-    @Test
-    public void userPage() {
-        ResultActions resultActions = ControllerTestHandler.post("/post/userPage");
-        List<PostController.User> userList = HttpRestHandler.getPageListResult(resultActions, PostController.User.class);
-        userList.forEach(user -> System.out.println(user.getUsername()));
-    }
-
 }

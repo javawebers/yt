@@ -1,7 +1,5 @@
 package com.github.yt.web.test.example.controller;
 
-import com.github.yt.mybatis.query.Page;
-import com.github.yt.mybatis.query.PageUtils;
 import com.github.yt.web.test.example.entity.WebQueryEntity;
 import com.github.yt.web.test.query.WebQuery;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +19,4 @@ public class WebPageQueryController {
                 .setPageSize(webQuery.takePageSize());
     }
 
-    @GetMapping("pageResult")
-    public Page<Object> pageResult() {
-        return PageUtils.createPage(1, 2, 3, new ArrayList<>());
-    }
 }
