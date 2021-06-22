@@ -3,7 +3,6 @@ package com.github.yt.web.result;
 import com.github.yt.commons.exception.BaseException;
 import com.github.yt.commons.util.YtStringUtils;
 import com.github.yt.web.conf.YtWebProperties;
-import com.github.yt.web.util.JsonUtils;
 import com.github.yt.web.util.SpringContextUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.context.request.RequestAttributes;
@@ -11,13 +10,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Objects;
-
-import static com.github.yt.web.result.PackageResponseBodyAdvice.REQUEST_RESULT_ENTITY;
 
 /**
  * http请求返回实体处理类
@@ -126,23 +121,6 @@ public class HttpResultHandler {
             request.setAttribute(REQUEST_EXCEPTION_STR, exceptionStr);
         }
         return exceptionStr;
-    }
-
-    public static void writeExceptionResult(final Throwable e, HttpServletRequest request,
-            HttpServletResponse response) {
-        // 当不向上抛异常时主动打印异常
-        log.error(e.getMessage(), e);
-        HttpResultEntity resultBody = HttpResultHandler.getErrorSimpleResultBody(e);
-        YtWebProperties ytWebProperties = SpringContextUtils.getBean(YtWebProperties.class);
-        response.setStatus(ytWebProperties.getResult().getErrorState());
-        response.setHeader("Content-Type", "application/json;charset=UTF-8");
-        request.setAttribute(REQUEST_RESULT_ENTITY, resultBody);
-        String result = JsonUtils.toJsonString(resultBody);
-        try {
-            response.getWriter().write(result);
-        } catch (IOException ioException) {
-            throw new RuntimeException(ioException);
-        }
     }
 
     private static HttpServletRequest getRequest() {

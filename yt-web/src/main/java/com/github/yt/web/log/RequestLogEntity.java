@@ -1,5 +1,7 @@
 package com.github.yt.web.log;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,6 +10,7 @@ import java.util.Date;
  *
  * @author liujiasheng
  */
+@Data
 public class RequestLogEntity implements Serializable {
 
     private String ipAddress;
@@ -32,112 +35,4 @@ public class RequestLogEntity implements Serializable {
     private Date requestTime;
     private Integer invokingTime;
 
-    public String getRequestUri() {
-        return requestUri;
-    }
-
-    public RequestLogEntity setRequestUri(String requestUri) {
-        this.requestUri = requestUri;
-        return this;
-    }
-
-    public String getUserAgent() {
-        return userAgent;
-    }
-
-    public RequestLogEntity setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
-        return this;
-    }
-
-
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public RequestLogEntity setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
-        return this;
-    }
-
-    public String getClassMethodName() {
-        return classMethodName;
-    }
-
-    public RequestLogEntity setClassMethodName(String classMethodName) {
-        this.classMethodName = classMethodName;
-        return this;
-    }
-
-    public String getHeaderParams() {
-        return headerParams;
-    }
-
-    public RequestLogEntity setHeaderParams(String headerParams) {
-        this.headerParams = headerParams;
-        return this;
-    }
-
-    public String getUrlParams() {
-        return urlParams;
-    }
-
-    public RequestLogEntity setUrlParams(String urlParams) {
-        this.urlParams = urlParams;
-        return this;
-    }
-
-    public String getResponseBody() {
-        return responseBody;
-    }
-
-    public RequestLogEntity setResponseBody(String responseBody) {
-        this.responseBody = responseBody;
-        return this;
-    }
-
-    public Boolean getError() {
-        return isError;
-    }
-
-    public RequestLogEntity setError(Boolean error) {
-        isError = error;
-        return this;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public RequestLogEntity setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-        return this;
-    }
-
-    public String getErrorStackTrace() {
-        return errorStackTrace;
-    }
-
-    public RequestLogEntity setErrorStackTrace(String errorStackTrace) {
-        this.errorStackTrace = errorStackTrace;
-        return this;
-    }
-
-    public Date getRequestTime() {
-        return requestTime;
-    }
-
-    public RequestLogEntity setRequestTime(Date requestTime) {
-        this.requestTime = requestTime;
-        return this;
-    }
-
-    public Integer getInvokingTime() {
-        return invokingTime;
-    }
-
-    public RequestLogEntity setInvokingTime(Integer invokingTime) {
-        this.invokingTime = invokingTime;
-        return this;
-    }
 }

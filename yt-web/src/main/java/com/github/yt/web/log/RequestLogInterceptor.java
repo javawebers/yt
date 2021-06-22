@@ -123,11 +123,11 @@ public class RequestLogInterceptor implements HandlerInterceptor {
         requestLogEntity.setResponseBody(JsonUtils.toJsonString(request.getAttribute(PackageResponseBodyAdvice.REQUEST_RESULT_ENTITY)));
         Exception e = (Exception) request.getAttribute(PackageResponseBodyAdvice.REQUEST_EXCEPTION);
         if (e != null) {
-            requestLogEntity.setError(true);
+            requestLogEntity.setIsError(true);
             requestLogEntity.setErrorStackTrace(HttpResultHandler.getAndSetExceptionStrToRequest(e));
             requestLogEntity.setErrorMessage(e.toString());
         } else {
-            requestLogEntity.setError(false);
+            requestLogEntity.setIsError(false);
         }
 
         if (log.isDebugEnabled()) {
