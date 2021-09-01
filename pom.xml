@@ -4,7 +4,7 @@
 
     <groupId>com.github.javawebers</groupId>
     <artifactId>yt</artifactId>
-    <version>2.3.3</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>https://github.com/javawebers/yt</url>
     <name>${project.artifactId}</name>
@@ -13,7 +13,6 @@
         yt-root
     </description>
     <modules>
-        <module>yt-commons</module>
         <module>yt-web</module>
     </modules>
     <scm>
@@ -45,11 +44,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.github.javawebers</groupId>
-                <artifactId>yt-commons</artifactId>
-                <version>${project.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.github.javawebers</groupId>
                 <artifactId>yt-web</artifactId>
